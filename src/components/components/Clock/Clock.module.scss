@@ -1,0 +1,42 @@
+.clock{
+    display: flex;
+    gap: 5px;
+    background:-webkit-linear-gradient(180deg, #FE00C7 0%, #0084FE 100%);
+          -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+  }
+
+  .de_countdown {
+    position: relative;
+    font-size: .8rem;
+    position: absolute;
+    right: 20px;
+    background: #171C27;
+    padding: 6px 10px;
+    border-radius: 30px;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border: solid 2px var(--color);
+    z-index: 1;
+    color: var(--white);
+    .clock_days{
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .clock_hours{
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .clock_minutes{
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .clock_seconds{
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 5px;
+    }
+}

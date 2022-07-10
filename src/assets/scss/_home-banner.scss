@@ -1,0 +1,53 @@
+.main-jumbo {
+    background-size: contain;
+    background-repeat: no-repeat !important;
+    padding: 5%;
+    padding-bottom: 0;
+    border-bottom: none;
+    .themeDark & {
+      background-image: url("../images/snake.svg");
+    }
+    .themeLight & {
+      background-image: url("../images/snake-light.svg");
+    }
+  }
+  
+  .jumbotron {
+    @include theme("themeDark", background-color, $background);
+    @include theme("themeLight", background-color, $background_light);
+  }
+  .home-banner{
+    .h_500{
+        // height: 500px;
+    }
+    .max_width_21{
+        max-width: 21%;
+    
+        @media all and (max-width: 576px)
+        {
+            max-width: 100%;
+            margin-top: 2rem;
+        }
+    }
+    
+    .image_position{
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .border_image{
+        width: 100%;
+        height: auto;
+        position: relative;
+        border: 7px solid rgba($white, 0.1);
+        border-radius: 10px;
+    
+        @media all and (max-width: 576px)
+        {
+            max-width: 100% !important;
+        }
+    }
+  }
+  .bannerLayer svg ellipse {
+    @include theme("themeLight", fill, $bannerLayer);
+  }

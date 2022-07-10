@@ -1,0 +1,115 @@
+.profile-section-main{
+    .jumbotron{
+        .themeDark & {
+            background-image: url("../images/snake.svg");
+          }
+          .themeLight & {
+            background-image: url("../images/snake-light.svg");
+          }
+    }
+    .form_wrapper{
+        @media all and (max-width: 576px){
+            flex-direction: column-reverse;
+        }
+        .MuiOutlinedInput-root{
+            @include theme('themeLight', background, $white);
+        }
+        input[type='text'],select,textarea{
+            @include theme('themeLight', background, $white);
+            @include theme('themeLight', color, $text-light);
+        }
+    }
+    
+    
+    .profile_section{
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .notification_wrapper{
+        background: linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%);
+        @include theme('themeLight', background, linear-gradient(90deg, rgba(57, 147, 255, 0.2) 129.09%, rgba(244, 5, 201, 0.2) -1.88%));
+        border-radius: 5px;
+        .form-control{
+            &.bg-transparent{
+                &[type='email']{
+                    @include theme('themeLight', background, $white!important);
+                }
+            }
+        }
+    }
+    
+    .social_wrapper{
+        background: #0A1735;
+        border-radius: 5px;
+        @include theme('themeLight', background, $white);
+        .MuiOutlinedInput-root{
+            @include theme('themeLight', background, $background_light);
+        }
+        input[type='text'],select,textarea{
+            @include theme('themeLight', background, $background_light);
+            @include theme('themeLight', color, $text-light);
+            
+        }
+    }
+    
+    .banner_wrapper{
+        // background-image: url('./img/profile-banner-bg.png');
+        width: 410px;
+        height: 200px;
+        border-radius: 5px;
+        position: relative;
+        .banner_label{
+            background: rgba(6, 19, 45, 1);
+            color: white;
+            @include theme('themeLight', box-shadow, 2px 1000px 1px #f5e6fa inset);
+            @include theme('themeLight', color, $text-light);
+            @include theme('themeLight', font-weight, 600);
+            display: flex;
+            width: fit-content;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 12px;
+            position: absolute;
+            top: 8%;
+            left: 2%;
+        }
+    
+        .banner_edit_icon{
+            position: absolute;
+            top: 2%;
+            right: 2%;
+        }
+    
+        img{
+            object-fit: cover;
+        }
+    }
+    
+    .avatar_wrapper{
+        width: 150px;
+        height: 150px;
+        border: 5px solid;
+        border-radius: 50%;
+        border-image-slice: 1;
+        border-color: #F902C8 ;
+        margin-top: -5rem;
+        position: relative;
+    
+        .avatar_edit_icon{
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+        }
+    
+        img{
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    }
+    
+    .social_icon{
+        color: #6C717C;
+        width: 32px;
+        margin-right: -5px;
+    }
+}

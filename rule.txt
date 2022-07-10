@@ -1,0 +1,12 @@
+-Naming Conventions
+component file name pascal case.
+non-component file name camel case.
+variable names camel case,
+
+-Basic rules
+Always define prop-types
+line max length-80 (preferrably use prettier)
+only use let or const
+avoid Inline CSS
+tabsize is 2
+leave your comment where you're creating new.

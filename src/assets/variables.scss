@@ -1,0 +1,58 @@
+@mixin theme($themeName, $prop, $val) {
+    .#{$themeName} & {
+        #{$prop}: #{$val};
+    }
+}
+
+$bg-primary-color: #ffffff;
+
+$white: #fff;
+$gray: #bbb;
+$light-gray: #ddd;
+$darkBlack: #000000;
+$black: #111;
+$general: #a2a2a2;
+$khaki: #636363;
+$black_soft: #333;
+$black_col: #2e333c;
+$black_lit: #0e1e45;
+$black_more: #0f0f0f;
+$blue: #0084fe;
+// $pink_soft: #fe00c7;
+$pink_col: #d61f8b;
+// $color: #FE00C7;
+$color_primary: #fe00c7;
+$color_more: #fc202c;
+$round_btn_size: 35px;
+$color_secondary: #0084fe;
+$color_bg_primary: #06132d;
+$color_bg_secondary: #0e1e45;
+$color_bg_secondary_dark: #050f23;
+$btn_font: 16px;
+$btn_border: 10px;
+$color_placeholder: #6670a6;
+$background: #020b1d;
+$background_light: #edf3ff;
+$search-grad1: #f405c9;
+$search-grad2: #3993ff;
+$search-bg-light: #edf3ff;
+$text-light: #7a8396;
+$text-btn-light: #06132d;
+$text-heading-light: $text-btn-light;
+$navstickyDark: #171c27;
+$navstickyLight: #fcfdff;
+$bannerLayer: #f9fbff;
+// Gradient colors
+$gradient1: linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%);
+$gradient2: linear-gradient(90deg, rgba(254, 0, 199, 0.2) 0%, rgba(0, 132, 254, 0.2) 103.82%);
+// $gradient-color1: #fe00c7;
+// $gradient-color2: #0084fe;
+$gradient-color3: rgba(244, 5, 201, 0.2);
+$gradient-color4: rgba(244, 5, 201, 0.2);
+// Gradient colors
+
+// variables from news items
+$new__item_bg: linear-gradient(90deg, rgba(244, 5, 201, 0.07) -1.88%, rgba(57, 147, 255, 0.07) 129.09%);
+$box_shadow: rgba(4, 15, 37, 0.2);
+$item__price_color: #00b2fe;
+$item__border_color: #282a53;
