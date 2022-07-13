@@ -114,15 +114,15 @@ function TopSellersBuyers() {
             >
               {collectionData.length > 0
                 ? collectionData?.map((author, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className={`cseller_list_item seller_list_item`}
-                    >
-                      <CollectionItem user={author} index={index} />
-                    </li>
-                  );
-                })
+                    return (
+                      <li
+                        key={index}
+                        className={`cseller_list_item seller_list_item`}
+                      >
+                        <CollectionItem user={author} index={index} />
+                      </li>
+                    );
+                  })
                 : null}
             </ul>
           </div>
@@ -161,15 +161,15 @@ function TopSellersBuyers() {
             >
               {sellerData.length > 0
                 ? sellerData?.map((author, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className={`cseller_list_item seller_list_item`}
-                    >
-                      <UserItem user={author} index={index} />
-                    </li>
-                  );
-                })
+                    return (
+                      <li
+                        key={index}
+                        className={`cseller_list_item seller_list_item`}
+                      >
+                        <UserItem user={author} index={index} />
+                      </li>
+                    );
+                  })
                 : null}
             </ul>
           </div>

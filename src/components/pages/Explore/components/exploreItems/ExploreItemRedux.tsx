@@ -23,7 +23,7 @@ const ExploreItemRedux = () => {
   const [height, setHeight] = useState(0);
 
   const onImgLoad = ({ target: img }) => {
-    let currentHeight = height;
+    const currentHeight = height;
     if (currentHeight < img.offsetHeight) {
       setHeight(img.offsetHeight);
     }
