@@ -1,17 +1,18 @@
-import BackupTableIcon from '@mui/icons-material/BackupTable';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useState } from 'react';
+import { Row, Col, OverlayTrigger, Popover, Form } from 'react-bootstrap';
 import {
-  Avatar,
-  Checkbox,
   List,
   ListItem,
   ListItemAvatar,
+  Checkbox,
   ListItemButton,
+  Avatar,
   ListItemText
 } from '@mui/material';
-import React, { useState } from 'react';
-import { Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { ICollection } from 'src/collections.types';
+
+import CheckIcon from '@mui/icons-material/Check';
+import BackupTableIcon from '@mui/icons-material/BackupTable';
 interface CollectionPopoverProps {
   collectionList: ICollection[];
   data: any[];

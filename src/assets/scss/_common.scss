@@ -40,7 +40,7 @@
 /*color*/
 
 :root {
-  // --color: #{$color};
+  --color: #{$color};
   --white: #{$white};
   --gray: #{$gray};
   --khaki: #{$khaki};
@@ -48,7 +48,7 @@
   --black_soft: #{$black_soft};
   --black_lit: #{$black_lit};
   --pink_col: #{$pink_col};
-  // --pink_soft: #{$pink_soft};
+  --pink_soft: #{$pink_soft};
   --blue: #{$blue};
   --background: #{$background};
 }
@@ -217,8 +217,8 @@ section {
   right: 0;
   bottom: 0;
   left: -50px;
-  background: -webkit-linear-gradient(top, transparent, rgba($white, 0.2) 5%, transparent);
-  background: linear-gradient(to bottom, transparent, rgba($white, 0.2) 5%, transparent);
+  background: -webkit-linear-gradient(top, transparent, rgba(255, 255, 255, 0.2) 5%, transparent);
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2) 5%, transparent);
   -webkit-transform: rotateZ(60deg) translate(-1em, 5.5em);
   transform: rotateZ(60deg) translate(-1em, 5.5em);
 }
@@ -344,7 +344,7 @@ section {
 hr {
   display: block;
   clear: both;
-  border-top: solid 1px $light-gray;
+  border-top: solid 1px #ddd;
   margin: 40px 0 40px 0;
 }
 
@@ -426,7 +426,7 @@ h1.ultra-big span {
 
 h1.ultra-big span.underline span {
   display: block;
-  border-bottom: solid 12px $white;
+  border-bottom: solid 12px #fff;
   position: relative;
   margin-top: -5px;
 }
@@ -611,7 +611,7 @@ h2.subtitle {
 }
 
 h2.name {
-  color: $white;
+  color: #fff;
   font-size: 84px;
   line-height: 50px;
 }
@@ -622,7 +622,7 @@ h2.name span {
 }
 
 h2.name-s1 {
-  color: $white;
+  color: #fff;
   font-size: 84px;
   font-weight: 700;
   line-height: 50px;
@@ -693,7 +693,7 @@ h2.hs1 span {
 }
 
 h2 .de_light .text-light h2 {
-  color: $white;
+  color: #fff;
 }
 
 .text-light h2.deco span:before,
@@ -711,7 +711,7 @@ h2.s3 {
 }
 
 h4.title {
-  border-bottom: solid 1px $light-gray;
+  border-bottom: solid 1px #ddd;
   margin-bottom: 20px;
 }
 
@@ -720,7 +720,7 @@ h4.style-2 {
 }
 
 h4.title {
-  border-bottom: solid 1px $light-gray;
+  border-bottom: solid 1px #ddd;
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
@@ -752,7 +752,7 @@ p.lead {
   display: block;
   width: max-content;
   text-align: center;
-  color: $white !important;
+  color: #fff !important;
   background: $pink_col;
   border-radius: 30px;
   letter-spacing: normal;
@@ -974,7 +974,7 @@ p.lead {
   font-size: 1.3rem;
   font-style: normal;
   font-weight: normal;
-  color: $white;
+  color: #fff;
   opacity: 0.8;
 }
 
@@ -1063,12 +1063,12 @@ p.lead {
 .slider-content .inner h1 {
   font-weight: 600;
   max-width: 840px;
-  color: $white;
+  color: #fff;
   font-size: 53px;
 }
 
 .slider-content .inner p {
-  color: $white;
+  color: #fff;
   font-size: 40px;
   line-height: 1.3;
   max-width: 640px;
@@ -1082,7 +1082,7 @@ p.lead {
 }
 
 .slider-content section span {
-  color: $white;
+  color: #fff;
 }
 
 .slider-content section span {
@@ -1104,7 +1104,7 @@ p.lead {
 }
 
 .slider-content section span strong {
-  color: $white;
+  color: #fff;
   font-size: 14px;
   display: block;
 }
@@ -1510,7 +1510,7 @@ p.lead {
       overflow: hidden;
       font-size: 11pt;
       letter-spacing: 1px;
-      color: $white;
+      color: #fff;
       border: 2px solid $pink_col;
       background: none;
       border-radius: 0;
@@ -1540,21 +1540,25 @@ p.lead {
   label,
   input,
   svg {
-    @include theme("themeDark", color, $white);
-    @include theme("themeLight", color, $text-light);
+    @include theme("themeDark", color, #ffffff);
+    @include theme("themeLight", color, #7a8396);
   }
 
   fieldset {
     border-color: transparent;
     border-radius: 10px;
-    @include theme("themeDark", background, $gradient1);
-    @include theme("themeLight", background, $background_light);
-    @include theme("themeLight", color, $text-light);
+    @include theme(
+      "themeDark",
+      background,
+      linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)
+    );
+    @include theme("themeLight", background, #edf3ff);
+    @include theme("themeLight", color, #7a8396);
     //
   }
 
   .MuiAutocomplete-inputRoot:hover fieldset {
-    border-color: $color_primary;
+    border-color: var(--color);
   }
 }
 // Global Search
@@ -1612,13 +1616,13 @@ p.lead {
   border-radius: 100%;
   -moz-border-radius: 100%;
   -webkit-border-radius: 100%;
-  border: solid 5px $white;
-  background: $white;
+  border: solid 5px #ffffff;
+  background: #ffffff;
 }
 
 .nft_coll_pp i {
   font-size: 10px;
-  color: $white;
+  color: #ffffff;
   background: $pink_col;
   border-radius: 100%;
   -moz-border-radius: 100%;
@@ -1807,13 +1811,13 @@ p.lead {
         .nft-item-customcontent {
           position: relative;
           z-index: 1;
-          background: $white;
+          background: #ffffff;
           margin: -20px;
           padding: 20px;
         }
         &:after {
           content: "";
-          background: linear-gradient(to left, $color_secondary, $color_primary) !important;
+          background: linear-gradient(to left, #0084fe, #fe00c7) !important;
           width: 102.5%;
           height: 102%;
           position: absolute;
@@ -1856,7 +1860,7 @@ p.lead {
   cursor: pointer;
   line-height: 28px;
   margin-bottom: -22px;
-  height: 110px;
+  height: 100px;
 }
 
 .nft__item h4 {
@@ -1894,7 +1898,7 @@ p.lead {
   position: relative;
   bottom: 22px;
   font-size: 14px;
-  color: $light-gray;
+  color: #ddd;
   float: right;
 
   span {
@@ -1987,7 +1991,7 @@ p.lead {
         font-family: "FontAwesome";
         font-size: 18px;
         content: "\f106";
-        color: $white !important;
+        color: #fff !important;
         position: relative;
       }
     }
@@ -1998,7 +2002,7 @@ p.lead {
 // Filters
 // .general-custom-filters {
 .btn__gradient {
-  background: linear-gradient(95.16deg, $color_primary 2.64%, $color_secondary 100%);
+  background: linear-gradient(95.16deg, #fe00c7 2.64%, #0084fe 100%);
   // border: 3px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   border: none;
@@ -2013,7 +2017,7 @@ p.lead {
   width: 100%;
   span {
     gap: 0px;
-    background: -webkit-linear-gradient(180deg, $color_primary 0%, $color_secondary 100%);
+    background: -webkit-linear-gradient(180deg, #fe00c7 0%, #0084fe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -2077,12 +2081,12 @@ p.lead {
   width: 100%;
   text-align: left;
   span {
-    color: $white;
+    color: #ffffff;
     opacity: 0.5;
     font-size: 14px;
   }
   .button__icon {
-    color: $white;
+    color: #ffffff;
     opacity: 0.5;
   }
 }
@@ -2090,7 +2094,7 @@ p.lead {
   border: 1px solid;
   border-image-slice: 1;
   border-radius: 1;
-  border-image-source: linear-gradient(to left, $color_primary, $color_secondary);
+  border-image-source: linear-gradient(to left, #fe00c7, #0084fe);
   .arrow {
     display: none;
   }
@@ -2111,7 +2115,7 @@ p.lead {
     min-width: 43px;
   }
   .selected__item {
-    color: $white;
+    color: #fff;
   }
   .custom__avatar {
     width: 35px;
@@ -2147,7 +2151,7 @@ p.lead {
       border: 1.5px solid #282a53;
     }
     .check__circle__icon {
-      background: linear-gradient(180deg, $color_primary 0%, $color_secondary 100%);
+      background: linear-gradient(180deg, #fe00c7 0%, #0084fe 100%);
       width: 24px;
       border-radius: 50%;
       height: 24px;
@@ -2160,7 +2164,7 @@ p.lead {
   border: 1px solid;
   border-image-slice: 1;
   border-radius: 5;
-  border-image-source: linear-gradient(to left, $color_primary, $color_secondary);
+  border-image-source: linear-gradient(to left, #fe00c7, #0084fe);
   .arrow {
     display: none;
   }
@@ -2184,9 +2188,9 @@ p.lead {
   //     margin: -8px; /* same as border width */
   //     border-radius: inherit; /* inherit container box's radius */
   //     background: #fff
-  //     // border:1px solid linear-gradient(to left, $color_primary, $color_secondary);
+  //     // border:1px solid linear-gradient(to left, #FE00C7, #0084FE);
   //     // border-image-slice: '1';
-  //     // border-image-source: linear-gradient(to left, $color_primary, $color_secondary),
+  //     // border-image-source: linear-gradient(to left, #FE00C7, #0084FE),
   // }
 }
 
@@ -2195,7 +2199,7 @@ p.lead {
 
 .explore_items_filer {
   .price_filer_holder {
-    background: $gradient1;
+    background: linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%);
     border-radius: 5px;
     font-size: 14px !important;
   }
@@ -2213,7 +2217,7 @@ p.lead {
   }
 
   .popover-header {
-    color: $white;
+    color: #ffffff;
     font-size: 17px !important;
     font-weight: 700;
     border-top-left-radius: 16px;
@@ -2299,42 +2303,6 @@ p.lead {
   .popover-body {
     color: rgba(255, 255, 255, 0.5) !important;
     @include theme("themeLight", color, $text-light!important);
-    .MuiList-root {
-      &::-webkit-scrollbar {
-        width: 3px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: rgb(255, 255, 255, 0.1);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #00b2fe;
-        border-radius: 10px;
-      }
-
-      &:hover::-webkit-scrollbar-thumb {
-        background: #32bbf5;
-      }
-      .themeLight & {
-        &::-webkit-scrollbar {
-          width: 3px;
-        }
-
-        &::-webkit-scrollbar-track {
-          background: #aba0a0;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: #19baff;
-          border-radius: 10px;
-        }
-
-        &:hover::-webkit-scrollbar-thumb {
-          background: #32bbf5;
-        }
-      }
-    }
   }
 }
 
@@ -2394,60 +2362,12 @@ p.lead {
   &:hover {
     svg {
       circle {
-        fill: $white;
+        fill: #ffffff;
         stroke: $white;
       }
       path {
         stroke: #0e1e45;
       }
-    }
-  }
-}
-// dynamic nav tabs
-.de_nav {
-  overflow: hidden;
-  padding-left: 0;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  font-weight: bold;
-
-  &.text-left {
-    text-align: left;
-    margin: 10px;
-  }
-
-  li {
-    float: none;
-    display: inline-block;
-    margin-right: 5px;
-
-    span {
-      position: relative;
-      padding: 10px 20px;
-      margin-right: 5px;
-      display: block;
-      background: none;
-      text-decoration: none;
-      color: $gray;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 15px;
-      cursor: poInter;
-      -webkit-border-radius: 3px;
-
-      &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    &.active span {
-      color: $white;
-      background: none;
     }
   }
 }

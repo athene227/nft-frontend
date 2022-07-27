@@ -1,7 +1,6 @@
 import React from 'react';
 import { ATTRIBUTE_TYPE } from 'src/enums';
 import { INft, INftAttribute } from 'src/types/nfts.types';
-
 import BoostNumberAttribute from './BoostNumberAttribute';
 import BoostPercentageAttribute from './BoostPercentageAttribute';
 import DateAttribute from './DateAttribute';

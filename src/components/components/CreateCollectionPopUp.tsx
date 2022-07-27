@@ -1,15 +1,15 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React, { memo, useState } from 'react';
-import Loader from 'src/components/components/Loader';
-import { ALERT_TYPE, ERRORS, INPUT_ERROS } from 'src/enums';
-import * as Yup from 'yup';
 
+import Loader from 'src/components/components/Loader';
+import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ALERT_TYPE, ERRORS, INPUT_ERROS } from 'src/enums';
 import Alert from './Alert';
 interface IProps {
   onClose: () => void;
   submitCollection: (
     values: { name: string; description: string; imgFile: File | null },
-    resetForm: () => void
+    resetForm: Function
   ) => void;
   createCollectionState: { error: null | string; loading: boolean };
 }
@@ -66,44 +66,47 @@ const CreateCollectionPopUp = (props: IProps) => {
 
     return (
       <Form onSubmit={handleSubmit}>
-        <div className="modal-header">
-          <h5 className="modal-title">Create Collection</h5>
-          <button className="btn-close" onClick={onClose}>
-            <span aria-hidden="true">&times;</span>
-          </button>
+        <button className="btn-close" onClick={onClose}>
+          x
+        </button>
+        <div className="heading">
+          <h3>Create Collection</h3>
         </div>
-        <div className="modal-content">
-          <div className="detailcheckout">
-            <div className="listcheckout form-cfield upload-file-field">
-              <h5>Upload file</h5>
-              <div className="d-create-file col upload__file">
-                <div className="browse">
-                  <input
-                    type="button"
-                    id="get_file"
-                    className="btn-main btn_gradient"
-                    value="Choose File"
-                  />
-                  <input
-                    id="upload_file"
-                    type="file"
-                    onChange={onChangeImage}
-                  />
-                  <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
+        <div className="container">
+          <div className="detailcheckout mt-4">
+            <div className="listcheckout">
+              <h6>Upload file</h6>
+              <div className="row">
+                <div className="d-create-file col">
+                  <div className="browse">
+                    <input
+                      type="button"
+                      id="get_file"
+                      className="btn-main"
+                      value="Browse"
+                    />
+                    <input
+                      id="upload_file"
+                      type="file"
+                      onChange={onChangeImage}
+                    />
+                  </div>
                 </div>
+                {getImage() && (
+                  <div className="profile_avatar col">
+                    <img src={getImage()} alt="collection" />
+                  </div>
+                )}
               </div>
-              {getImage() && (
-                <div className="profile_avatar col">
-                  <img src={getImage()} alt="collection" />
-                </div>
-              )}
             </div>
           </div>
 
+          <div className="spacer-30"></div>
+
           {/*  */}
-          <div className="detailcheckout form-cfield">
+          <div className="detailcheckout mt-4">
             <div className="listcheckout">
-              <h5>Name</h5>
+              <h6>Name</h6>
               <Field
                 type="text"
                 name="name"
@@ -115,9 +118,9 @@ const CreateCollectionPopUp = (props: IProps) => {
             </div>
           </div>
 
-          <div className="detailcheckout form-cfield">
+          <div className="detailcheckout">
             <div className="listcheckout">
-              <h5>Description</h5>
+              <h6>Description</h6>
               <Field
                 type="text"
                 name="description"
@@ -130,16 +133,19 @@ const CreateCollectionPopUp = (props: IProps) => {
           </div>
           {/*  */}
 
+          <div className="spacer-20"></div>
+
           {createCollectionState.loading ? (
             <Loader />
           ) : (
             <input
               type="submit"
               id="submit"
-              className="btn-main btn-create btn_gradient"
-              value="Create Now"
+              className="btn-main"
+              value="Create Collection"
             />
           )}
+          <div className="spacer-20"></div>
           {createCollectionState.error && (
             <Alert
               text={createCollectionState.error}
@@ -152,7 +158,7 @@ const CreateCollectionPopUp = (props: IProps) => {
   };
 
   return (
-    <div className="maincheckout modal-style-1">
+    <div className="maincheckout">
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {

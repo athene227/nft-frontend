@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Loader from 'react-loader-spinner';
 
 const _Loader = (props: { size?: number }) => {

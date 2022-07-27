@@ -1,8 +1,8 @@
 import { Avatar } from '@mui/material';
 import { navigate } from '@reach/router';
 import React from 'react';
-import { getImage } from 'src/services/ipfs';
 import { IUser } from 'src/types/users.types';
+import { getImage } from 'src/services/ipfs';
 
 const UserCard = (props: { data: IUser }) => {
   const { data } = props;

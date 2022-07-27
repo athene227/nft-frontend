@@ -1,6 +1,5 @@
 {
   "singleQuote": true,
-  "quoteProps": "as-needed",
   "printWidth": 80,
   "editor.formatOnSave": true,
   "proseWrap": "always",

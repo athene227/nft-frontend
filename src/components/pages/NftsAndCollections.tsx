@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { ICollection } from 'src/collections.types';
 import Loader from 'src/components/components/Loader';
 import { ALERT_TYPE, STATUS } from 'src/enums';
-import { fetchUserCollections } from 'src/store/actions/thunks/collections';
-
-import { fetchUserNfts } from '../../store/actions/thunks/nfts';
-import * as selectors from '../../store/selectors';
+import { INft } from 'src/types/nfts.types';
 import Alert from '../components/Alert';
 import ColumnNewReduCollections from '../components/ColumnNewReduCollections';
 import ColumnNewRedux from '../components/ColumnNewRedux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserNfts } from '../../store/actions/thunks/nfts';
+import { fetchUserCollections } from 'src/store/actions/thunks/collections';
+import * as selectors from '../../store/selectors';
 
 export enum tabType {
   on_sale = 'on_sale',

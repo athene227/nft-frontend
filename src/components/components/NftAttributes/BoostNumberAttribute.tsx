@@ -1,9 +1,8 @@
-import 'react-circular-progressbar/dist/styles.css';
-
 import React from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { BsFillLightningFill } from 'react-icons/bs';
 import { INftAttribute } from 'src/types/nfts.types';
+import 'react-circular-progressbar/dist/styles.css';
 
 const BoostNumberAttribute = ({ data }: { data: INftAttribute }) => (
   <div className="nft-attr-bsnumber">

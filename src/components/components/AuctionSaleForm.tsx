@@ -1,15 +1,14 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
-import moment from 'moment';
 import React from 'react';
-import Loader from 'src/components/components/Loader';
-import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
-import * as Yup from 'yup';
-
+import Loader from 'src/components/components/Loader';
 import Alert from './Alert';
+import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
+import moment from 'moment';
 interface IProps {
   nft: INft;
-  submit: (values: any, resetForm: () => void) => void;
+  submit: (values: any, resetForm: Function) => void;
   setMinimumBidInput: (val: string) => void;
   setExpirationDateInput: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };

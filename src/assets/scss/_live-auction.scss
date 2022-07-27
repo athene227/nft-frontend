@@ -43,7 +43,7 @@ $live-bg-color: #0e1e45;
             }
 
             .stats_price {
-                color: $color_primary;
+                color: var(--color);
                 font-size: 16px;
                 font-weight: 900;
                 @media only screen and (max-width: 641px) {

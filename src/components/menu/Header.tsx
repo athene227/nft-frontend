@@ -1,24 +1,18 @@
-// import { header } from 'react-bootstrap';
-import { Link, navigate } from '@reach/router';
-import jwtDecode from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
-import useOnclickOutside from 'react-cool-onclickoutside';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
 import Breakpoint, {
   BreakpointProvider,
   setDefaultBreakpoints
 } from 'react-socks';
-// contracts
-import NFT from 'src/abis/NFT.json';
-import NFTMarket from 'src/abis/NFTMarket.json';
-import { ApiService } from 'src/core/axios';
-import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
-import notification from 'src/services/notification';
-import { setUserProfile } from 'src/store/actions/thunks/users';
-import { setupWeb3 } from 'src/store/actions/thunks/web3';
+import jwtDecode from 'jwt-decode';
+
+// import { header } from 'react-bootstrap';
+import { Link, navigate } from '@reach/router';
+import Web3 from 'web3';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import useOnclickOutside from 'react-cool-onclickoutside';
 import * as selectors from 'src/store/selectors';
+import { useSelector, useDispatch } from 'react-redux';
 import { IUser } from 'src/types/users.types';
 import {
   getMyBalance,
@@ -26,8 +20,15 @@ import {
   getNetworkId,
   shortAddress
 } from 'src/utils';
-import Web3 from 'web3';
-
+import { getImage } from 'src/services/ipfs';
+import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
+import { ApiService } from 'src/core/axios';
+import { setupWeb3 } from 'src/store/actions/thunks/web3';
+// contracts
+import NFT from 'src/abis/NFT.json';
+import NFTMarket from 'src/abis/NFTMarket.json';
+import { setUserProfile } from 'src/store/actions/thunks/users';
+import notification from 'src/services/notification';
 import GlobalSearchBar from '../components/GlobalSearchBar';
 
 setDefaultBreakpoints([{ xs: 0 }, { l: 1199 }, { xl: 1200 }]);

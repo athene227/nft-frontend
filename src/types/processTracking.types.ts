@@ -1,5 +1,4 @@
 import { ICollection } from 'src/collections.types';
-
 import { IUser } from './users.types';
 
 export interface IProcessTracking {

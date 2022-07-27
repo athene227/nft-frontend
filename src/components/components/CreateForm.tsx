@@ -1,23 +1,22 @@
-import 'react-datepicker/dist/react-datepicker.css';
-
+import React, { useState, useEffect } from 'react';
 import {
-  ErrorMessage,
   Field,
-  FieldArray,
-  FieldArrayRenderProps,
   Form,
   Formik,
   FormikProps,
-  useField,
-  useFormikContext
+  ErrorMessage,
+  FieldArray,
+  FieldArrayRenderProps,
+  useFormikContext,
+  useField
 } from 'formik';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
+import { Row, Col } from 'react-bootstrap';
+import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { categories } from 'src/components/components/constants/filters';
-import Loader from 'src/components/components/Loader';
+import { v4 as uuidv4 } from 'uuid';
+
 import {
   ALERT_TYPE,
   ATTRIBUTE_TYPE,
@@ -26,22 +25,22 @@ import {
   INPUT_ERROS,
   MARKET_TYPE
 } from 'src/enums';
-import ipfs from 'src/services/ipfs';
-import notification from 'src/services/notification';
-import {
-  createCollection,
-  fetchMyCollections
-} from 'src/store/actions/thunks/collections';
-import { INftAttribute } from 'src/types/nfts.types';
-import { getErrorMessage } from 'src/utils';
-import { v4 as uuidv4 } from 'uuid';
-import * as Yup from 'yup';
-
-import * as selectors from '../../store/selectors';
-import AddAttributePopup from './AddAttributePopup';
+import Loader from 'src/components/components/Loader';
 import Alert from './Alert';
 import CreateCollectionPopUp from './CreateCollectionPopUp';
+import { getErrorMessage } from 'src/utils';
+import {
+  fetchMyCollections,
+  createCollection
+} from 'src/store/actions/thunks/collections';
+import ipfs from 'src/services/ipfs';
+import * as selectors from '../../store/selectors';
+import notification from 'src/services/notification';
 import NftAttribute from './NftAttributes';
+import AddAttributePopup from './AddAttributePopup';
+import { INftAttribute } from 'src/types/nfts.types';
+import 'react-datepicker/dist/react-datepicker.css';
+import { categories } from 'src/components/components/constants/filters';
 
 interface IProps {
   onChangeImage: (e: any) => void;
@@ -51,7 +50,7 @@ interface IProps {
   setNumberOfCopiesInput: (e: any) => void;
   setRoyaltiesInput: (e: any) => void;
   setExpirationDateInput: (e: any) => void;
-  submit: (values: any, resetForm: () => void) => void;
+  submit: (values: any, resetForm: Function) => void;
   submitCreateState: { error: null | string; loading: boolean };
   marketType: MARKET_TYPE;
   multiple: boolean;
@@ -189,7 +188,7 @@ export default function CreateForm(props: IProps) {
       description: string;
       imgFile: File | null;
     },
-    resetForm: () => void
+    resetForm: Function
   ) => {
     const { name, description, imgFile } = data;
     setCreateCollectionState({ loading: true, error: null });
@@ -223,7 +222,7 @@ export default function CreateForm(props: IProps) {
 
   const addAttribute = async (
     values: { type: ATTRIBUTE_TYPE },
-    resetForm: () => void
+    resetForm: Function
   ) => {
     const { type } = values;
     const newValue: any = { trait_type: '' };

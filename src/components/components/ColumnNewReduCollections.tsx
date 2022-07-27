@@ -1,9 +1,8 @@
 import React, { memo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ICollection } from 'src/collections.types';
-
 import * as actions from '../../store/actions/thunks';
 import CollectionCard from './CollectionCard';
+import { ICollection } from 'src/collections.types';
 interface IProps {
   collections: ICollection[];
   showLoadMore: boolean;

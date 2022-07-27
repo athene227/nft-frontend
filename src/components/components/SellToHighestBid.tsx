@@ -1,16 +1,16 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Loader from 'src/components/components/Loader';
-import { ALERT_TYPE, COIN, COMISSION_PERCENTAGE, INPUT_ERROS } from 'src/enums';
-import { IBid } from 'src/types/bids.types';
-import { INft } from 'src/types/nfts.types';
-import { getErrorMessage } from 'src/utils';
-import { createGlobalStyle } from 'styled-components';
-import * as Yup from 'yup';
 
-import * as selectors from '../../store/selectors';
+import Loader from 'src/components/components/Loader';
+import { createGlobalStyle } from 'styled-components';
+import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ALERT_TYPE, COIN, COMISSION_PERCENTAGE, INPUT_ERROS } from 'src/enums';
+import { INft } from 'src/types/nfts.types';
 import Alert from './Alert';
+import * as selectors from '../../store/selectors';
+import { getErrorMessage } from 'src/utils';
+import { IBid } from 'src/types/bids.types';
 
 const GlobalStyles = createGlobalStyle`
 .heading h3, .description h3{

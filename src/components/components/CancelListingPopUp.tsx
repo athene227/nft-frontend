@@ -1,21 +1,20 @@
-import { Form, Formik, FormikProps } from 'formik';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import Loader from 'src/components/components/Loader';
+import { Form, Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
 import { ALERT_TYPE, COIN, ERRORS, MARKET_CONTRACT_EVENTS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
 import { getErrorMessage } from 'src/utils';
-import * as Yup from 'yup';
-
-import * as selectors from '../../store/selectors';
+import Loader from 'src/components/components/Loader';
 import Alert from './Alert';
+import * as selectors from '../../store/selectors';
 import TransactionHash from './TransactionHash';
 
 interface IProps {
   nft: INft;
   cancelListingState: { error: null | string; loader: boolean };
   onClose: (value: boolean) => void;
-  submit: (values: any, resetForm: () => void) => void;
+  submit: (values: any, resetForm: Function) => void;
 }
 
 const CancelListingPopUp = (props: IProps) => {
@@ -158,7 +157,7 @@ const CancelListingPopUp = (props: IProps) => {
   };
 
   return (
-    <div className="maincheckout modal-style-1">
+    <div className="maincheckout">
       <button
         className="btn-close"
         onClick={() => onClose(cancelTransactionHash !== undefined)}

@@ -1,6 +1,6 @@
 import { ApiService, Canceler } from '../../../core/axios';
-import { getNftFilterQuery } from '../../utils';
 import * as actions from '..';
+import { getNftFilterQuery } from '../../utils';
 
 export const fetchSearchCollectionResults =
   () => async (dispatch: any, getState: any) => {

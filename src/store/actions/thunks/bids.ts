@@ -1,6 +1,6 @@
+import { getNftFilterQuery } from 'src/store/utils';
 import { IBid } from 'src/types/bids.types';
-
-import { ApiService, Canceler } from '../../../core/axios';
+import { ApiService, Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
 
 //* fetchBids

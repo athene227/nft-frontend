@@ -1,5 +1,5 @@
-import { navigate } from '@reach/router';
 import React, { memo } from 'react';
+import { navigate } from '@reach/router';
 import { ICollection } from 'src/collections.types';
 import { getImage } from 'src/services/ipfs';
 

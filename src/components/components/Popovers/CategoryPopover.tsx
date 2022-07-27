@@ -1,17 +1,16 @@
-import CategoryIcon from '@mui/icons-material/Category';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useState } from 'react';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import {
-  Checkbox,
   List,
   ListItem,
+  Checkbox,
   ListItemButton,
   ListItemText
 } from '@mui/material';
-import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { ICollection } from 'src/collections.types';
-
 import classes from './CustomPopover.module.scss';
+import CheckIcon from '@mui/icons-material/Check';
+import CategoryIcon from '@mui/icons-material/Category';
 interface CategoryPopoverProps {
   collectionList: ICollection[];
   onUpdate: (v: any) => void;

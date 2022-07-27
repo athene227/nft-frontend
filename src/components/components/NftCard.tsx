@@ -1,15 +1,14 @@
 /* eslint-disable react/jsx-no-bind */
-import { navigate } from '@reach/router';
 import React, { memo } from 'react';
+import styled from 'styled-components';
+import Clock from './Clock/Clock';
+import { navigate } from '@reach/router';
 import { useSelector } from 'react-redux';
-import { MARKET_TYPE, STATUS } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
+import * as selectors from '../../store/selectors';
+import { STATUS, MARKET_TYPE } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
 import { dateHasPassed } from 'src/utils';
-import styled from 'styled-components';
-
-import * as selectors from '../../store/selectors';
-import Clock from './Clock/Clock';
+import { getImage } from 'src/services/ipfs';
 const Outer = styled.div`
   display: flex;
   justify-content: center;

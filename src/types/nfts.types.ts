@@ -7,7 +7,6 @@ import {
   MARKET_TYPE,
   STATUS
 } from 'src/enums';
-
 import { IUser } from './users.types';
 
 export interface INftAttribute {
@@ -26,7 +25,6 @@ export interface INft {
   royalty: number;
   description: string;
   imageUrl: string;
-  previewImageUrl: string;
   attributes?: INftAttribute[];
   marketType: MARKET_TYPE;
   creatorAddress: string;
@@ -42,6 +40,7 @@ export interface INft {
   nftLink: string;
   bidLink: string;
   authorImg: string;
+  previewImg: string;
   price: number;
   bid: string;
   likes: number;
@@ -91,7 +90,6 @@ export interface INftFilterQuery {
 export interface MarketItemCreateProgress {
   status: ITEM_CREATE_STATUS;
   imageUrl: string | null;
-  previewImageUrl: string | null;
   metaDataUrl: string | null;
   tokenId: string | null;
   tokenTransactionHash: string | null;

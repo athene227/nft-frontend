@@ -1,9 +1,13 @@
-import { navigate } from '@reach/router';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Alert from 'src/components/components/Alert';
-import { ApiService } from 'src/core/axios';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchNftDetail } from '../../store/actions/thunks/nfts';
+import * as selectors from '../../store/selectors';
+
+import Footer from '../components/footer';
+// import { createGlobalStyle } from 'styled-components';
+import RegularSaleForm from '../components/RegularSaleForm';
+import AuctionSaleForm from '../components/AuctionSaleForm';
+import { INft } from 'src/types/nfts.types';
 import {
   ALERT_TYPE,
   ERRORS,
@@ -13,8 +17,7 @@ import {
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
-import notification from 'src/services/notification';
-import { INft } from 'src/types/nfts.types';
+import Alert from 'src/components/components/Alert';
 import {
   createAuctionMarketItem,
   createSimpleMarketItem,
@@ -22,16 +25,13 @@ import {
   getNetworkId,
   getUserNftQuantityFromNftContract
 } from 'src/utils';
-
-import { fetchNftDetail } from '../../store/actions/thunks/nfts';
-import * as selectors from '../../store/selectors';
-import AuctionSaleForm from '../components/AuctionSaleForm';
-import Footer from '../components/footer';
+import { ApiService } from 'src/core/axios';
+import { navigate } from '@reach/router';
+import PreviewNft from '../components/PreviewNft';
 import Loader from '../components/Loader';
 import MarketTypeTabs from '../components/MarketTypeTabs';
-import PreviewNft from '../components/PreviewNft';
-// import { createGlobalStyle } from 'styled-components';
-import RegularSaleForm from '../components/RegularSaleForm';
+import notification from 'src/services/notification';
+import moment from 'moment';
 
 const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
@@ -72,7 +72,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     price: string;
   }
 
-  const _submit = async (data: InftInputs, resetForm: any) => {
+  const _submit = async (data: InftInputs, resetForm: Function) => {
     if (!nft) return;
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
@@ -124,7 +124,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       const tokenId = nft.tokenId;
       //* dates
       const ts1 = moment(data.expirationDate).unix();
-      // const expirationDate = data.expirationDate; // "2022-05-14T21:30"
+      const expirationDate = data.expirationDate; // "2022-05-14T21:30"
       const _date = new Date(data.expirationDate); //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
 
       if (marketType === MARKET_TYPE.AUCTION) {

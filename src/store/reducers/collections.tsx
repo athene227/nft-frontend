@@ -2,13 +2,12 @@ import { ICollection } from 'src/collections.types';
 import { gatewayUrl } from 'src/services/ipfs';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
-
 import * as actions from '../actions';
 import {
-  entityLoadingFailed,
+  initEntityState,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  initEntityState
+  entityLoadingFailed
 } from '../utils';
 
 export interface ICollectionsState {

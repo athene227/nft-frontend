@@ -1,12 +1,51 @@
-import 'react-toastify/dist/ReactToastify.css';
-
-import SEO from '@americanexpress/react-seo';
-import { Location, Redirect, Router } from '@reach/router';
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Router, Location, Redirect } from '@reach/router';
 import { ToastContainer } from 'react-toastify';
-import { AppSeo } from 'src/config/seo';
-import { MARKET_CONTRACT_EVENTS } from 'src/enums';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { navigate } from '@reach/router';
+
+import ScrollToTopBtn from './menu/ScrollToTop';
+import HeaderNew from './menu/headerNew';
+import Header from './menu/Header';
+import Home from './pages/Home/home';
+// import Explore from './pages/explore1';
+import Explore from './pages/Explore/explore';
+import Explore2 from './pages/explore2';
+import Helpcenter from './pages/helpcenter';
+// import Ranking from './pages/Ranking';
+import RankingRedux from './pages/RankingRedux';
+import Collection from './pages/Collection';
+// import ItemDetail from './pages/ItemDetail';
+import ItemDetailSingle from './pages/ItemDetailSingle';
+import ItemDetailMultiple from './pages/ItemDetailMultiple';
+import Author from './pages/Author';
+import Wallet from './pages/wallet';
+import Login from './pages/login';
+import LoginTwo from './pages/loginTwo';
+import Register from './pages/register';
+import Price from './pages/price';
+import Works from './pages/works';
+import News from './pages/news';
+import CreateSingle from './pages/CreateSingle/CreateSingle';
+import CreateMultiple from './pages/CreateMultiple';
+import Listing from './pages/Listing';
+
+import Auction from './pages/Auction';
+import Activity from './pages/activity';
+import Contact from './pages/contact';
+import Profile from './pages/Profile/Profile';
+import MyProfile from './pages/MyProfile';
+import CreateOption from './pages/CreateOption/CreateOption';
+import ElegantIcons from './pages/elegantIcons';
+import EtlineIcons from './pages/etlineIcons';
+import FontAwesomeIcons from './pages/fontAwesomeIcons';
+import Accordion from './pages/accordion';
+import Alerts from './pages/alerts';
+import Progressbar from './pages/progressbar';
+import Tabs from './pages/tabs';
+import Search from './pages/SearchPage';
+import { addBid } from 'src/store/actions/thunks/bids';
 import {
   addAuctionMarketItemEvent,
   addBuySimpleEvent,
@@ -16,43 +55,9 @@ import {
   addSimpleMarketItemEvent,
   addTerminateAuctionEvent
 } from 'src/store/actions';
-import { addBid } from 'src/store/actions/thunks/bids';
+import { MARKET_CONTRACT_EVENTS } from 'src/enums';
 import * as selectors from 'src/store/selectors';
-
 import Footer from '../components/components/footer';
-import HeaderNew from './menu/headerNew';
-import ScrollToTopBtn from './menu/ScrollToTop';
-import Accordion from './pages/accordion';
-import Activity from './pages/activity';
-import Alerts from './pages/alerts';
-import Auction from './pages/Auction';
-import Author from './pages/Author';
-import Collection from './pages/Collection';
-import Contact from './pages/contact';
-import CreateMultiple from './pages/CreateMultiple';
-import CreateOption from './pages/CreateOption/CreateOption';
-import CreateSingle from './pages/CreateSingle/CreateSingle';
-import ElegantIcons from './pages/elegantIcons';
-import EtlineIcons from './pages/etlineIcons';
-import Explore from './pages/Explore/explore';
-import FontAwesomeIcons from './pages/fontAwesomeIcons';
-import Helpcenter from './pages/helpcenter';
-import Home from './pages/Home/home';
-import ItemDetailMultiple from './pages/ItemDetailMultiple';
-import ItemDetailSingle from './pages/ItemDetailSingle';
-import Listing from './pages/Listing';
-import MyProfile from './pages/MyProfile';
-import News from './pages/news';
-import Price from './pages/price';
-import Profile from './pages/Profile/Profile';
-import Progressbar from './pages/progressbar';
-// import Ranking from './pages/Ranking';
-import RankingRedux from './pages/RankingRedux';
-import Register from './pages/register';
-import Search from './pages/SearchPage';
-import Tabs from './pages/tabs';
-import Wallet from './pages/wallet';
-import Works from './pages/works';
 
 export const ScrollTop = ({ children, location }) => {
   React.useEffect(() => window.scrollTo(0, 0), [location]);
@@ -157,7 +162,7 @@ const App = () => {
 
   return (
     <div className="wraper">
-      <SEO {...AppSeo} />
+      {/* <Header /> */}
       <HeaderNew />
       <PosedRouter>
         <ScrollTop path="/">
@@ -181,9 +186,12 @@ const App = () => {
           {/* <Home1 path="/home1" />
           <Home2 path="/home2" /> */}
           <Explore path="/explore" />
+          <Explore2 path="/explore2" />
           <Helpcenter path="/helpcenter" />
           <RankingRedux path="/Ranking" />
           <Wallet path="/wallet" />
+          <Login path="/login" />
+          <LoginTwo path="/loginTwo" />
           <Register path="/register" />
           <Price path="/price" />
           <Works path="/works" />

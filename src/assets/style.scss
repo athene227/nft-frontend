@@ -15,9 +15,6 @@
 @import "scss/profile";
 // Create Options styling
 @import "scss/createOption";
-@import "scss/createSingle";
-// Detail page
-@import "scss/nftdetail";
 
 // Footer styling
 @import "scss/footer";
@@ -431,8 +428,45 @@ address {
 }
 
 .pagination > .active > .a {
-  color: $white;
+  color: #ffffff;
   background: $pink_col;
+}
+
+/*** create file ***/
+
+.d-create-file {
+  padding: 50px;
+  border-radius: 10px;
+  border: dashed 3px #dddddd;
+  text-align: center;
+
+  #get_file {
+    margin: 0 auto;
+  }
+
+  .browse {
+    position: relative;
+    width: max-content;
+    height: auto;
+    margin: 0 auto;
+    cursor: pointer;
+
+    #upload_file {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+
+    &:hover {
+      .btn-main {
+        box-shadow: 2px 2px 20px 0px $pink_col;
+        transition: all 0.3s ease;
+      }
+    }
+  }
 }
 
 /*** activity ***/
@@ -685,7 +719,7 @@ i.font60 {
   display: block;
   text-align: center;
   font-size: 28px;
-  color: $white;
+  color: #ffffff;
   background: $pink_col;
   padding: 14px 0;
   width: 56px;
@@ -737,7 +771,7 @@ i.font60 {
   margin-top: -50px;
   position: relative;
   z-index: 1;
-  background: $white;
+  background: #ffffff;
   padding: 30px;
   padding-top: 50px;
 }
@@ -761,14 +795,14 @@ i.font60 {
 }
 
 .feature-box.f-boxed:hover {
-  color: $white;
+  color: #ffffff;
   -webkit-box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.05);
   box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.05);
 }
 
 .feature-box.f-boxed:hover h4 {
-  color: $white;
+  color: #ffffff;
 }
 
 .feature-box i.i-circle {
@@ -980,7 +1014,7 @@ i.font60 {
 }
 
 .author_list_pp i {
-  color: $white;
+  color: #ffffff;
   background: $pink_col;
   font-size: 10px;
   padding: 3px;
@@ -1075,7 +1109,7 @@ i.font60 {
 .icon-box {
   display: block;
   text-align: center;
-  border: solid 1px $light-gray;
+  border: solid 1px #dddddd;
   padding: 20px 0 20px 0;
   text-decoration: none;
   cursor: pointer;
@@ -1108,15 +1142,15 @@ i.font60 {
 }
 
 .dark-scheme .icon-box span {
-  color: $white;
+  color: #ffffff;
 }
 
 .text-light .icon-box span {
-  color: $white;
+  color: #ffffff;
 }
 
 .icon-box:hover {
-  color: $white;
+  color: #ffffff;
   background: $color_more;
   -webkit-box-shadow: 5px 5px 30px 0px $color_more;
   -moz-box-shadow: 5px 5px 30px 0px $color_more;
@@ -1174,7 +1208,7 @@ i.font60 {
   padding: 40px;
   z-index: 1;
   font-size: 28px;
-  color: $white;
+  color: #ffffff;
 }
 
 .nft_pic_title {
@@ -1373,7 +1407,7 @@ i.font60 {
       float: left;
       width: 60px;
       background: $pink_col;
-      color: $white;
+      color: #ffffff;
       display: table-cell;
       padding: 13px 0;
       border-radius: 0 5px 5px 0;
@@ -1450,7 +1484,7 @@ i.font60 {
 }
 
 .profile_avatar i {
-  color: $white;
+  color: #ffffff;
   background: $pink_col;
   margin: 110px 0 0 110px;
   display: block;
@@ -1503,7 +1537,7 @@ i.font60 {
   font-size: 12px;
   padding: 4px 10px;
   line-height: 1em;
-  border: solid 1px $light-gray;
+  border: solid 1px #dddddd;
   display: inline-block;
   border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1516,6 +1550,54 @@ i.font60 {
     border: 0;
   }
 }*/
+
+.de_nav {
+  overflow: hidden;
+  padding-left: 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-weight: bold;
+
+  &.text-left {
+    text-align: left;
+    margin: 10px;
+  }
+
+  li {
+    float: none;
+    display: inline-block;
+    margin-right: 5px;
+
+    span {
+      position: relative;
+      padding: 10px 20px;
+      margin-right: 5px;
+      display: block;
+      background: none;
+      text-decoration: none;
+      color: $gray;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 15px;
+      cursor: poInter;
+      -webkit-border-radius: 3px;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    &.active span {
+      color: $white;
+      background: none;
+    }
+  }
+}
 
 .profile_follower {
   margin-right: 20px;
@@ -1602,7 +1684,7 @@ i.font60 {
   }
 
   i {
-    color: $white;
+    color: #ffffff;
     background: $pink_col;
     font-size: 10px;
     padding: 3px;
@@ -1649,7 +1731,7 @@ img.img-rounded {
   border: solid 1px rgba(255, 255, 255, 0.1);
   background: var(--background);
   // @include theme("themeLight", background, #edf3ff);
-  @include theme("themeLight", background, $white);
+  @include theme("themeLight", background, #ffffff);
   border-radius: 3px;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
@@ -1658,12 +1740,10 @@ img.img-rounded {
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   color: $white;
-  @include theme("themeLight", color, $text-light);
 
   &:focus {
     background-color: inherit;
     color: $white;
-    @include theme("themeLight", color, $text-light);
     border-color: #86b7fe;
     outline: 0;
   }
@@ -1887,7 +1967,7 @@ input:-internal-autofill-selected {
       background-size: auto;
       width: 100%;
       height: 8px;
-      background: $light-gray;
+      background: #ddd;
       margin-top: 20px;
       margin-bottom: 20px;
       border-radius: 8px;
@@ -2004,6 +2084,48 @@ input:-internal-autofill-selected {
   }
 }
 
+/*** create 2 ***/
+
+.de_tab.tab_methods {
+  .de_nav {
+    text-align: left;
+
+    li {
+      margin: 0 10px 0 0;
+
+      span {
+        padding: 35px 10px;
+        background: none;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+        border-radius: 12px;
+        min-width: 140px;
+
+        i {
+          display: block;
+          font-size: 30px;
+          margin-bottom: 10px;
+          // background-color: red;
+        }
+      }
+
+      &.active {
+        span {
+          border-color: $pink_col;
+          color: $pink_col;
+
+          i {
+            color: $pink_col;
+          }
+        }
+      }
+    }
+  }
+}
+
 .switch-with-title {
   h5 {
     float: left;
@@ -2107,7 +2229,7 @@ input:-internal-autofill-selected {
 
   .de_form input[type="checkbox"]:checked + label::before {
     content: "\f00c";
-    color: $white;
+    color: #ffffff;
     border: rgba(0, 0, 0, 0);
     background: $pink_col;
   }
@@ -2116,7 +2238,7 @@ input:-internal-autofill-selected {
 /*** table ***/
 
 .de-table.table-rank {
-  color: $white;
+  color: #ffffff;
   display: table;
   margin-bottom: 0;
   --bs-table-bg: transparent;
@@ -2171,7 +2293,7 @@ input:-internal-autofill-selected {
     }
 
     i {
-      color: $white;
+      color: #ffffff;
       background: $pink_col;
       font-size: 10px;
       padding: 3px;
@@ -2247,7 +2369,7 @@ input:-internal-autofill-selected {
       font-size: 30px;
       float: left;
       width: 100%;
-      color: $white;
+      color: #ffffff;
       background: $pink_col;
       display: table-cell;
       padding: 5px 40px 7px 40px;
@@ -2709,6 +2831,187 @@ input:-internal-autofill-selected {
   font-weight: 300;
 }
 
+.nft-attr-normal {
+  background-color: rgba(21, 178, 229, 0.06);
+  border-radius: 6px;
+  border: 1px solid rgb(21, 178, 229);
+  padding: 10px;
+  text-align: center;
+  width: fit-content;
+  min-width: 75px;
+
+  .nft-attr-name {
+    color: rgb(21, 178, 229);
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    .nft-date-icon {
+      margin-right: 6px;
+      margin-top: -4px;
+    }
+  }
+
+  .nft-attr-value {
+    color: rgb(255 255 255);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.nft-attr-bsnumber,
+.nft-attr-bspercent {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+
+  .boost-progress-wrapper {
+    cursor: pointer;
+    margin: auto;
+    width: 65px;
+    height: 65px;
+
+    .CircularProgressbar .CircularProgressbar-path {
+      stroke: rgb(0 178 235);
+    }
+
+    .CircularProgressbar .CircularProgressbar-trail {
+      stroke: none;
+      fill: rgb(4 39 58);
+      fill-opacity: 1;
+    }
+
+    div[data-test-id="CircularProgressbarWithChildren__children"] {
+      font-size: 24px;
+    }
+  }
+
+  .boost-label-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .nft-attr-name {
+      font-size: 14px;
+      margin: 7px 0px 0px;
+      text-transform: none;
+      color: white;
+      width: min-content;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .nft-attr-value {
+      font-size: 14px;
+      opacity: 0.6;
+      margin: 0px;
+      color: rgb(42 216 255);
+    }
+  }
+
+  &.danger {
+    .CircularProgressbar .CircularProgressbar-path {
+      stroke: rgb(184, 41, 60);
+    }
+
+    .CircularProgressbar .CircularProgressbar-trail {
+      stroke: none;
+      fill: rgb(97, 7, 22);
+      fill-opacity: 1;
+    }
+
+    .nft-attr-value {
+      color: rgb(255 42 71);
+    }
+  }
+}
+
+.nft-attr-ranking {
+  width: 100%;
+  max-width: 500px;
+
+  .nft-attr-name {
+    color: rgb(21, 178, 229);
+  }
+
+  .nft-attr-value {
+    color: white;
+  }
+
+  &.danger .progress-bar {
+    background-color: #ff0d3e;
+  }
+}
+
+.nft-attr-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  & > * {
+    margin: 5px;
+  }
+}
+
+.add-attr-popup {
+  max-width: 550px;
+
+  .attr-type-container {
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+
+    &:hover {
+      border: 1px solid rgb(21, 178, 229);
+    }
+
+    .nft-attr-normal {
+      margin: auto;
+      background-color: rgb(35 40 42 / 80%);
+      border: 1px solid rgb(21, 178, 229);
+    }
+
+    .nft-attr-bsnumber {
+      margin: auto;
+
+      .nft-attr-name {
+        color: #00b2eb;
+      }
+
+      .nft-attr-value {
+        color: rgb(0 113 139);
+      }
+    }
+
+    .nft-attr-ranking {
+      .nft-attr-value {
+        color: #747474;
+      }
+    }
+
+    .form-label {
+      margin-left: 5px;
+      font-size: 18px;
+      color: #3f4150;
+    }
+  }
+}
+
+.nft-create-form .react-datepicker-wrapper {
+  input {
+    height: 40px;
+    padding-left: 5px;
+    background: none;
+    border: solid 1px rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+  }
+}
+
 .search-page {
   .search-query {
     color: #00b2eb;
@@ -2887,7 +3190,7 @@ input:-internal-autofill-selected {
 }
 
 .swiper-pagination-bullet-active {
-  background: $color_primary !important;
+  background: $color !important;
 }
 
 .swiper-pagination {
@@ -2907,7 +3210,7 @@ input:-internal-autofill-selected {
   cursor: pointer;
   transition: all ease-in-out 0.3s;
   &:hover {
-    color: $color_primary;
+    color: var(--color);
   }
 }
 
@@ -2926,7 +3229,7 @@ input:-internal-autofill-selected {
   width: max-content;
   text-align: center;
   color: #fff !important;
-  background: $color_primary;
+  background: $color;
   border-radius: 30px;
   letter-spacing: normal;
   outline: 0;
@@ -2943,7 +3246,7 @@ input:-internal-autofill-selected {
   justify-content: center;
 
   &:hover {
-    box-shadow: 2px 2px 20px 0px $color_primary;
+    box-shadow: 2px 2px 20px 0px $color;
     transition: all 0.3s ease;
   }
 
@@ -3095,7 +3398,7 @@ input:-internal-autofill-selected {
     }
 
     .stats-price {
-      color: $color_primary;
+      color: $color;
       font-size: 20px;
       font-weight: 700;
     }

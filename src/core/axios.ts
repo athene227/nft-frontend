@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { ICollection } from 'src/collections.types';
-import { API_ERRORS } from 'src/enums';
-import TokenService from 'src/services/token';
 import { IBid } from 'src/types/bids.types';
 import { INft } from 'src/types/nfts.types';
 import { IUser } from 'src/types/users.types';
+import TokenService from 'src/services/token';
+import { API_ERRORS } from 'src/enums';
+import { IToken, JwtDecoded } from 'src/types/auth.types';
+import jwtDecode from 'jwt-decode';
 
 export const Axios = axios.create();
 export const Canceler = axios.CancelToken.source();
@@ -17,7 +19,7 @@ Axios.interceptors.request.use(
     if (accessToken) {
       headers.Authorization = accessToken;
     }
-    config.headers = { ...config.headers, ...headers };
+    config.headers = headers;
     return config;
   },
   (error) => {
@@ -47,7 +49,7 @@ Axios.interceptors.response.use(
         TokenService.updateAccessToken(newToken);
         TokenService.setCurrentToken(newToken);
 
-        return Axios.request(originalRequest);
+        return Axios(originalRequest);
       } catch (err) {
         // if refreshToken is expired
         console.error(err);
@@ -76,9 +78,6 @@ const END_POINTS = {
   NFT_COLLECTIBLE_DETAILES: `${SERVER_URL}/${API_VERSION}/nfts/nftMultipleDetailes`,
   GET_HOT_AUCTIONS: `${SERVER_URL}/${API_VERSION}/nfts/getHotAuctions`,
   GET_NFT_COUNTS_BY_CATEGORY: `${SERVER_URL}/${API_VERSION}/nfts/getCountByCategory`,
-
-  GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/getImageUri`,
-  GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
   // COLLECTIONS
@@ -368,22 +367,6 @@ export class ApiService {
       url: `${END_POINTS.SEARCH}/user`,
       method: 'get',
       params
-    });
-  };
-
-  static getImageUri = async (data: FormData) => {
-    return Axios.request({
-      url: END_POINTS.GET_IMAGE_URI,
-      method: 'post',
-      data
-    });
-  };
-
-  static getUri = async (data: any) => {
-    return Axios.request({
-      url: END_POINTS.GET_URI,
-      method: 'post',
-      data
     });
   };
 }

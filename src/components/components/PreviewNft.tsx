@@ -1,7 +1,6 @@
 import React from 'react';
 import { COIN, MARKET_TYPE } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
-
 import Clock from './Clock/Clock';
 
 interface IProps {

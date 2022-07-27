@@ -22,7 +22,7 @@ import { fetchHotAuctions } from '../../../../../store/actions/thunks';
 const nfts = [
   {
     author: './img/eth.png',
-    image: './img/auctions/pic5.jpg',
+    image: './img/auctions/pic5.svg',
     title: 'Art Crypto',
     price: '0.25',
     user: '@cryptoage'
@@ -51,7 +51,7 @@ const nfts = [
   },
   {
     author: './img/eth.png',
-    image: './img/auctions/pic8.png',
+    image: './img/auctions/pic8.svg',
     title: 'Art Crypto',
     price: '0.25',
     user: '@cryptoage'

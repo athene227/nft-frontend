@@ -7,7 +7,6 @@ import {
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
-
 import TransactionHash from '../TransactionHash';
 import ProcessStep from './ProcessStep';
 

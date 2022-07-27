@@ -1,17 +1,17 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import Loader from 'src/components/components/Loader';
-import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
+import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
+import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
+import Loader from 'src/components/components/Loader';
+import { useSelector } from 'react-redux';
 import * as selectors from '../../store/selectors';
+
 import Alert from '../components/Alert';
 interface IProps {
   onChangeImage: (e: any) => void;
   setNameInput: (e: any) => void;
   setDescriptionInput: (e: any) => void;
-  submit: (values: any, resetForm: () => void) => void;
+  submit: (values: any, resetForm: Function) => void;
   submitCreateState: { error: null | string; loading: boolean };
 }
 

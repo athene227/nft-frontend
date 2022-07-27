@@ -1,10 +1,9 @@
-import { navigate } from '@reach/router';
 import React, { memo } from 'react';
 import { COIN } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
 import { IUser } from 'src/types/users.types';
 import { shortAddress } from 'src/utils';
-
+import { navigate } from '@reach/router';
+import { getImage } from 'src/services/ipfs';
 import UserAvatar from './UserAvatar';
 
 //react functional component

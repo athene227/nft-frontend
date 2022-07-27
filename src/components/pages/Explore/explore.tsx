@@ -1,12 +1,9 @@
-import SEO from '@americanexpress/react-seo';
-import { ExplorePageSeo } from 'src/config/seo';
-
+/* eslint-disable react/react-in-jsx-scope */
 import ExploreItems from './components/exploreItems/ExploreItems';
 
 const explore = () => {
   return (
     <div>
-      <SEO {...ExplorePageSeo} />
       <ExploreItems />
     </div>
   );

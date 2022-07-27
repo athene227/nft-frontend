@@ -1,9 +1,9 @@
-import SellIcon from '@mui/icons-material/Sell';
-import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
-import { BiPulse } from 'react-icons/bi';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import { SiEthereum } from 'react-icons/si';
+import { BiPulse } from 'react-icons/bi';
+import { Select, MenuItem, TextField, SelectChangeEvent } from '@mui/material';
+import SellIcon from '@mui/icons-material/Sell';
 
 interface PricePopoverProps {
   data: { max: number; min: number; unit: string };

@@ -1,8 +1,8 @@
-import './index.scss';
-
 import React from 'react';
 import Blockies from 'react-blockies';
+
 import { getImage } from 'src/services/ipfs';
+import './index.scss';
 
 interface IProps {
   image: string | undefined;

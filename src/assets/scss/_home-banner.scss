@@ -33,13 +33,12 @@
     .image_position{
         position: absolute;
         top: 0;
-        left: 0;
     }
     .border_image{
         width: 100%;
         height: auto;
         position: relative;
-        border: 7px solid rgba($white, 0.1);
+        border: 7px solid rgba(255, 255, 255, 0.1);
         border-radius: 10px;
     
         @media all and (max-width: 576px)
@@ -49,5 +48,5 @@
     }
   }
   .bannerLayer svg ellipse {
-    @include theme("themeLight", fill, $bannerLayer);
+    @include theme("themeLight", fill, #f9fbff);
   }
