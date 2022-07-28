@@ -44,13 +44,13 @@ describe('Market contract with auction market buy, without royalties', async () 
       erc20.address
     ])) as NFTMarketAuction;
 
-    nft721 = (await NFT721.connect(deployer).deploy(market.address)) as NFT721;
+    nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
     await nft721.connect(userWith721NFT).createToken('dummy', 0);
     await nft721
       .connect(userWith721NFT)
       .setApprovalForAll(market.address, true);
 
-    nft1155 = (await NFT1155.connect(user1).deploy(market.address)) as NFT1155;
+    nft1155 = (await NFT1155.connect(user1).deploy()) as NFT1155;
     await nft1155.connect(userWith1155NFT).createToken('dummy', 5, 0);
     await nft1155
       .connect(userWith1155NFT)
@@ -1748,7 +1748,7 @@ describe('Market contract with auction market buy, without royalties', async () 
   });*/
 });
 
-xdescribe('Market contract with auction market buy, with royalties', async () => {
+describe('Market contract with auction market buy, with royalties', async () => {
   let market: NFTMarketAuction,
     nft721: NFT721,
     nft1155: NFT1155,
@@ -1773,7 +1773,7 @@ xdescribe('Market contract with auction market buy, with royalties', async () =>
     userWith1155NFT = accounts[6];
     userWith20Token = accounts[7];
 
-    const Market = await ethers.getContractFactory('NFTMarket');
+    const Market = await ethers.getContractFactory('NFTMarketAuction');
     const NFT1155 = await ethers.getContractFactory('NFT1155');
     const NFT721 = await ethers.getContractFactory('NFT721');
     const Erc20 = await ethers.getContractFactory('MockERC20');
@@ -1783,8 +1783,8 @@ xdescribe('Market contract with auction market buy, with royalties', async () =>
       erc20.address
     ])) as NFTMarketAuction;
 
-    nft721 = (await NFT721.connect(deployer).deploy(market.address)) as NFT721;
-    await nft721.connect(user721Creator).createToken('dummy', 3);
+    nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
+    await nft721.connect(user721Creator).createToken('dummy', 300);
     await nft721
       .connect(user721Creator)
       .transferFrom(user721Creator.address, userWith721NFT.address, 1);
@@ -1792,10 +1792,8 @@ xdescribe('Market contract with auction market buy, with royalties', async () =>
       .connect(userWith721NFT)
       .setApprovalForAll(market.address, true);
 
-    nft1155 = (await NFT1155.connect(user721Creator).deploy(
-      market.address
-    )) as NFT1155;
-    await nft1155.connect(user1155Creator).createToken('dummy', 5, 3);
+    nft1155 = (await NFT1155.connect(user721Creator).deploy()) as NFT1155;
+    await nft1155.connect(user1155Creator).createToken('dummy', 5, 300);
     await nft1155
       .connect(user1155Creator)
       .safeTransferFrom(
@@ -1850,6 +1848,7 @@ xdescribe('Market contract with auction market buy, with royalties', async () =>
       await market.connect(userWith20Token).bid(listingId, 101);
       await nextDay();
       await market.terminateAuction(listingId);
+
       await nft721
         .connect(userWith20Token)
         .setApprovalForAll(market.address, true);

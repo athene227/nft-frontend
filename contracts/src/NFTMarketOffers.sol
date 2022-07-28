@@ -4,6 +4,8 @@ pragma solidity ^0.8.4;
 
 import './MarketTools.sol';
 
+import 'hardhat/console.sol';
+
 /**
  * @title Marketplace contract for arbitrary offers for NFTs
  */
@@ -14,9 +16,6 @@ contract NFTMarketOffers is MarketTools {
   mapping(address => uint256) nftOffers;
   mapping(uint256 => Offer) public offers;
   Counters.Counter private _offerIds;
-
-  bytes4 private InterfaceId_ERC721 = 0x80ac58cd; // The ERC-165 identifier for 721
-  bytes4 private InterfaceId_ERC1155 = 0xd9b67a26; // The ERC-165 identifier for 1155
 
   struct Offer {
     address offerer;
@@ -111,11 +110,20 @@ contract NFTMarketOffers is MarketTools {
       commissionPercent
     );
 
+    // Transfers royalty
+    uint256 royalty = handleErc20Royalty(
+      offer.nftContract,
+      offer.tokenId,
+      offer.erc20Address,
+      offer.offerer,
+      offer.amount
+    );
+
     // Transfers price
     IERC20(offer.erc20Address).transferFrom(
       offer.offerer,
       msg.sender,
-      offer.amount - commission
+      offer.amount - commission - royalty
     );
 
     // Transfers commission
@@ -123,8 +131,6 @@ contract NFTMarketOffers is MarketTools {
 
     // transfer the nft from owner to offerer
     transferNFT(offer.nftContract, msg.sender, offer.offerer, offer.tokenId, 1);
-
-    // TODO add royalty
 
     emit OfferAccepted(offerId);
   }

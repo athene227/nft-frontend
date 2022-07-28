@@ -321,44 +321,29 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
     AuctionMarketItem storage marketItem,
     AuctionBid memory chosenBid
   ) internal {
-    InitialItem memory item = initialItems[marketItem.nftContract][
-      marketItem.nftTokenId
-    ];
-
     uint256 commission = getPriceAfterPercent(
       chosenBid.bidAmount,
       1,
       commissionPercent
     );
 
-    if (item.royalty > 0 && item.creator != address(0x0)) {
-      uint256 creatorRoyalty = getPriceAfterPercent(
-        chosenBid.bidAmount,
-        1,
-        item.royalty
-      );
-      // transfer royalty
-      IERC20(marketItem.priceTokenAddress).transferFrom(
-        chosenBid.bidder,
-        item.creator,
-        creatorRoyalty
-      );
-      // transfer (price - creatorRoyalty - commission) to seller
-      IERC20(marketItem.priceTokenAddress).transferFrom(
-        chosenBid.bidder,
-        marketItem.ownerAddress,
-        chosenBid.bidAmount - creatorRoyalty - commission
-      );
-    } else {
-      // transfer (price - commission) to seller
-      IERC20(marketItem.priceTokenAddress).transferFrom(
-        chosenBid.bidder,
-        marketItem.ownerAddress,
-        chosenBid.bidAmount - commission
-      );
-    }
+    // Transfers royalty
+    uint256 royalty = handleErc20Royalty(
+      marketItem.nftContract,
+      marketItem.nftTokenId,
+      marketItem.priceTokenAddress,
+      chosenBid.bidder,
+      chosenBid.bidAmount
+    );
 
-    // pay commission to the market place
+    // Transfers price
+    IERC20(marketItem.priceTokenAddress).transferFrom(
+      chosenBid.bidder,
+      marketItem.ownerAddress,
+      chosenBid.bidAmount - commission - royalty
+    );
+
+    // Transfers commission
     IERC20(marketItem.priceTokenAddress).transferFrom(
       chosenBid.bidder,
       owner(),

@@ -3,27 +3,26 @@ pragma solidity ^0.8.4;
 
 // erc 721
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
-
-// ERC721URIStorage (inherits from erc 721)
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
+import '@openzeppelin/contracts/token/common/ERC2981.sol';
 
 // utils
 import '@openzeppelin/contracts/utils/Counters.sol';
 
-import './INFTMarket.sol';
-
-contract NFT721 is ERC721URIStorage {
+contract NFT721 is ERC721URIStorage, ERC2981 {
   using Counters for Counters.Counter;
   Counters.Counter public _tokensIds; // for minting incrementing
-  address _marketplaceAddress; // market place address we gonna give ability to transact the tokens;
-
-  constructor(address marketplaceAddress) ERC721('Metaverse Tokens', 'METT') {
-    _marketplaceAddress = marketplaceAddress;
-  }
 
   event Mint(uint256 newItemId);
 
-  function createToken(string memory tokenURI, uint256 royalty)
+  constructor() ERC721('HowToPulse', 'HTP') {}
+
+  /**
+   * @dev Mints a token
+   * @param tokenURI The metadata URL for this NFT
+   * @param royalty Possible royalty percentage, specified in basis points (10000 means 100%)
+   */
+  function createToken(string memory tokenURI, uint96 royalty)
     public
     returns (uint256)
   {
@@ -31,33 +30,26 @@ contract NFT721 is ERC721URIStorage {
     uint256 newItemId = _tokensIds.current();
     // minting
     _mint(msg.sender, newItemId);
-    //
-    _setTokenURI(newItemId, tokenURI);
-    // give the marketplace approval to transcat this token between users
-    setApprovalForAll(_marketplaceAddress, true);
 
-    //emit Mint(newItemId);
-    // FIXME: enable when we implement royalties properly
-    /*     INFTMarket(_marketplaceAddress).initializeItem(
-      address(this),
-      newItemId,
-      msg.sender,
-      royalty
-      // frontData
-    ); */
+    _setTokenURI(newItemId, tokenURI);
+
+    if (royalty > 0) {
+      _setTokenRoyalty(newItemId, msg.sender, royalty);
+    }
+
+    emit Mint(newItemId);
+
     return newItemId;
   }
 
-  // Whenever tokens are transferred, add the market contract allowance to handle the tokens
-  function _beforeTokenTransfer(
-    address from,
-    address to,
-    uint256 tokenId
-  ) internal virtual override {
-    super._beforeTokenTransfer(from, to, tokenId);
-    if (_marketplaceAddress != to) {
-      // Allow marketplace to transfer tokens from the new owner
-      _setApprovalForAll(to, _marketplaceAddress, true);
-    }
+  /// @inheritdoc ERC165
+  function supportsInterface(bytes4 interfaceId)
+    public
+    view
+    virtual
+    override(ERC721, ERC2981)
+    returns (bool)
+  {
+    return super.supportsInterface(interfaceId);
   }
 }

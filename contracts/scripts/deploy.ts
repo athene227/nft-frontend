@@ -59,14 +59,10 @@ async function main() {
   ])) as NFTMarketAuction;
   await marketAuction.deployed();
 
-  const nft721 = (await NFT721Fact.connect(deployer).deploy(
-    ethers.constants.AddressZero // FIXME
-  )) as NFT721;
+  const nft721 = (await NFT721Fact.connect(deployer).deploy()) as NFT721;
   await nft721.deployed();
 
-  const nft1155 = (await NFT1155Fact.connect(deployer).deploy(
-    ethers.constants.AddressZero // FIXME
-  )) as NFT1155;
+  const nft1155 = (await NFT1155Fact.connect(deployer).deploy()) as NFT1155;
   await nft1155.deployed();
 
   const writeAddr = (addr: string, name: string) => {
@@ -99,8 +95,8 @@ async function main() {
   await verify(marketOffers.address, [[mockErc20.address]]);
   await verify(marketSimple.address, []);
   await verify(marketAuction.address, [[mockErc20.address]]);
-  await verify(nft721.address, [ethers.constants.AddressZero]); // FIXME
-  await verify(nft1155.address, [ethers.constants.AddressZero]); // FIXME
+  await verify(nft721.address, []);
+  await verify(nft1155.address, []);
 
   console.log('All done');
 }

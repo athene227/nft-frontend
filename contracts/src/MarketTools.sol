@@ -12,6 +12,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/security/Pausable.sol';
 
 import '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
+import '@openzeppelin/contracts/interfaces/IERC2981.sol';
 
 import './IPartialNFT.sol';
 
@@ -22,8 +23,6 @@ abstract contract MarketTools is Ownable, Pausable {
   using Counters for Counters.Counter;
   using ERC165Checker for address;
 
-  // NFT address -> token id -> (royalty + creator address)
-  mapping(address => mapping(uint256 => InitialItem)) public initialItems;
   // Amount of tokens a user has for sale, per contract and per tokenId
   mapping(address => mapping(address => mapping(uint256 => uint256)))
     public userListedTokens;
@@ -33,13 +32,9 @@ abstract contract MarketTools is Ownable, Pausable {
   // List of ERC20 token addresses which are allowed to be used
   mapping(address => bool) public whitelistedERC20;
 
-  bytes4 private InterfaceId_ERC721 = 0x80ac58cd; // The ERC-165 identifier for 721
-  bytes4 private InterfaceId_ERC1155 = 0xd9b67a26; // The ERC-165 identifier for 1155
-
-  struct InitialItem {
-    uint256 royalty;
-    address creator;
-  }
+  bytes4 internal InterfaceId_ERC721 = 0x80ac58cd; // The ERC-165 identifier for 721
+  bytes4 internal InterfaceId_ERC1155 = 0xd9b67a26; // The ERC-165 identifier for 1155
+  bytes4 internal InterfaceId_ERC2981 = 0x2a55205a; // The ERC-165 identifier for 2981
 
   /**
    * @dev Initializes the contract
@@ -73,24 +68,6 @@ abstract contract MarketTools is Ownable, Pausable {
    */
   function getLatestListItemId() public view returns (uint256) {
     return _listingIds.current();
-  }
-
-  /**
-   * @dev Used to initialize royalties. Under construction currently.
-   */
-  function initializeItem(
-    address nftContract,
-    uint256 tokenId,
-    address creator,
-    uint256 royalty
-  ) public {
-    require(
-      initialItems[nftContract][tokenId].creator == address(0x0),
-      'Already initialized'
-    );
-    initialItems[nftContract][tokenId] = InitialItem(royalty, creator);
-
-    // TODO: consider emitting an event once royalties are implemented properly
   }
 
   /**
@@ -181,6 +158,38 @@ abstract contract MarketTools is Ownable, Pausable {
     } else {
       revert('Not supported');
     }
+  }
+
+  /**
+   * @dev Sends out royalties for ERC20 priced sales if the NFT supports royalties
+   * @param nftContract The NFT contract address
+   * @param tokenId NFT token ID
+   * @param priceTokenAddress The ERC20 token contract address
+   * @param royaltyFrom From which address to take the ERC20 tokens for royalty
+   * @param price Sale price, from which the royalty is to be calculated
+   * @return royalty The calculated and transferred royalty
+   */
+  function handleErc20Royalty(
+    address nftContract,
+    uint256 tokenId,
+    address priceTokenAddress,
+    address royaltyFrom,
+    uint256 price
+  ) internal returns (uint256 royalty) {
+    if (nftContract.supportsInterface(InterfaceId_ERC2981)) {
+      (address receiver, uint256 royaltyAmount) = IERC2981(nftContract)
+        .royaltyInfo(tokenId, price);
+
+      if (receiver != address(0x0) && royaltyAmount > 0) {
+        IERC20(priceTokenAddress).transferFrom(
+          royaltyFrom,
+          receiver,
+          royaltyAmount
+        );
+        return royaltyAmount;
+      }
+    }
+    return 0;
   }
 
   function pause() external onlyOwner {
