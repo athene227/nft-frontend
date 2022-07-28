@@ -10,6 +10,7 @@ import './MarketTools.sol';
  */
 contract NFTMarketSimple is ReentrancyGuard, MarketTools {
   using Counters for Counters.Counter;
+  using ERC165Checker for address;
 
   // listingId -> item details
   mapping(uint256 => SimpleMarketItem) public simpleListingIdToMarketItem;
@@ -128,24 +129,13 @@ contract NFTMarketSimple is ReentrancyGuard, MarketTools {
 
     marketItem.remainingQuantity -= quantity;
 
-    InitialItem memory item = initialItems[marketItem.nftContract][
-      marketItem.nftTokenId
-    ];
-    if (item.royalty > 0 && item.creator != address(0x0)) {
-      uint256 creatorRoyalty = getPriceAfterPercent(
-        marketItem.price,
-        quantity,
-        item.royalty
-      );
+    uint256 royalty = handleRoyalty(
+      marketItem.nftContract,
+      marketItem.nftTokenId,
+      marketItem.price * quantity
+    );
 
-      sendAssets(item.creator, creatorRoyalty);
-      sendAssets(
-        marketItem.ownerAddress,
-        marketItem.price * quantity - creatorRoyalty
-      );
-    } else {
-      sendAssets(marketItem.ownerAddress, marketItem.price * quantity);
-    }
+    sendAssets(marketItem.ownerAddress, marketItem.price * quantity - royalty);
 
     // pay commission to the market place
     sendAssets(owner(), commission);
@@ -164,6 +154,30 @@ contract NFTMarketSimple is ReentrancyGuard, MarketTools {
     );
 
     emit SimpleItemSold(listingId, quantity);
+  }
+
+  /**
+   * @dev Sends out royalties if the NFT supports royalties
+   * @param nftContract The NFT contract address
+   * @param tokenId NFT token ID
+   * @param totalPrice Price for a single token * quantity.
+   * @return royalty The calculated and transferred total royalty
+   */
+  function handleRoyalty(
+    address nftContract,
+    uint256 tokenId,
+    uint256 totalPrice
+  ) internal returns (uint256 royalty) {
+    if (nftContract.supportsInterface(InterfaceId_ERC2981)) {
+      (address receiver, uint256 royaltyAmount) = IERC2981(nftContract)
+        .royaltyInfo(tokenId, totalPrice);
+
+      if (receiver != address(0x0) && royaltyAmount > 0) {
+        sendAssets(receiver, royaltyAmount);
+        return royaltyAmount;
+      }
+    }
+    return 0;
   }
 
   /**

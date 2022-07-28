@@ -48,9 +48,7 @@ describe('Offer', async () => {
     // Creating an offer doesn't check what the NFT type is, so this is common for both types
     beforeEach(async function () {
       const NFT721 = await ethers.getContractFactory('NFT721');
-      nft721 = (await NFT721.connect(deployer).deploy(
-        offers.address
-      )) as NFT721;
+      nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
       await nft721.connect(userWithNFT).createToken('dummy', 0);
       await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
     });
@@ -135,9 +133,7 @@ describe('Offer', async () => {
   describe('Accepting a 721 offer', async () => {
     beforeEach(async function () {
       const NFT721 = await ethers.getContractFactory('NFT721');
-      nft721 = (await NFT721.connect(deployer).deploy(
-        offers.address
-      )) as NFT721;
+      nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
       await nft721.connect(userWithNFT).createToken('dummy', 0);
       await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
 
@@ -255,9 +251,7 @@ describe('Offer', async () => {
   describe('Accepting a 1155 offer', async () => {
     beforeEach(async function () {
       const NFT1155 = await ethers.getContractFactory('NFT1155');
-      nft1155 = (await NFT1155.connect(deployer).deploy(
-        offers.address
-      )) as NFT1155;
+      nft1155 = (await NFT1155.connect(deployer).deploy()) as NFT1155;
       await nft1155.connect(userWithNFT).createToken('dummy', 5, 0);
       await nft1155
         .connect(userWithNFT)
@@ -348,6 +342,57 @@ describe('Offer', async () => {
       await expect(
         offers.connect(userWithTokens).acceptOffer(1)
       ).to.be.revertedWith('Not enough balance');
+    });
+  });
+
+  describe('Handling royalties', async () => {
+    beforeEach(async function () {
+      const NFT721 = await ethers.getContractFactory('NFT721');
+      nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
+      await nft721.connect(userWithNFT).createToken('dummy', 765);
+      await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
+
+      await erc20.connect(user2).freeMint(10000);
+      await erc20.connect(user2).approve(offers.address, 10000);
+
+      await offers
+        .connect(userWithTokens)
+        .offerOnNft(nft721.address, 1, erc20.address, 505, dummyDeadline);
+    });
+
+    it('should work', async () => {
+      await offers.connect(userWithNFT).acceptOffer(1);
+    });
+
+    it('should transfer ERC20 asset and royalty in primary sale', async () => {
+      await expect(() =>
+        offers.connect(userWithNFT).acceptOffer(1)
+      ).to.changeTokenBalances(
+        erc20,
+        [userWithTokens, userWithNFT, deployer],
+        [-505, 505 - 5, 5]
+      );
+    });
+
+    it('should transfer ERC20 asset and royalty in secondary sale', async () => {
+      await offers.connect(userWithNFT).acceptOffer(1);
+
+      await offers
+        .connect(user2)
+        .offerOnNft(nft721.address, 1, erc20.address, 606, dummyDeadline);
+
+      await nft721
+        .connect(userWithTokens)
+        .setApprovalForAll(offers.address, true);
+
+      // 7,65% of 606 = 46
+      await expect(() =>
+        offers.connect(userWithTokens).acceptOffer(2)
+      ).to.changeTokenBalances(
+        erc20,
+        [userWithTokens, userWithNFT, user2, deployer],
+        [606 - 46 - 6, 46, -606, 6]
+      );
     });
   });
 });

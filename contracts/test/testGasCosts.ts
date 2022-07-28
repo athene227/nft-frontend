@@ -41,7 +41,7 @@ xdescribe('Estimating gas costs', async () => {
       gasPrice: 0
     })) as MockMarket;
 
-    nft721 = (await NFT721.connect(deployer).deploy(market.address, {
+    nft721 = (await NFT721.connect(deployer).deploy(, {
       gasPrice: 0
     })) as NFT721;
     await nft721

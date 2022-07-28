@@ -58,9 +58,7 @@ describe('Various minor functionalities', async () => {
   describe('Pausability', async () => {
     beforeEach(async function () {
       const NFT721 = await ethers.getContractFactory('NFT721');
-      nft721 = (await NFT721.connect(deployer).deploy(
-        offers.address
-      )) as NFT721;
+      nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
       await nft721.connect(userWithNFT).createToken('dummy', 0);
       await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
     });

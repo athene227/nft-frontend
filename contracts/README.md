@@ -5,7 +5,6 @@ This page provides general information about the used contracts and required fil
 ## Contracts overview
 
 The following are the main contracts:
-- `INFTMarket.sol`: An interface used for storing NFT royalty information to the marketplace contracts.
 - `IPartialNFT.sol`: An interface used to present some common functionality between ERC-1155 and ERC-721
 - `MarketTools.sol`: An abstract contract which is inherited by all the marketplace contracts. Contains logic common to all marketplace type contracts
 - `NFT721.sol`: A basic ERC-721 contract with some extra minting logic for royalties
@@ -27,10 +26,6 @@ This section describes the main functionality which is common for all of the mar
 Functionality for adding an ERC20 token to the whitelist and for removing one from there.  Only the deployer has access to this.
 
 Only whitelisted ERC20 tokens can be used in the marketplaces.
-
-#### `initializeItem`
-
-Related to royalties. TODO
 
 #### `pause` and `unpause`
 
@@ -146,17 +141,14 @@ A simple sale is always in the blockchain's native asset which doesn't support a
 
 #### Royalty
 
-TODO: rewrite once royalty standards are in use.
-
 For each completed sale (a direct sale or a successfully completed auction),
 royalty percentage is transferred to the NFT's original creator. The royalty
-percentage is decided when minting the NFT(s).
+percentage is decided when minting the NFT(s) - it can be also zero.
 
 The royalty is calculated after the sale price. For example, if sale (or bid)
-price is 100 weis and royalty is 5%, the seller gets 95 weis and creator 5 weis.
+price is 100 weis and royalty is 5%, the seller gets 95 weis and the creator 5 weis.
 
-Royalties are only paid for trades made using this platform. Sales and/or
-transfers outside this platform do not incur royalty.
+Royalties are implemented with the [EIP-2981 royalty standard](https://eips.ethereum.org/EIPS/eip-2981). Therefore the royalty is valid in all platforms which respect the royalty standard.
 
 #### Commission
 
