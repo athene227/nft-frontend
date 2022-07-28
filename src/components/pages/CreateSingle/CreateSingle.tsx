@@ -24,7 +24,8 @@ import {
 import { getImageUri, getUri } from 'src/services/ipfs';
 import PreviewNft from 'src/components/components/PreviewNft';
 import CreateForm from './components/CreateForm';
-import NFT from 'src/abis/NFT.json';
+// import NFT from 'src/abis/NFT.json';
+import NFT from 'src/abis/new/NFT721.json';
 import MarketTypeTabs from './components/MarketTypeTabs';
 import notification from 'src/services/notification';
 import CreateItemProgressPopup from 'src/components/components/Popups/CreateItemProgressPopup';

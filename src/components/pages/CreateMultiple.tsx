@@ -21,7 +21,8 @@ import {
   getProfileImage
 } from 'src/utils';
 import { getImageUri, getUri } from 'src/services/ipfs';
-import NFT from 'src/abis/NFT.json';
+// import NFT from 'src/abis/NFT.json';
+import NFT from 'src/abis/new/NFT1155.json';
 import PreviewNft from '../components/PreviewNft';
 import CreateForm from '../components/CreateForm';
 import Footer from '../components/footer';

@@ -24,7 +24,8 @@ import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
 import { ApiService } from 'src/core/axios';
 import { setupWeb3 } from 'src/store/actions/thunks/web3';
 // contracts
-import NFT from 'src/abis/NFT.json';
+// import NFT from 'src/abis/NFT.json';
+import NFT from 'src/abis/new/NFT721.json';
 import NFTMarket from 'src/abis/NFTMarket.json';
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
@@ -253,8 +254,9 @@ const Header = function () {
       setLoadingState({ loading: true, error: null });
       // await addPulseNetwork()
 
-      // get accouns
+      // get accounts
       const accounts = await _web3.eth.getAccounts();
+      console.log(accounts[0]);
 
       TokenService.removeInvalidTokens();
       if (!fromConnectButton) {

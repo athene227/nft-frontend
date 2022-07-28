@@ -15,6 +15,8 @@ export interface IWeb3State {
   networkId: null | number;
   accounts: string[];
   balance: null | number;
+  nft721Contract: any;
+  nft1155Contract: any;
 }
 
 const initialValue: IWeb3State = {
@@ -24,7 +26,9 @@ const initialValue: IWeb3State = {
   escrowContract: null,
   accounts: [],
   networkId: null,
-  balance: null
+  balance: null,
+  nft721Contract: null,
+  nft1155Contract: null
 };
 
 export const defaultState = {

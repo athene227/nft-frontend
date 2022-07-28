@@ -56,14 +56,17 @@ export enum IMAGES_NAMES {
 export enum NETWORKS {
   ETH_MAIN_NET = 1,
   RINKEBY = 4,
+  GOERLI = 5,
   PULSE_CHAIN = 941
 }
 
-export const SELECTED_NETWORK = NETWORKS.RINKEBY;
+// export const SELECTED_NETWORK = NETWORKS.RINKEBY;
+export const SELECTED_NETWORK = NETWORKS.GOERLI;
 
 export enum ERRORS {
   NOT_CONNECTED_TO_WALLET = 'You are not connected',
-  WRONG_NETWORK = 'You are not on the right network. Please switch to Rinkeby.',
+  // WRONG_NETWORK = 'You are not on the right network. Please switch to Rinkeby.',
+  WRONG_NETWORK = 'You are not on the right network. Please switch to Goerli.',
   MISSING_IMAGE = 'Please upload an image.',
   NOT_ENOUGH_BALANCE = 'Oups. Seems like your balance is too low.',
   SET_QUANTITY = 'Please set a quantity.',
