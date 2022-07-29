@@ -226,9 +226,10 @@ export const createToken = async (data: {
   jsonUri: string;
   quantity: number;
   royalty: number;
-  startPrice: number;
-  deadline: number;
-  frontData: any;
+  // startPrice: number;
+  // deadline: number;
+  // frontData: any;
+  nftType: string;
 }) => {
   const {
     nftContract,
@@ -236,14 +237,25 @@ export const createToken = async (data: {
     jsonUri,
     quantity,
     royalty,
-    startPrice,
-    deadline,
-    frontData
+    // startPrice,
+    // deadline,
+    // frontData
+    nftType
   } = data;
   // created token with the nft contract
-  const createdToken = await nftContract.methods
-    .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
-    .send({ from: userAddress });
+  let createdToken;
+  if (nftType === 'NFT721') {
+    createdToken = await nftContract.methods
+      // .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
+      .createToken(jsonUri, royalty)
+      .send({ from: userAddress });
+  } else {
+    // NFT1155
+    createdToken = await nftContract.methods
+      // .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
+      .createToken(jsonUri, quantity, royalty)
+      .send({ from: userAddress });
+  }
   const tokenId = createdToken.events.Mint.returnValues.newItemId;
   return tokenId;
 };

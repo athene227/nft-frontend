@@ -24,8 +24,9 @@ import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
 import { ApiService } from 'src/core/axios';
 import { setupWeb3 } from 'src/store/actions/thunks/web3';
 // contracts
-// import NFT from 'src/abis/NFT.json';
-import NFT from 'src/abis/new/NFT721.json';
+import NFT from 'src/abis/NFT.json';
+import NFT721 from 'src/abis/new/NFT721.json';
+import NFT1155 from 'src/abis/new/NFT1155.json';
 import NFTMarket from 'src/abis/NFTMarket.json';
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
@@ -149,7 +150,9 @@ const Header = function () {
           nftMarketContract: null,
           accounts: [],
           networkId: null,
-          balance: null
+          balance: null,
+          nft721Contract: null,
+          nft1155Contract: null
         }
       })
     );
@@ -214,7 +217,9 @@ const Header = function () {
             nftMarketContract: null,
             accounts: [],
             balance: null,
-            networkId: null
+            networkId: null,
+            nft721Contract: null,
+            nft1155Contract: null
           }
         })
       );
@@ -311,6 +316,8 @@ const Header = function () {
       const NFT_NETWORK_DATA = await getNetworkData(_web3, NFT);
       const NFT_MARKET_NETWORK_DATA = await getNetworkData(_web3, NFTMarket);
 
+      const NFT721_NETWORK_DATA = await getNetworkData(_web3, NFT721);
+      const NFT1155_NETWORK_DATA = await getNetworkData(_web3, NFT1155);
       // set data in redux
       dispatch(
         setupWeb3({
@@ -320,30 +327,46 @@ const Header = function () {
             nftMarketContract: null,
             accounts: accounts.map((ac: string) => ac.toLowerCase()),
             networkId,
-            balance
+            balance,
+            nft721Contract: null,
+            nft1155Contract: null
           }
         })
       );
 
-      if (NFT_NETWORK_DATA) {
-        const _nftContract = new _web3.eth.Contract(
-          NFT.abi,
-          NFT_NETWORK_DATA.address
+      // if (NFT_NETWORK_DATA) {
+      if (NFT721_NETWORK_DATA) {
+        // const _nftContract = new _web3.eth.Contract(
+        //   NFT.abi,
+        //   NFT_NETWORK_DATA.address
+        // );
+        // const _nftMarketContract = new _web3.eth.Contract(
+        //   NFTMarket.abi,
+        //   NFT_MARKET_NETWORK_DATA.address
+        // );
+
+        const _nft721Contract = new _web3.eth.Contract(
+          NFT721.abi,
+          NFT721_NETWORK_DATA.address
         );
-        const _nftMarketContract = new _web3.eth.Contract(
-          NFTMarket.abi,
-          NFT_MARKET_NETWORK_DATA.address
+        const _nft1155Contract = new _web3.eth.Contract(
+          NFT1155.abi,
+          NFT1155_NETWORK_DATA.address
         );
 
         dispatch(
           setupWeb3({
             data: {
               web3: _web3,
-              nftContract: _nftContract,
-              nftMarketContract: _nftMarketContract,
+              // nftContract: _nftContract,
+              // nftMarketContract: _nftMarketContract,
+              nftContract: null,
+              nftMarketContract: null,
               accounts: accounts.map((ac: string) => ac.toLowerCase()),
               networkId,
-              balance
+              balance,
+              nft721Contract: _nft721Contract,
+              nft1155Contract: _nft1155Contract
             }
           })
         );

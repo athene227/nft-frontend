@@ -1,13 +1,8 @@
 {
+    "contractName": "NFT1155",
     "abi": [
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketplaceAddress",
-                    "type": "address"
-                }
-            ],
+            "inputs": [],
             "stateMutability": "nonpayable",
             "type": "constructor"
         },
@@ -34,6 +29,19 @@
                 }
             ],
             "name": "ApprovalForAll",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "newItemId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Mint",
             "type": "event"
         },
         {
@@ -203,9 +211,9 @@
                     "type": "uint256"
                 },
                 {
-                    "internalType": "uint256",
+                    "internalType": "uint96",
                     "name": "royalty",
-                    "type": "uint256"
+                    "type": "uint96"
                 }
             ],
             "name": "createToken",
@@ -251,6 +259,35 @@
                     "internalType": "string",
                     "name": "",
                     "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_salePrice",
+                    "type": "uint256"
+                }
+            ],
+            "name": "royaltyInfo",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",
@@ -400,7 +437,8 @@
         "5": {
             "events": {},
             "links": {},
-            "address": "0x4c37d7f0e0A831757F1399B2C92DacAa17da61fe"
+            "address": "0xdB757560f4eC331A9897930Cec93e528bE7F5E3f",
+            "transactionHash": "0x035622de173a4d58581acc134a3ebb7e5b62535b99d2af4aaf5d8dd7625c5a09"
         }
     }
 }

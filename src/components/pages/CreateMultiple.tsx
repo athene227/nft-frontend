@@ -22,7 +22,7 @@ import {
 } from 'src/utils';
 import { getImageUri, getUri } from 'src/services/ipfs';
 // import NFT from 'src/abis/NFT.json';
-import NFT from 'src/abis/new/NFT1155.json';
+import NFT1155 from 'src/abis/new/NFT1155.json';
 import PreviewNft from '../components/PreviewNft';
 import CreateForm from '../components/CreateForm';
 import Footer from '../components/footer';
@@ -50,8 +50,11 @@ const CreateSingle = () => {
   const [marketType, _] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract, nftContract, networkId } =
+  // const { web3, accounts, nftMarketContract, nftContract, networkId } =
+  //   web3State.web3.data;
+  const { web3, accounts, nftMarketContract, nft1155Contract, networkId } =
     web3State.web3.data;
+  const nftContract = nft1155Contract;
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
 
@@ -193,7 +196,8 @@ const CreateSingle = () => {
         });
       }
 
-      const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
+      // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
+      const NFT_NETWORK_DATA = await getNetworkData(web3, NFT1155);
 
       const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
 
@@ -231,9 +235,10 @@ const CreateSingle = () => {
           jsonUri: metaDataUrl() as string,
           quantity: Number(data.numberOfCopies),
           royalty: Number(data.royalties),
-          startPrice: 0,
-          deadline: 0,
-          frontData
+          // startPrice: 0,
+          // deadline: 0,
+          // frontData
+          nftType: 'NFT1155'
         });
         // update item create progress to listing item
         updateItemCreateProgress({
@@ -343,7 +348,7 @@ const CreateSingle = () => {
               <CreateItemProgressPopup
                 progress={itemCreateProgress}
                 events={eventList}
-                onRetry={() => submitForm(submitData.current, () => {}, true)}
+                onRetry={() => submitForm(submitData.current, () => { }, true)}
                 onClose={() => setOpenProgressPopup(false)}
                 onReset={resetPage}
               />

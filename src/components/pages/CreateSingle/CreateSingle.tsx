@@ -25,7 +25,7 @@ import { getImageUri, getUri } from 'src/services/ipfs';
 import PreviewNft from 'src/components/components/PreviewNft';
 import CreateForm from './components/CreateForm';
 // import NFT from 'src/abis/NFT.json';
-import NFT from 'src/abis/new/NFT721.json';
+import NFT721 from 'src/abis/new/NFT721.json';
 import MarketTypeTabs from './components/MarketTypeTabs';
 import notification from 'src/services/notification';
 import CreateItemProgressPopup from 'src/components/components/Popups/CreateItemProgressPopup';
@@ -55,8 +55,11 @@ const CreateSingle = () => {
   const [marketType, setMarketType] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract, nftContract, networkId } =
+  // const { web3, accounts, nftMarketContract, networkId, nftContract } =
+  //   web3State.web3.data;
+  const { web3, accounts, nftMarketContract, networkId, nft721Contract } =
     web3State.web3.data;
+  const nftContract = nft721Contract;
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
 
@@ -137,6 +140,7 @@ const CreateSingle = () => {
       category: data.category
     };
 
+    console.log(nftToCreate, "======================");
     //* create tracking before creating
     await ApiService.createProcessTracking({
       ...nftToCreate,
@@ -166,9 +170,10 @@ const CreateSingle = () => {
         jsonUri,
         quantity: SINGLE,
         royalty: Number(data.royalties),
-        frontData: frontDataCreate,
-        startPrice: 0,
-        deadline: 0
+        // frontData: frontDataCreate,
+        // startPrice: 0,
+        // deadline: 0,
+        nftType: 'NFT721'
       });
       // update item create progress to listing item
       updateItemCreateProgress({
@@ -363,7 +368,8 @@ const CreateSingle = () => {
       }
       const imageUrl = () => itemCreateProgressRef.current.imageUrl;
       const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
-      const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
+      // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
+      const NFT_NETWORK_DATA = await getNetworkData(web3, NFT721);
 
       if (!imageUrl()) {
         //* uploading image to ipfs
