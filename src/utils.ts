@@ -226,38 +226,22 @@ export const createToken = async (data: {
   jsonUri: string;
   quantity: number;
   royalty: number;
-  // startPrice: number;
-  // deadline: number;
-  // frontData: any;
   nftType: string;
 }) => {
-  const {
-    nftContract,
-    userAddress,
-    jsonUri,
-    quantity,
-    royalty,
-    // startPrice,
-    // deadline,
-    // frontData
-    nftType
-  } = data;
+  const { nftContract, userAddress, jsonUri, quantity, royalty, nftType } = data;
   // created token with the nft contract
   let createdToken;
   if (nftType === 'NFT721') {
     createdToken = await nftContract.methods
-      // .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
       .createToken(jsonUri, royalty)
       .send({ from: userAddress });
   } else {
     // NFT1155
     createdToken = await nftContract.methods
-      // .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
       .createToken(jsonUri, quantity, royalty)
       .send({ from: userAddress });
   }
-  const tokenId = createdToken.events.Mint.returnValues.newItemId;
-  return tokenId;
+  return createdToken.events.Mint;
 };
 
 export const createSimpleMarketItem = async (data: {
@@ -267,7 +251,7 @@ export const createSimpleMarketItem = async (data: {
   tokenId: string;
   priceInWei: number;
   quantity: number;
-  frontData: any;
+  deadline: number;
 }) => {
   const {
     nftMarketContract,
@@ -276,7 +260,7 @@ export const createSimpleMarketItem = async (data: {
     tokenId,
     priceInWei,
     quantity,
-    frontData
+    deadline
   } = data;
   // create on the market contract
   const res = await nftMarketContract.methods
@@ -285,15 +269,12 @@ export const createSimpleMarketItem = async (data: {
       Number(tokenId),
       priceInWei,
       quantity,
-      frontData
+      deadline
     )
     .send({ from: userAddress });
 
-  console.log('create a market on the contract');
-  console.log('res.events', res.events);
-  const itemIdOnMarketContract =
-    res.events.SimpleMarketItemCreated.returnValues['0'];
-  return itemIdOnMarketContract;
+  console.log(res.events.SimpleItemCreated);
+  return res.events.SimpleItemCreated;
 };
 
 export const createAuctionMarketItem = async (data: {

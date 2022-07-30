@@ -12,6 +12,7 @@ export const setupWeb3 =
       balance: any;
       nft721Contract: any;
       nft1155Contract: any;
+      nftMarketSimpleContract: any;
     };
   }) =>
   async (dispatch: any) => {

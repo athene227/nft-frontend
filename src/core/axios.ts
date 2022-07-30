@@ -19,7 +19,7 @@ Axios.interceptors.request.use(
     if (accessToken) {
       headers.Authorization = accessToken;
     }
-    config.headers = headers;
+    config.headers = { ...config.headers, ...headers };
     return config;
   },
   (error) => {
@@ -78,6 +78,8 @@ const END_POINTS = {
   NFT_COLLECTIBLE_DETAILES: `${SERVER_URL}/${API_VERSION}/nfts/nftMultipleDetailes`,
   GET_HOT_AUCTIONS: `${SERVER_URL}/${API_VERSION}/nfts/getHotAuctions`,
   GET_NFT_COUNTS_BY_CATEGORY: `${SERVER_URL}/${API_VERSION}/nfts/getCountByCategory`,
+  GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/getImageUri`,
+  GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
   // COLLECTIONS
@@ -367,6 +369,21 @@ export class ApiService {
       url: `${END_POINTS.SEARCH}/user`,
       method: 'get',
       params
+    });
+  };
+
+  static getImageUri = async (data: FormData) => {
+    return Axios.request({
+      url: END_POINTS.GET_IMAGE_URI,
+      method: 'post',
+      data
+    });
+  };
+  static getUri = async (data: any) => {
+    return Axios.request({
+      url: END_POINTS.GET_URI,
+      method: 'post',
+      data
     });
   };
 }

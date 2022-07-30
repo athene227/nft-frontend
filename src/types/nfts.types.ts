@@ -96,4 +96,6 @@ export interface MarketItemCreateProgress {
   listingId: string | null;
   listingTransactionHash: string | null;
   error: any;
+  multiple: boolean;
+  nftAddress: any;
 }

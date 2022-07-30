@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Breakpoint, {
@@ -25,9 +26,11 @@ import { ApiService } from 'src/core/axios';
 import { setupWeb3 } from 'src/store/actions/thunks/web3';
 // contracts
 import NFT from 'src/abis/NFT.json';
+import NFTMarket from 'src/abis/NFTMarket.json';
 import NFT721 from 'src/abis/new/NFT721.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
-import NFTMarket from 'src/abis/NFTMarket.json';
+import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
+
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
 import GlobalSearchBar from '../components/GlobalSearchBar';
@@ -152,7 +155,8 @@ const Header = function () {
           networkId: null,
           balance: null,
           nft721Contract: null,
-          nft1155Contract: null
+          nft1155Contract: null,
+          nftMarketSimpleContract: null
         }
       })
     );
@@ -219,7 +223,8 @@ const Header = function () {
             balance: null,
             networkId: null,
             nft721Contract: null,
-            nft1155Contract: null
+            nft1155Contract: null,
+            nftMarketSimpleContract: null
           }
         })
       );
@@ -313,11 +318,12 @@ const Header = function () {
       const balance = await getMyBalance(accounts[0], _web3, inEth);
       // Network ID
 
-      const NFT_NETWORK_DATA = await getNetworkData(_web3, NFT);
-      const NFT_MARKET_NETWORK_DATA = await getNetworkData(_web3, NFTMarket);
+      // const NFT_NETWORK_DATA = await getNetworkData(_web3, NFT);
+      // const NFT_MARKET_NETWORK_DATA = await getNetworkData(_web3, NFTMarket);
 
       const NFT721_NETWORK_DATA = await getNetworkData(_web3, NFT721);
       const NFT1155_NETWORK_DATA = await getNetworkData(_web3, NFT1155);
+      const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(_web3, NFTMarketSimple);
       // set data in redux
       dispatch(
         setupWeb3({
@@ -329,7 +335,8 @@ const Header = function () {
             networkId,
             balance,
             nft721Contract: null,
-            nft1155Contract: null
+            nft1155Contract: null,
+            nftMarketSimpleContract: null,
           }
         })
       );
@@ -353,6 +360,10 @@ const Header = function () {
           NFT1155.abi,
           NFT1155_NETWORK_DATA.address
         );
+        const _nftMarketSimpleContract = new _web3.eth.Contract(
+          NFTMarketSimple.abi,
+          NFT_MARKET_SIMPLE_NETWORK_DATA.address
+        );
 
         dispatch(
           setupWeb3({
@@ -366,7 +377,8 @@ const Header = function () {
               networkId,
               balance,
               nft721Contract: _nft721Contract,
-              nft1155Contract: _nft1155Contract
+              nft1155Contract: _nft1155Contract,
+              nftMarketSimpleContract: _nftMarketSimpleContract
             }
           })
         );
