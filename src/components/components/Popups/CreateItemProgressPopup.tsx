@@ -109,11 +109,12 @@ const CreateItemProgressPopUp = (props: IProps) => {
             onClick={() => {
               // if (!listingEvent) return;
               // const { multiple, tokenId, nftAddress } = listingEvent;
-
               if (!multiple) {
-                navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
+                navigate(`/ItemDetail/${tokenId}/${nftAddress.toLowerCase()}`);
               } else {
-                navigate(`/ItemDetailMultiple/${tokenId}/${nftAddress}`);
+                navigate(
+                  `/ItemDetailMultiple/${tokenId}/${nftAddress.toLowerCase()}`
+                );
               }
             }}
           />

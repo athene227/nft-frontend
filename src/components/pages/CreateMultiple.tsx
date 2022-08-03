@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/ban-types */
 import React, { useState, useRef } from 'react';
 import { navigate } from '@reach/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,8 +54,10 @@ const CreateSingle = () => {
   const web3State = useSelector(selectors.web3State);
   // const { web3, accounts, nftMarketContract, nftContract, networkId } =
   //   web3State.web3.data;
-  const { web3, accounts, nftMarketContract, nft1155Contract, networkId } =
+  const { web3, accounts, nft1155Contract, networkId, nftMarketSimpleContract } =
     web3State.web3.data;
+
+  // const nftMarketContract = nftMarketSimpleContract;
   const nftContract = nft1155Contract;
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
@@ -187,7 +191,8 @@ const CreateSingle = () => {
           name: data.name,
           description: data.description,
           imageUrl: imageUrl() as string,
-          attributes: data.attributes
+          attributes: data.attributes,
+          previewImageUrl: ''
         });
         // update item create progress to metadata
         updateItemCreateProgress({
@@ -198,14 +203,17 @@ const CreateSingle = () => {
 
       // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
       const NFT_NETWORK_DATA = await getNetworkData(web3, NFT1155);
-
       const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
-
       const nftToCreate: any = getItem(
         NFT_NETWORK_DATA,
         data,
         imageUrl() as string
       );
+      const _attributes = data.attributes.map((item: any) => {
+        return { ...item, value: item.value.toString() };
+      });
+
+      nftToCreate.attributes = _attributes;
 
       //* create tracking before creating
       await ApiService.createProcessTracking({
@@ -214,36 +222,55 @@ const CreateSingle = () => {
         action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
-      const _attributes = data.attributes.map((item: any) => {
-        return { ...item, value: item.value.toString() };
-      });
-      const frontData = {
-        name: data.name,
-        description: data.description,
-        imageUrl: imageUrl() as string,
-        attributes: _attributes,
-        multiple: true,
-        collectionId: data.collectionId,
-        category: data.category
-      };
+
+      // const frontData = {
+      //   name: data.name,
+      //   description: data.description,
+      //   imageUrl: imageUrl() as string,
+      //   attributes: _attributes,
+      //   multiple: true,
+      //   collectionId: data.collectionId,
+      //   category: data.category
+      // };
 
       if (!tokenId()) {
         //* create on contract
-        const tokenId = await createToken({
+        const res = await createToken({
           nftContract,
           userAddress,
           jsonUri: metaDataUrl() as string,
           quantity: Number(data.numberOfCopies),
           royalty: Number(data.royalties),
-          // startPrice: 0,
-          // deadline: 0,
-          // frontData
           nftType: 'NFT1155'
         });
+
+        const tokenId = res.returnValues.newItemId;
+        const transactionHash = res.transactionHash;
+
+        await ApiService.createdNft({
+          transactionHash,
+          data: {
+            ...nftToCreate,
+            tokenURI: metaDataUrl() as string,
+            status: STATUS.NOT_LISTED,
+            totalAmount: Number(data.numberOfCopies),
+            leftAmount: Number(data.numberOfCopies),
+            listedAmount: 0
+          }
+        });
+
+        await ApiService.createProcessTracking({
+          ...nftToCreate,
+          userAddress,
+          action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
+          processStatus: PROCESS_TRAKING_STATUS.AFTER
+        });
+
         // update item create progress to listing item
         updateItemCreateProgress({
           status: ITEM_CREATE_STATUS.LIST_ITEM,
-          tokenId
+          tokenId,
+          tokenTransactionHash: transactionHash
         });
       }
 
@@ -260,19 +287,56 @@ const CreateSingle = () => {
 
       if (!listingId()) {
         //* list on contract
-        const listingId = await createSimpleMarketItem({
-          nftMarketContract,
+
+        await nftContract.methods
+          .setApprovalForAll(nftMarketSimpleContract._address, true)
+          .send({ from: userAddress });
+
+        const res = await createSimpleMarketItem({
+          nftMarketSimpleContract,
           userAddress,
           nftAddress: NFT_NETWORK_DATA.address,
           tokenId: tokenId() as string,
           priceInWei,
           quantity: Number(data.numberOfCopies),
-          frontData
+          deadline: 1680000000
         });
+
+        const listingId = res.returnValues.listingId;
+        const transactionHash = res.transactionHash;
+        const SellerNFTBalance = await nftContract.methods
+          .balanceOf(userAddress, 1)
+          .call();
+
+        await ApiService.createdNft({
+          transactionHash,
+          data: {
+            ...nftToCreate,
+            tokenId: itemCreateProgressRef.current.tokenId,
+            // price: priceInWei,
+            tokenURI: metaDataUrl() as string,
+            status: STATUS.ON_SELL,
+            totalAmount: SellerNFTBalance + Number(data.numberOfCopies),
+            leftAmount: SellerNFTBalance,
+            listedAmount: Number(data.numberOfCopies)
+          }
+        });
+
+        await ApiService.createProcessTracking({
+          ...nftToCreate,
+          tokenId: tokenId() as string,
+          userAddress,
+          action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
+          processStatus: PROCESS_TRAKING_STATUS.AFTER
+        });
+
         // update item create progress to finished
         updateItemCreateProgress({
           status: ITEM_CREATE_STATUS.FINISHED,
-          listingId
+          listingId,
+          listingTransactionHash: transactionHash,
+          multiple: true,
+          nftAddress: NFT_NETWORK_DATA.address
         });
       }
 

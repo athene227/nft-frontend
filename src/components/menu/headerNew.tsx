@@ -27,9 +27,11 @@ import { setupWeb3 } from 'src/store/actions/thunks/web3';
 // contracts
 import NFT from 'src/abis/NFT.json';
 import NFTMarket from 'src/abis/NFTMarket.json';
+import MockERC20 from 'src/abis/new/MockERC20.json';
 import NFT721 from 'src/abis/new/NFT721.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
 import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
+import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
 
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
@@ -154,9 +156,11 @@ const Header = function () {
           accounts: [],
           networkId: null,
           balance: null,
+          mockERC20Contract: null,
           nft721Contract: null,
           nft1155Contract: null,
-          nftMarketSimpleContract: null
+          nftMarketSimpleContract: null,
+          nftMarketAuctionContract: null,
         }
       })
     );
@@ -222,9 +226,11 @@ const Header = function () {
             accounts: [],
             balance: null,
             networkId: null,
+            mockERC20Contract: null,
             nft721Contract: null,
             nft1155Contract: null,
-            nftMarketSimpleContract: null
+            nftMarketSimpleContract: null,
+            nftMarketAuctionContract: null,
           }
         })
       );
@@ -321,9 +327,12 @@ const Header = function () {
       // const NFT_NETWORK_DATA = await getNetworkData(_web3, NFT);
       // const NFT_MARKET_NETWORK_DATA = await getNetworkData(_web3, NFTMarket);
 
+      const MockERC20_NETWORK_DATA = await getNetworkData(_web3, MockERC20);
       const NFT721_NETWORK_DATA = await getNetworkData(_web3, NFT721);
       const NFT1155_NETWORK_DATA = await getNetworkData(_web3, NFT1155);
       const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(_web3, NFTMarketSimple);
+      const NFT_MARKET_AUCTION_NETWORK_DATA = await getNetworkData(_web3, NFTMarketAuction);
+
       // set data in redux
       dispatch(
         setupWeb3({
@@ -334,9 +343,11 @@ const Header = function () {
             accounts: accounts.map((ac: string) => ac.toLowerCase()),
             networkId,
             balance,
+            mockERC20Contract: null,
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
+            nftMarketAuctionContract: null,
           }
         })
       );
@@ -352,6 +363,10 @@ const Header = function () {
         //   NFT_MARKET_NETWORK_DATA.address
         // );
 
+        const _mockERC20Contract = new _web3.eth.Contract(
+          MockERC20.abi,
+          MockERC20_NETWORK_DATA.address
+        );
         const _nft721Contract = new _web3.eth.Contract(
           NFT721.abi,
           NFT721_NETWORK_DATA.address
@@ -363,6 +378,10 @@ const Header = function () {
         const _nftMarketSimpleContract = new _web3.eth.Contract(
           NFTMarketSimple.abi,
           NFT_MARKET_SIMPLE_NETWORK_DATA.address
+        );
+        const _nftMarketAuctionContract = new _web3.eth.Contract(
+          NFTMarketAuction.abi,
+          NFT_MARKET_AUCTION_NETWORK_DATA.address
         );
 
         dispatch(
@@ -376,9 +395,11 @@ const Header = function () {
               accounts: accounts.map((ac: string) => ac.toLowerCase()),
               networkId,
               balance,
+              mockERC20Contract: _mockERC20Contract,
               nft721Contract: _nft721Contract,
               nft1155Contract: _nft1155Contract,
-              nftMarketSimpleContract: _nftMarketSimpleContract
+              nftMarketSimpleContract: _nftMarketSimpleContract,
+              nftMarketAuctionContract: _nftMarketAuctionContract,
             }
           })
         );

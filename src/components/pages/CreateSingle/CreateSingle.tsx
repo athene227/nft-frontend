@@ -60,10 +60,17 @@ const CreateSingle = () => {
   const web3State = useSelector(selectors.web3State);
   // const { web3, accounts, nftMarketContract, networkId, nftContract } =
   //   web3State.web3.data;
-  const { web3, accounts, networkId, nft721Contract, nftMarketSimpleContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    networkId,
+    mockERC20Contract,
+    nft721Contract,
+    nftMarketSimpleContract,
+    nftMarketAuctionContract
+  } = web3State.web3.data;
+
   const nftContract = nft721Contract;
-  const nftMarketContract = nftMarketSimpleContract;
 
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
@@ -241,11 +248,11 @@ const CreateSingle = () => {
     if (!listingId()) {
       //* listing nft on contract
       await nftContract.methods
-        .setApprovalForAll(nftMarketContract._address, true)
+        .setApprovalForAll(nftMarketSimpleContract._address, true)
         .send({ from: userAddress });
 
       const res = await createSimpleMarketItem({
-        nftMarketContract,
+        nftMarketSimpleContract,
         userAddress,
         nftAddress: NFT_NETWORK_DATA.address,
         tokenId: tokenId() as string,
@@ -272,7 +279,7 @@ const CreateSingle = () => {
         data: {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
-          price: priceInWei,
+          price: data.price,
           tokenURI: jsonUri,
           status: STATUS.ON_SELL,
           totalAmount: SellerNFTBalance + SINGLE,
@@ -337,13 +344,14 @@ const CreateSingle = () => {
       name: data.name,
       description: data.description,
       imageUrl: imageUrl,
+      attributes: _attributes,
       creatorAddress: userAddress,
       ownerAddress: userAddress,
       nftAddress: NFT_NETWORK_DATA.address,
       // price: data.price, There is no price to auction. There is minimum bid
       collectionId: data.collectionId,
       royalty: data.royalties,
-      listingId: null,
+      // listingId: null,
       marketType: MARKET_TYPE.AUCTION,
       listedAt: new Date(),
       isListedOnce: true,
@@ -354,6 +362,7 @@ const CreateSingle = () => {
       minimumBid: data.minimumBid,
       expirationDate: _date
     };
+
     //* create tracking before creating
     await ApiService.createProcessTracking({
       ...nftToCreate,
@@ -364,21 +373,40 @@ const CreateSingle = () => {
 
     if (!tokenId()) {
       //* creating nft in the nft contract
-      const tokenId = await createToken({
+      const res = await createToken({
         nftContract,
         userAddress,
         jsonUri,
         quantity: SINGLE,
         royalty: Number(data.royalties),
-        // startPrice: startPriceInWei,
-        // deadline: ts1,
-        // frontData
         nftType: 'NFT721'
       });
+
+      const tokenId = res.returnValues.newItemId;
+      const transactionHash = res.transactionHash;
+
+      await ApiService.createdNft({
+        transactionHash,
+        data: {
+          ...nftToCreate,
+          tokenId,
+          tokenURI: jsonUri,
+          status: STATUS.NOT_LISTED
+        }
+      });
+
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
+        userAddress,
+        action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
+        processStatus: PROCESS_TRAKING_STATUS.AFTER
+      });
+
       // update item create progress to listing item
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.LIST_ITEM,
-        tokenId
+        tokenId,
+        tokenTransactionHash: transactionHash
       });
     }
 
@@ -394,20 +422,54 @@ const CreateSingle = () => {
     });
 
     if (!listingId()) {
+      await nftContract.methods
+        .setApprovalForAll(nftMarketAuctionContract._address, true)
+        .send({ from: userAddress });
+
+      console.log(
+        mockERC20Contract._address,
+        '======= test mockerc20contract address '
+      );
       //* listing nft on contract
-      const listingId = await createAuctionMarketItem({
-        nftMarketContract,
+      const res = await createAuctionMarketItem({
+        nftMarketAuctionContract,
         userAddress,
+        priceTokenAddress: mockERC20Contract._address,
         nftAddress: NFT_NETWORK_DATA.address,
         tokenId: tokenId() as string,
         startPriceInWei,
-        deadline: ts1,
-        frontData
+        deadline: ts1
       });
+
+      const listingId = res.returnValues.listingId;
+      const transactionHash = res.transactionHash;
+
+      await ApiService.createdNft({
+        transactionHash,
+        data: {
+          ...nftToCreate,
+          listingId,
+          tokenId: tokenId() as string,
+          tokenURI: jsonUri,
+          status: STATUS.ON_SELL
+        }
+      });
+
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
+        userAddress,
+        tokenId,
+        action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
+        processStatus: PROCESS_TRAKING_STATUS.AFTER
+      });
+
       // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
-        listingId
+        listingId,
+        listingTransactionHash: transactionHash,
+        multiple: false,
+        nftAddress: NFT_NETWORK_DATA.address
       });
     }
   };

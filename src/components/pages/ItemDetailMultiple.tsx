@@ -563,67 +563,16 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
   const renderOtherOwnersButton = (_nft: INft) => {
     // is current user
+    // eslint-disable-next-line no-constant-condition
     if (_nft.ownerAddress === userAddress) {
       if (_nft.status === STATUS.ON_SELL) {
         return (
-          <div
-            className="tab-1 onStep fadeIn"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}
+          <button
+            className="btn-main lead mb-5"
+            onClick={() => openCancelListingPopUp(_nft)}
           >
-            <div className="spacer-40"></div>
-
-            {nftGroups.map((group, index) => (
-              <div
-                className="item_author"
-                style={{ display: 'flex', justifyContent: 'space-between' }}
-                key={index}
-              >
-                <div>
-                  <div className="author_list_pp">
-                    <span>
-                      <UserAvatar
-                        className="lazy"
-                        image={group.owner[0]?.profileImage}
-                        userAddress={group.ownerAddress}
-                        blockSize={5}
-                        size={50}
-                      />
-                      {/* <img className="lazy" src={group.owner[0]?.profileImage} alt="" /> */}
-                      <i className="fa fa-check"></i>
-                    </span>
-                  </div>
-                  <div className="p_list_info">
-                    <h5>
-                      {group.owner[0]?.username ||
-                        shortAddress(group.ownerAddress)}
-                    </h5>
-                    db{' '}
-                    {group.status === STATUS.ON_SELL ? (
-                      <p>
-                        {group.listedAmount}/{group.totalAmount} on sale for{' '}
-                        <b>{group.price}</b>
-                      </p>
-                    ) : (
-                      <p>{group.leftAmount} editions not for sale</p>
-                    )}
-                    blockchain{' '}
-                    <OwnerAndQuantity
-                      userAddress={group.ownerAddress}
-                      listingId={Number(group.listingId)}
-                      tokenId={Number(group.tokenId)}
-                    />
-                    <p>tokenId {group.tokenId}</p>
-                    <p>listingId {group.listingId}</p>
-                  </div>
-                </div>
-                <div className="">{renderOtherOwnersButton(group)}</div>
-              </div>
-            ))}
-          </div>
+            Cancel
+          </button>
         );
       } else {
         return (

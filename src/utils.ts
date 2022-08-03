@@ -245,7 +245,7 @@ export const createToken = async (data: {
 };
 
 export const createSimpleMarketItem = async (data: {
-  nftMarketContract: any;
+  nftMarketSimpleContract: any;
   userAddress: string;
   nftAddress: string;
   tokenId: string;
@@ -254,7 +254,7 @@ export const createSimpleMarketItem = async (data: {
   deadline: number;
 }) => {
   const {
-    nftMarketContract,
+    nftMarketSimpleContract,
     userAddress,
     nftAddress,
     tokenId,
@@ -263,7 +263,7 @@ export const createSimpleMarketItem = async (data: {
     deadline
   } = data;
   // create on the market contract
-  const res = await nftMarketContract.methods
+  const res = await nftMarketSimpleContract.methods
     .createSimpleMarketItem(
       nftAddress,
       Number(tokenId),
@@ -278,40 +278,45 @@ export const createSimpleMarketItem = async (data: {
 };
 
 export const createAuctionMarketItem = async (data: {
-  nftMarketContract: any;
+  nftMarketAuctionContract: any;
   userAddress: string;
   nftAddress: string;
+  priceTokenAddress: string;
   tokenId: string;
   startPriceInWei: number;
   deadline: number;
-  frontData: any;
+  // frontData: any;
 }) => {
   const {
-    nftMarketContract,
+    nftMarketAuctionContract,
     userAddress,
     nftAddress,
+    priceTokenAddress,
     tokenId,
     startPriceInWei,
-    deadline,
-    frontData
+    deadline
   } = data;
   // create on the market contract
-  const res = await nftMarketContract.methods
+  const res = await nftMarketAuctionContract.methods
     .createAuctionMarketItem(
       nftAddress,
       Number(tokenId),
+      priceTokenAddress,
       startPriceInWei,
-      deadline,
-      frontData
+      deadline
     )
     .send({ from: userAddress });
 
-  console.log('create a market on the contract');
-  console.log('res.events', res.events);
-
-  const itemIdOnMarketContract =
-    res.events.AuctionMarketItemCreated.returnValues['0'];
-  return itemIdOnMarketContract;
+  console.log(res.events.AuctionItemCreated);
+  return res.events.AuctionItemCreated;
+  /*
+    console.log('create a market on the contract');
+    console.log('res.events', res.events);
+  
+    const itemIdOnMarketContract =
+      res.events.AuctionItemCreated.returnValues['0'];
+    return itemIdOnMarketContract;
+  */
 };
 
 export const setInLocalStorage = (key: string, val: string) => {

@@ -147,6 +147,7 @@ const states = (
         )
       };
     case getType(actions.fetchNftMultipleDetails.success):
+      console.log(action.payload)
       return {
         ...state,
         nftCollectibleDetails: entityLoadingSucceeded(

@@ -15,9 +15,11 @@ export interface IWeb3State {
   networkId: null | number;
   accounts: string[];
   balance: null | number;
+  mockERC20Contract: any;
   nft721Contract: any;
   nft1155Contract: any;
   nftMarketSimpleContract: any;
+  nftMarketAuctionContract: any;
 }
 
 const initialValue: IWeb3State = {
@@ -28,9 +30,11 @@ const initialValue: IWeb3State = {
   accounts: [],
   networkId: null,
   balance: null,
+  mockERC20Contract: null,
   nft721Contract: null,
   nft1155Contract: null,
-  nftMarketSimpleContract: null
+  nftMarketSimpleContract: null,
+  nftMarketAuctionContract: null
 };
 
 export const defaultState = {
