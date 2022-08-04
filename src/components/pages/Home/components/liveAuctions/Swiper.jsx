@@ -82,12 +82,12 @@ export default function Swiperr() {
             transform="matrix(-1 0 0 1 28.5 28.6636)"
             fill="currentColor"
             stroke="currentColor"
-            stroke-width="0.5"
+            strokeWidth="0.5"
           />
           <path
             d="M34.3948 40.4531L22.6053 28.6636L34.3948 16.8741"
             stroke="currentColor"
-            stroke-width="2"
+            strokeWidth="2"
           />
         </svg>
       </div>
@@ -156,12 +156,12 @@ export default function Swiperr() {
               r="27.75"
               fill="currentColor"
               stroke="currentColor"
-              stroke-width="0.5"
+              strokeWidth="0.5"
             />
             <path
               d="M22.6052 40.4531L34.3947 28.6636L22.6052 16.8741"
               stroke="currentColor"
-              stroke-width="2"
+              strokeWidth="2"
             />
           </svg>
         </div>
