@@ -9,7 +9,8 @@ import { getImage } from 'src/services/ipfs';
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import TransactionHash from '../TransactionHash';
 import ProcessStep from './ProcessStep';
-
+import NFT721 from 'src/abis/new/NFT721.json';
+import NFT1155 from 'src/abis/new/NFT1155.json';
 interface IProps {
   progress: MarketItemCreateProgress;
   events: any[];
@@ -20,18 +21,25 @@ interface IProps {
 
 const CreateItemProgressPopUp = (props: IProps) => {
   const { progress, events, onClose, onRetry, onReset } = props;
-  const { status, imageUrl, error } = progress;
-  const tokenTransactionHash = events.find(
-    ({ eventName, tokenId }) =>
-      eventName === MARKET_CONTRACT_EVENTS.Mint && tokenId === progress.tokenId
-  )?.transactionHash;
-  const listingEvent = events.find(
-    ({ eventName, listingId }) =>
-      (eventName === MARKET_CONTRACT_EVENTS.SimpleMarketItemCreated ||
-        eventName === MARKET_CONTRACT_EVENTS.AuctionMarketItemCreated) &&
-      listingId === progress.listingId
-  );
-  const listingTransactionHash = listingEvent?.transactionHash;
+  const {
+    status,
+    imageUrl,
+    error,
+    tokenTransactionHash,
+    listingTransactionHash,
+    tokenId,
+    multiple,
+    nftAddress
+  } = progress;
+
+  // const tokenTransactionHash = transactionHash;
+  // const listingEvent = events.find(
+  //   ({ eventName, listingId }) =>
+  //     (eventName === MARKET_CONTRACT_EVENTS.SimpleMarketItemCreated ||
+  //       eventName === MARKET_CONTRACT_EVENTS.AuctionMarketItemCreated) &&
+  //     listingId === progress.listingId
+  // );
+  // const listingTransactionHash = listingEvent?.transactionHash;
 
   const OperationFailed = () => (
     <div className="operation-failed-wrapper mb-2">
@@ -99,13 +107,14 @@ const CreateItemProgressPopUp = (props: IProps) => {
             type="button"
             value="View NFT"
             onClick={() => {
-              if (!listingEvent) return;
-              const { multiple, tokenId, nftAddress } = listingEvent;
-
+              // if (!listingEvent) return;
+              // const { multiple, tokenId, nftAddress } = listingEvent;
               if (!multiple) {
-                navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
+                navigate(`/ItemDetail/${tokenId}/${nftAddress.toLowerCase()}`);
               } else {
-                navigate(`/ItemDetailMultiple/${tokenId}/${nftAddress}`);
+                navigate(
+                  `/ItemDetailMultiple/${tokenId}/${nftAddress.toLowerCase()}`
+                );
               }
             }}
           />

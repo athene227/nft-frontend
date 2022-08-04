@@ -331,7 +331,7 @@ const Header = function () {
       setLoadingState({ loading: true, error: null });
       // await addPulseNetwork()
 
-      // get accouns
+      // get accounts
       const accounts = await _web3.eth.getAccounts();
 
       if (!fromConnectButton) {

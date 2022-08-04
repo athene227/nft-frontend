@@ -10,6 +10,11 @@ export const setupWeb3 =
       accounts: any;
       networkId: any;
       balance: any;
+      mockERC20Contract: any;
+      nft721Contract: any;
+      nft1155Contract: any;
+      nftMarketSimpleContract: any;
+      nftMarketAuctionContract: any;
     };
   }) =>
   async (dispatch: any) => {
