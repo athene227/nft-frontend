@@ -32,6 +32,7 @@ import NFT721 from 'src/abis/new/NFT721.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
 import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
 import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
+import NFTMarketOffers from 'src/abis/new/NFTMarketOffers.json';
 
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
