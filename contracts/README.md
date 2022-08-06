@@ -139,6 +139,14 @@ Once a sale is completed, the allowance is used to withdraw the NFT from the sel
 
 A simple sale is always in the blockchain's native asset which doesn't support allowances. Purchase via simple sale therefore transfers the asset directly to the seller from the buyer - and the NFT via allowances from the seller to the buyer.
 
+#### Asset allowances
+
+All ERC20 and NFT interactions are performed via allowances. Whenever you want to sell an NFT, buy an NFT, make a bid or make an offer, you have to first add the corresponding marketplace contract allowance to manage your ERC20 and/or NFT. In other words: whenever you want to offer some asset to (possibly) get some other asset, the marketplace has to have (in advance) allowance to withdraw your assets - even if it withdraws the assets only in the case of a successful sale.
+
+In the case of ERC20 allowances, the `approve` function should be used for giving allowance. In the case of NFT allowance, the `setApprovalForAll` function should be used.
+
+The only exception is buying a listed asset with a simple sale: you need to send the native asset directly with your purchase.
+
 #### Royalty
 
 For each completed sale (a direct sale or a successfully completed auction),
@@ -172,10 +180,6 @@ paths should be sufficiently covered.
 You can run unit tests with Hardhat: `npx hardhat test`.
 
 ## Information for the client
-
-### Next steps
-
-TODO
 
 ### Vulnerabilities and considerations
 

@@ -40,8 +40,8 @@ describe('Offer', async () => {
       erc20.address
     ])) as NFTMarketOffers;
 
-    await erc20.connect(userWithTokens).freeMint(1000);
-    await erc20.connect(userWithTokens).approve(offers.address, 600);
+    await erc20.connect(userWithTokens).freeMint(10000);
+    await erc20.connect(userWithTokens).approve(offers.address, 6000);
   });
 
   describe('Creating an offer', async () => {
@@ -66,6 +66,7 @@ describe('Offer', async () => {
       expect(offer.erc20Address).to.equal(erc20.address);
       expect(offer.amount).to.equal(5);
       expect(offer.deadline).to.equal(dummyDeadline);
+      expect(offer.isClosed).to.false;
     });
 
     it('should emit the correct events', async () => {
@@ -91,13 +92,11 @@ describe('Offer', async () => {
       await expect(
         offers
           .connect(userWithTokens)
-          .offerOnNft(nft721.address, 1, erc20.address, 700, dummyDeadline)
+          .offerOnNft(nft721.address, 1, erc20.address, 7000, dummyDeadline)
       ).to.be.revertedWith('Not enough allowance');
     });
 
     describe('Invalid parameters', async () => {
-      // TODO: add tests when multiple erc20 are whitelisted
-
       it('should fail if incorrect price token', async () => {
         await expect(
           offers
@@ -342,6 +341,14 @@ describe('Offer', async () => {
       await expect(
         offers.connect(userWithTokens).acceptOffer(1)
       ).to.be.revertedWith('Not enough balance');
+    });
+
+    it('should fail if trying to reuse an offer', async () => {
+      await offers.connect(userWithNFT).acceptOffer(1);
+
+      await expect(
+        offers.connect(userWithNFT).acceptOffer(1)
+      ).to.be.revertedWith('The offer is used already');
     });
   });
 
