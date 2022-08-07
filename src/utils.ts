@@ -431,6 +431,7 @@ export const getAuctionMarketItem = async (data: {
   const marketItem = await nftMarketAuctionContract.methods
     .auctionListingIdToMarketItem(Number(listingId))
     .call();
+  console.log(marketItem);
   return marketItem;
 };
 

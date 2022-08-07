@@ -161,7 +161,7 @@ const Header = function () {
           nft721Contract: null,
           nft1155Contract: null,
           nftMarketSimpleContract: null,
-          nftMarketAuctionContract: null,
+          nftMarketAuctionContract: null
         }
       })
     );
@@ -231,7 +231,7 @@ const Header = function () {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
+            nftMarketAuctionContract: null
           }
         })
       );
@@ -331,8 +331,14 @@ const Header = function () {
       const MockERC20_NETWORK_DATA = await getNetworkData(_web3, MockERC20);
       const NFT721_NETWORK_DATA = await getNetworkData(_web3, NFT721);
       const NFT1155_NETWORK_DATA = await getNetworkData(_web3, NFT1155);
-      const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(_web3, NFTMarketSimple);
-      const NFT_MARKET_AUCTION_NETWORK_DATA = await getNetworkData(_web3, NFTMarketAuction);
+      const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(
+        _web3,
+        NFTMarketSimple
+      );
+      const NFT_MARKET_AUCTION_NETWORK_DATA = await getNetworkData(
+        _web3,
+        NFTMarketAuction
+      );
 
       // set data in redux
       dispatch(
@@ -348,7 +354,7 @@ const Header = function () {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
+            nftMarketAuctionContract: null
           }
         })
       );
@@ -400,7 +406,7 @@ const Header = function () {
               nft721Contract: _nft721Contract,
               nft1155Contract: _nft1155Contract,
               nftMarketSimpleContract: _nftMarketSimpleContract,
-              nftMarketAuctionContract: _nftMarketAuctionContract,
+              nftMarketAuctionContract: _nftMarketAuctionContract
             }
           })
         );

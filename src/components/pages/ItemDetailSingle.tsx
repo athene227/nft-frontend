@@ -395,6 +395,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
       const now = moment().unix();
       const deadline = Number(auctionMarketItem.deadline);
+      console.log(now, deadline);
 
       if (now > deadline) {
         notification.error(ERRORS.AUCTION_IS_FINISHED);
