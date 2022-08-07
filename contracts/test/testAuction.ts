@@ -95,8 +95,6 @@ describe('Market contract with auction market buy, without royalties', async () 
       expect(listedAmount).to.equal(1);
     });
 
-    // TODO: add tests when multiple erc20 are whitelisted
-
     it('should succeed with zero starting price', async () => {
       await market
         .connect(userWith721NFT)
@@ -281,7 +279,7 @@ describe('Market contract with auction market buy, without royalties', async () 
 
       await expect(market.connect(userWith20Token).bid(listingId, 10))
         .to.emit(market, 'AuctionBidCreated')
-        .withArgs(1, 10);
+        .withArgs(1, 0, 10);
     });
 
     it('should fail if paused', async () => {
@@ -322,6 +320,35 @@ describe('Market contract with auction market buy, without royalties', async () 
       await expect(
         market.connect(userWith20Token).bid(listingId, 10)
       ).to.be.revertedWith('The auction has ended');
+    });
+
+    it('should fail if auction has been closed due to termination', async () => {
+      await nextDay();
+      const listingId = await market.getLatestListItemId();
+      await market.terminateAuction(listingId);
+
+      await expect(
+        market.connect(userWith20Token).bid(listingId, 10)
+      ).to.be.revertedWith('Listing is closed');
+    });
+
+    it('should fail if auction has been closed due to acceptance', async () => {
+      const listingId = await market.getLatestListItemId();
+      await market.connect(userWith20Token).bid(listingId, 20);
+      await market.connect(userWith721NFT).acceptBid(listingId, 0);
+
+      await expect(
+        market.connect(userWith20Token).bid(listingId, 10)
+      ).to.be.revertedWith('Listing is closed');
+    });
+
+    it('should fail if auction has been closed due to cancellation', async () => {
+      const listingId = await market.getLatestListItemId();
+      await market.connect(userWith721NFT).cancelAuctionListing(listingId);
+
+      await expect(
+        market.connect(userWith20Token).bid(listingId, 10)
+      ).to.be.revertedWith('Listing is closed');
     });
 
     it('should fail if not enough allowance', async () => {
@@ -456,9 +483,13 @@ describe('Market contract with auction market buy, without royalties', async () 
       ).to.be.revertedWith('The auction has ended');
     });
 
-    it('should fail if auction has been closed', async () => {
+    it('should fail for non-existing bid', async () => {
       const listingId = await market.getLatestListItemId();
       await market.connect(userWith20Token).bid(listingId, 20);
+
+      await expect(
+        market.connect(userWith20Token).cancelBid(listingId, 1)
+      ).to.be.revertedWith("Bid doesn't exist");
 
       await expect(
         market.connect(userWith20Token).cancelBid(listingId, 50)
@@ -1000,6 +1031,10 @@ describe('Market contract with auction market buy, without royalties', async () 
       const listingId = await market.getLatestListItemId();
 
       await expect(
+        market.connect(userWith721NFT).acceptBid(listingId, 0)
+      ).to.be.revertedWith("Bid doesn't exist");
+
+      await expect(
         market.connect(userWith721NFT).acceptBid(listingId, 10)
       ).to.be.revertedWith("Bid doesn't exist");
     });
@@ -1208,6 +1243,16 @@ describe('Market contract with auction market buy, without royalties', async () 
       );
     });
 
+    it('should fail if auction has been closed due to cancellation', async () => {
+      const listingId = await market.getLatestListItemId();
+      await nextDay();
+      await market.connect(userWith721NFT).cancelAuctionListing(listingId);
+
+      await expect(market.terminateAuction(listingId)).to.be.revertedWith(
+        'Already closed'
+      );
+    });
+
     it('should fail if auction has been closed due to termination', async () => {
       const listingId = await market.getLatestListItemId();
       await nextDay();
@@ -1329,10 +1374,22 @@ describe('Market contract with auction market buy, without royalties', async () 
       ).to.revertedWith('Only owner can cancel');
     });
 
-    it('fails if trying to cancel twice', async () => {
+    it('fails if auction has been closed due to cancellation', async () => {
       const listingId = await market.getLatestListItemId();
 
       await market.connect(userWith721NFT).cancelAuctionListing(listingId);
+
+      await expect(
+        market.connect(userWith721NFT).cancelAuctionListing(listingId)
+      ).to.revertedWith('Already closed');
+    });
+
+    it('fails if auction has been closed due to termination', async () => {
+      const listingId = await market.getLatestListItemId();
+
+      await nextDay();
+
+      await market.terminateAuction(listingId);
 
       await expect(
         market.connect(userWith721NFT).cancelAuctionListing(listingId)
@@ -1700,52 +1757,6 @@ describe('Market contract with auction market buy, without royalties', async () 
       );
     });
   });
-
-  /*
-  TODO
-  describe('other', async () => {
-    
-
-    it('bidding, termination and cancellation after termination fails', async () => {
-      const deadline = (await getTimestamp()) + 1000;
-      await market.createAuctionMarketItem(nft.address, 0, 1, 100, deadline, {
-        from: user1
-      });
-      const listingId = await market.getLatestListItemId();
-
-      await nextDay();
-
-      await market.terminateAuction(listingId, { from: user1 });
-      await expect(
-        market.bid(listingId, { value: 1000, from: user2, gasPrice: 0 })
-      ).to.be.revertedWith('Already closed');
-      await expect(
-        market.terminateAuction(listingId, { from: user1 })
-      ).to.be.revertedWith('Already closed');
-      await expect(
-        market.cancelAuctionListing(listingId, { from: user1 })
-      ).to.be.revertedWith('Already closed');
-    });
-
-    it('bidding, termination and cancellation after cancellation fails', async () => {
-      const deadline = (await getTimestamp()) + 1000;
-      await market.createAuctionMarketItem(nft.address, 0, 1, 100, deadline, {
-        from: user1
-      });
-      const listingId = await market.getLatestListItemId();
-
-      await market.cancelAuctionListing(listingId, { from: user1 });
-      await expect(
-        market.bid(listingId, { value: 1000, from: user2, gasPrice: 0 })
-      ).to.be.revertedWith('Already closed');
-      await expect(
-        market.terminateAuction(listingId, { from: user1 })
-      ).to.be.revertedWith('Already closed');
-      await expect(
-        market.cancelAuctionListing(listingId, { from: user1 })
-      ).to.be.revertedWith('Already closed');
-    });
-  });*/
 });
 
 describe('Market contract with auction market buy, with royalties', async () => {

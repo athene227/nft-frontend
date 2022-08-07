@@ -24,6 +24,7 @@ contract NFTMarketOffers is MarketTools {
     address erc20Address;
     uint256 amount;
     uint256 deadline;
+    bool isClosed;
   }
 
   event OfferCreated(uint256 indexed offerId);
@@ -70,7 +71,8 @@ contract NFTMarketOffers is MarketTools {
       tokenId,
       offerERC20Address,
       offerAmount,
-      offerDeadline
+      offerDeadline,
+      false
     );
     offers[offerId] = offer;
 
@@ -82,7 +84,7 @@ contract NFTMarketOffers is MarketTools {
    * @param offerId ID of the offer
    */
   function acceptOffer(uint256 offerId) external whenNotPaused {
-    Offer memory offer = offers[offerId];
+    Offer storage offer = offers[offerId];
     require(offer.offerer != address(0x0), 'No offer found');
 
     uint256 givenAllowance = IERC20(offer.erc20Address).allowance(
@@ -91,6 +93,7 @@ contract NFTMarketOffers is MarketTools {
     );
     require(givenAllowance >= offer.amount, 'Not enough allowance');
     require(block.timestamp < offer.deadline, 'The offer has expired');
+    require(!offer.isClosed, 'The offer is used already');
 
     // Check that the seller has the NFT
     if (is721Type(offer.nftContract)) {
@@ -103,6 +106,8 @@ contract NFTMarketOffers is MarketTools {
       );
       require(senderBalance > 0, 'Not enough balance');
     }
+
+    offer.isClosed = true;
 
     uint256 commission = getPriceAfterPercent(
       offer.amount,

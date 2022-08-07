@@ -36,7 +36,11 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
   }
 
   event AuctionItemCreated(uint256 indexed listingId);
-  event AuctionBidCreated(uint256 indexed listingId, uint256 bidAmount);
+  event AuctionBidCreated(
+    uint256 indexed listingId,
+    uint256 indexed bidIndex,
+    uint256 bidAmount
+  );
   event AuctionBidCancelled(
     uint256 indexed listingId,
     uint256 indexed bidIndex
@@ -152,7 +156,11 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
 
     auctionBids[listingId].push(AuctionBid(bidAmount, msg.sender, false));
 
-    emit AuctionBidCreated(listingId, bidAmount);
+    emit AuctionBidCreated(
+      listingId,
+      auctionBids[listingId].length - 1,
+      bidAmount
+    );
   }
 
   /**
@@ -193,7 +201,7 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
     returns (AuctionBid memory)
   {
     if (bids.length > 0) {
-      uint256 highestBidIndex = MAX_INT;
+      uint256 highestBidIndex = MAX_INT; // use as "no valid bid found yet"
       for (uint256 i = 0; i < bids.length; i++) {
         if (
           // Check balance and allowance and that it's not canceled
@@ -203,8 +211,9 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
           bids[i].bidAmount &&
           !bids[i].isCanceled
         ) {
+          // The bid is valid
           if (
-            highestBidIndex == MAX_INT ||
+            highestBidIndex == MAX_INT || // if no highest valid bid found yet
             bids[i].bidAmount > bids[highestBidIndex].bidAmount
           ) {
             highestBidIndex = i;
@@ -256,12 +265,13 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
         !chosenBid.isCanceled,
       'Not a valid bid'
     );
+
+    marketItem.isClosed = true;
     settleAuction(marketItem, chosenBid);
 
     userListedTokens[marketItem.ownerAddress][marketItem.nftContract][
       marketItem.nftTokenId
     ] = 0;
-    marketItem.isClosed = true;
 
     emit AuctionBidAccepted(listingId, bidIndex);
   }
@@ -285,6 +295,7 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
       ) > 0,
       "Seller doesn't have the NFT"
     );
+    marketItem.isClosed = true;
 
     AuctionBid[] memory bids = auctionBids[listingId];
 
@@ -307,7 +318,6 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
     userListedTokens[marketItem.ownerAddress][marketItem.nftContract][
       marketItem.nftTokenId
     ] = 0;
-    marketItem.isClosed = true;
 
     emit AuctionTerminated(listingId);
   }
