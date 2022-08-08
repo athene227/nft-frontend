@@ -171,8 +171,10 @@ const Header = function () {
     (window as any).ethereum?.on(
       'accountsChanged',
       async function (accounts: string[]) {
-        console.log('account changed');
-        console.log('accountsChanged - accounts -', accounts);
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 174 ~ accountsChanged ~ accounts',
+          accounts
+        );
         if (accounts.length) {
           loadWeb3({ fromConnectButton: false });
         } else {
@@ -187,7 +189,10 @@ const Header = function () {
     (window as any).ethereum?.on(
       'networkChanged',
       function (networkId: string) {
-        console.log('networkChanged', networkId);
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 192 ~ networkChanged ~ networkId',
+          networkId
+        );
         loadWeb3({});
       }
     );
@@ -236,7 +241,10 @@ const Header = function () {
         })
       );
     } catch (error) {
-      console.log('error in handleLoggedOut', error);
+      console.log(
+        '🚀 ~ file: headerNew.tsx ~ line 244 ~ handleLoggedOut ~ error',
+        error
+      );
     }
   };
 
@@ -273,7 +281,6 @@ const Header = function () {
 
       // get accounts
       const accounts = await _web3.eth.getAccounts();
-      console.log(accounts[0]);
 
       TokenService.removeInvalidTokens();
       if (!fromConnectButton) {
@@ -287,7 +294,10 @@ const Header = function () {
           TokenService.removeCurrentToken(false);
           throw new Error('please login from this other account you using now');
         }
-        console.log(TokenService.getTokens(), '+++++++++++++++++');
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 295 ~ loadBlockchainData ~ TokenService.getTokens()',
+          TokenService.getTokens()
+        );
         TokenService.setCurrentToken(token);
         const {
           payload: { _id }
@@ -416,7 +426,10 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in loadBlockchainData', error);
+      console.log(
+        '🚀 ~ file: headerNew.tsx ~ line 423 ~ loadBlockchainData ~ error',
+        error
+      );
       clearUserState();
       TokenService.removeCurrentToken();
     }
@@ -439,7 +452,7 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in web 3', error);
+      console.log('🚀 ~ file: headerNew.tsx ~ line 446 ~ web3 ~ error', error);
       notification.error('Please connect to metamask');
       TokenService.removeTokens();
     }

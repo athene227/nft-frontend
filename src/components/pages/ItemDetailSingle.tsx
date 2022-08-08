@@ -346,7 +346,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       // setOpenBuy(false);
     } catch (error) {
       setBuyState({ loader: false, error: getErrorMessage(error) });
-      console.log('error in buy', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 350 ~ buy ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
     }
   };
 
@@ -395,7 +398,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
       const now = moment().unix();
       const deadline = Number(auctionMarketItem.deadline);
-      console.log(now, deadline);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 399 ~ const_placeBid= ~ now, deadline',
+        now,
+        deadline
+      );
 
       if (now > deadline) {
         notification.error(ERRORS.AUCTION_IS_FINISHED);
@@ -422,7 +429,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* approve contract
       await approveContract({
         mockERC20Contract,
-        spender: nftMarketAuctionContract.options.address,
+        spender: nftMarketAuctionContract._address,
         owner: userAddress,
         amount: bidWithCommissionWeiValue
       });
@@ -532,8 +539,14 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         }
         // if deadline is bigger than now you can cancel
         // if now is bigger than auction dedline===>error
-        console.log('deadling', Number(auctionMarketItem.deadline));
-        console.log('now', now);
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 543 ~ cancelListing ~ Number(auctionMarketItem.deadline)',
+          Number(auctionMarketItem.deadline)
+        );
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 544 ~ cancelListing ~ now',
+          now
+        );
 
         if (Number(auctionMarketItem.deadline) < now) {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
@@ -566,7 +579,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log('error in cancelListing', error);
+      console.log("🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ cancelListing ~ error", error);
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -665,7 +678,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         setTerminateAuctionState({ loader: false, error: null });
       }
     } catch (error) {
-      console.log('error in _terminateAuction', error);
+      console.log("🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error", error);
       setTerminateAuctionState({
         loader: false,
         error: getErrorMessage(error)

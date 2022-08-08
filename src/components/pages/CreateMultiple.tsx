@@ -54,8 +54,13 @@ const CreateSingle = () => {
   const web3State = useSelector(selectors.web3State);
   // const { web3, accounts, nftMarketContract, nftContract, networkId } =
   //   web3State.web3.data;
-  const { web3, accounts, nft1155Contract, networkId, nftMarketSimpleContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    nft1155Contract,
+    networkId,
+    nftMarketSimpleContract
+  } = web3State.web3.data;
 
   // const nftMarketContract = nftMarketSimpleContract;
   const nftContract = nft1155Contract;
@@ -96,7 +101,10 @@ const CreateSingle = () => {
   const onChangeImage = (e: any) => {
     e.preventDefault();
     if (e.target.files.length === 0) {
-      console.log(ERRORS.MISSING_IMAGE);
+      console.log(
+        '🚀 ~ file: CreateMultiple.tsx ~ line 100 ~ onChangeImage ~ ERRORS.MISSING_IMAGE',
+        ERRORS.MISSING_IMAGE
+      );
       return;
     }
     const file = e.target.files[0];
@@ -343,7 +351,10 @@ const CreateSingle = () => {
       //* turn off loader
       setCreateNftState({ loading: false, error: null });
     } catch (error) {
-      console.log('error in create mutiple', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: CreateMultiple.tsx ~ line 347 ~ CreateMutiple ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setCreateNftState({ loading: false, error: getErrorMessage(error) });
       updateItemCreateProgress({ error });
     }
@@ -412,7 +423,7 @@ const CreateSingle = () => {
               <CreateItemProgressPopup
                 progress={itemCreateProgress}
                 events={eventList}
-                onRetry={() => submitForm(submitData.current, () => { }, true)}
+                onRetry={() => submitForm(submitData.current, () => {}, true)}
                 onClose={() => setOpenProgressPopup(false)}
                 onReset={resetPage}
               />

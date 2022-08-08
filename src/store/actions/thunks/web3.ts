@@ -22,7 +22,7 @@ export const setupWeb3 =
     try {
       dispatch(actions.setupWeb3.success(data));
     } catch (err) {
-      console.log('error in setupWeb3', err);
+      console.log('🚀 ~ file: web3.ts ~ line 26 ~ setupWeb3 ~ err', err);
       dispatch(actions.setupWeb3.failure(err));
     }
   };

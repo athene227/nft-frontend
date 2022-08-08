@@ -15,7 +15,10 @@ const CollectionCard = ({
     navigate(link);
   };
 
-  console.log('collection', collection);
+  console.log(
+    '🚀 ~ file: CollectionCard.tsx ~ line 19 ~ collection',
+    collection
+  );
   return (
     <div
       className={className}

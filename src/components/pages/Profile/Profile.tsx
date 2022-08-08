@@ -137,7 +137,10 @@ const Profile = function () {
       setSubmitUserState({ error: null, loading: false });
       notification.success('Successfully changed the detailes');
     } catch (error) {
-      console.log('errorin listONSellContract', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: Profile.tsx ~ line 141 ~ listONSellContract ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setSubmitUserState({ error: getErrorMessage(error), loading: false });
       notification.error(getErrorMessage(error));
     }
@@ -164,7 +167,10 @@ const Profile = function () {
     const [toggle, setToggle] = useState(false);
     const handleToggle = () => {
       toggle ? setToggle(false) : setToggle(true);
-      console.log('toggle State: ', toggle);
+      console.log(
+        '🚀 ~ file: Profile.tsx ~ line 171 ~ handleToggle ~ toggle',
+        toggle
+      );
     };
 
     return (

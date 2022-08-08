@@ -65,7 +65,10 @@ const GlobalSearchbar = (props: any) => {
           key: '1'
         }
       ];
-      console.log(options);
+      console.log(
+        '🚀 ~ file: GlobalSearchBar.tsx ~ line 69 ~ onChangeHandle ~ options',
+        options
+      );
       setOptions(options);
     } catch (e) {
       setLoading(false);

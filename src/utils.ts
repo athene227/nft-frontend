@@ -274,7 +274,10 @@ export const createSimpleMarketItem = async (data: {
     )
     .send({ from: userAddress });
 
-  console.log(res.events.SimpleItemCreated);
+  console.log(
+    '🚀 ~ file: utils.ts ~ line 278 ~ res.events.SimpleItemCreated',
+    res.events.SimpleItemCreated
+  );
   return res.events.SimpleItemCreated;
 };
 
@@ -308,7 +311,10 @@ export const createAuctionMarketItem = async (data: {
     )
     .send({ from: userAddress });
 
-  console.log(res.events.AuctionItemCreated);
+  console.log(
+    '🚀 ~ file: utils.ts ~ line 312 ~ res.events.AuctionItemCreated',
+    res.events.AuctionItemCreated
+  );
   return res.events.AuctionItemCreated;
   /*
     console.log('create a market on the contract');
@@ -380,6 +386,7 @@ export const placeBid = async (data: {
   bid: number;
 }) => {
   const { nftMarketAuctionContract, userAddress, listingId, bid } = data;
+  console.log('🚀 ~ file: utils.ts ~ line 383 ~ data', data);
   const res = await nftMarketAuctionContract.methods
     .bid(listingId, BigInt(bid))
     .send({ from: userAddress });
@@ -431,7 +438,7 @@ export const getAuctionMarketItem = async (data: {
   const marketItem = await nftMarketAuctionContract.methods
     .auctionListingIdToMarketItem(Number(listingId))
     .call();
-  console.log(marketItem);
+  console.log('🚀 ~ file: utils.ts ~ line 435 ~ marketItem', marketItem);
   return marketItem;
 };
 

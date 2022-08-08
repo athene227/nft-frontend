@@ -34,7 +34,10 @@ Axios.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
     const { status, data } = error.response;
-    console.log(error.response);
+    console.log(
+      '🚀 ~ file: axios.ts ~ line 38 ~ error.response',
+      error.response
+    );
     if (
       status === 401 &&
       !originalRequest._retry &&

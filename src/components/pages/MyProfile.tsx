@@ -86,7 +86,10 @@ const MyProfile = function () {
       </div>
     );
   };
-  console.log('getImage(user?.bannerImage)', getImage(user?.bannerImage));
+  console.log(
+    '🚀 ~ file: MyProfile.tsx ~ line 90 ~ MyProfile ~ getImage(user?.bannerImage)',
+    getImage(user?.bannerImage)
+  );
   return (
     <div>
       <GlobalStyles />

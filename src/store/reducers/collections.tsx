@@ -93,7 +93,10 @@ const states = (state = defaultState, action: any) => {
         myCollections: entityLoadingStarted(state.myCollections, action.payload)
       };
     case getType(actions.createCollection.success):
-      console.log('action.payload', action.payload);
+      console.log(
+        '🚀 ~ file: collections.tsx ~ line 97 ~ states ~ action.payload',
+        action.payload
+      );
       const data = [...state.myCollections.data, action.payload.data];
       return {
         ...state,

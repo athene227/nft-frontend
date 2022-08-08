@@ -111,7 +111,10 @@ const CreateSingle = () => {
   const onChangeImage = (e: any) => {
     e.preventDefault();
     if (e.target.files.length === 0) {
-      console.log(ERRORS.MISSING_IMAGE);
+      console.log(
+        '🚀 ~ file: CreateSingle.tsx ~ line 115 ~ onChangeImage ~ ERRORS.MISSING_IMAGE',
+        ERRORS.MISSING_IMAGE
+      );
       return;
     }
     const file = e.target.files[0];
@@ -135,8 +138,11 @@ const CreateSingle = () => {
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-
-    console.log(data.attributes, _attributes);
+    console.log(
+      '🚀 ~ file: CreateSingle.tsx ~ line 140 ~ CreateSingle ~ data.attributes, _attributes',
+      data.attributes,
+      _attributes
+    );
 
     // nft mongo item
     const nftToCreate: any = {
@@ -268,10 +274,10 @@ const CreateSingle = () => {
         .call();
 
       console.log(
+        '🚀 ~ file: CreateSingle.tsx ~ line 276 ~ CreateSingle ~ listingId, transactionHash, SellerNFTBalance',
         listingId,
         transactionHash,
-        SellerNFTBalance,
-        '*** SellerNFTBalance ***'
+        SellerNFTBalance
       );
 
       await ApiService.createdNft({
@@ -288,8 +294,6 @@ const CreateSingle = () => {
         }
       });
 
-      console.log('I am here, test');
-
       await ApiService.createProcessTracking({
         ...nftToCreate,
         userAddress,
@@ -298,7 +302,6 @@ const CreateSingle = () => {
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
-      console.log('I am here, test');
       // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
@@ -427,8 +430,8 @@ const CreateSingle = () => {
         .send({ from: userAddress });
 
       console.log(
-        mockERC20Contract._address,
-        '======= test mockerc20contract address '
+        '🚀 ~ file: CreateSingle.tsx ~ line 434 ~ CreateSingle ~ mockERC20Contract._address',
+        mockERC20Contract._address
       );
       //* listing nft on contract
       const res = await createAuctionMarketItem({

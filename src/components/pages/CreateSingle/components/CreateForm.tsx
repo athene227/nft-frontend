@@ -212,7 +212,10 @@ export default function CreateForm(props: IProps) {
       closeCreateCollectionPopup();
       setCreateCollectionState({ loading: false, error: null });
     } catch (error) {
-      console.log('error in submitCollection ', error);
+      console.log(
+        '🚀 ~ file: CreateForm.tsx ~ line 215 ~ submitCollection ~ error',
+        error
+      );
       setCreateCollectionState({
         loading: false,
         error: getErrorMessage(error)

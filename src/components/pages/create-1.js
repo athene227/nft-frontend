@@ -13,9 +13,15 @@ export default class Createpage extends Component {
 
   onChange(e) {
     var files = e.target.files;
-    console.log(files);
+    console.log(
+      '🚀 ~ file: create-1.js ~ line 16 ~ Createpage ~ onChange ~ files',
+      files
+    );
     var filesArr = Array.prototype.slice.call(files);
-    console.log(filesArr);
+    console.log(
+      '🚀 ~ file: create-1.js ~ line 19 ~ Createpage ~ onChange ~ filesArr',
+      filesArr
+    );
     document.getElementById('file_name').style.display = 'none';
     this.setState({ files: [...this.state.files, ...filesArr] });
   }

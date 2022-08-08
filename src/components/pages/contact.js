@@ -25,13 +25,19 @@ const contact = function () {
       )
       .then(
         (result) => {
-          console.log(result.text);
+          console.log(
+            '🚀 ~ file: contact.js ~ line 29 ~ sendEmail ~ result.text',
+            result.text
+          );
           success.classList.add('show');
           button.classList.add('show');
           failed.classList.remove('show');
         },
         (error) => {
-          console.log(error.text);
+          console.log(
+            '🚀 ~ file: contact.js ~ line 36 ~ sendEmail ~ error.text',
+            error.text
+          );
           failed.classList.add('show');
         }
       );

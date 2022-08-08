@@ -66,7 +66,10 @@ export default function Swiperr() {
   useEffect(() => {
     dispatch(fetchHotAuctions());
   }, [dispatch]);
-  console.log('hotAuctions swiper1', hotAuctions);
+  console.log(
+    '🚀 ~ file: Swiper.jsx ~ line 70 ~ Swiperr ~ hotAuctions',
+    hotAuctions
+  );
   return (
     <>
       <div className="swiper-button-prev-unique swiper-arrow-btn ">

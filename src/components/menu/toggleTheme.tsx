@@ -54,7 +54,10 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function ToggleTheme() {
   const [checked, setChecked] = useState(true);
-  console.log(checked);
+  console.log(
+    '🚀 ~ file: toggleTheme.tsx ~ line 57 ~ ToggleTheme ~ checked',
+    checked
+  );
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
     if (event.target.checked) {

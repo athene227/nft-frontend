@@ -51,7 +51,10 @@ const CreateCollectionPopUp = (props: IProps) => {
     const onChangeImage = (e: any) => {
       e.preventDefault();
       if (e.target.files.length === 0) {
-        console.log(ERRORS.MISSING_IMAGE);
+        console.log(
+          '🚀 ~ file: CreateCollectionPopUp.tsx ~ line 55 ~ onChangeImage ~ ERRORS.MISSING_IMAGE',
+          ERRORS.MISSING_IMAGE
+        );
         return;
       }
       const file = e.target.files[0];
