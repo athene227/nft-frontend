@@ -53,7 +53,7 @@ const BuyPopUp = (props: IProps) => {
   );
 
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract } = web3State.web3.data;
+  const { web3, accounts, nftMarketAuctionContract } = web3State.web3.data;
 
   const _getMyBalance = async () => {
     const wei_balance = await web3.eth.getBalance(accounts[0]);
@@ -63,7 +63,7 @@ const BuyPopUp = (props: IProps) => {
 
   const _getAuctionMarketItem = async () => {
     const _marketItem = await getAuctionMarketItem({
-      nftMarketContract,
+      nftMarketAuctionContract,
       listingId: Number(nft.listingId)
     });
     return _marketItem;

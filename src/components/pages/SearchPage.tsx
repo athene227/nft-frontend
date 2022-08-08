@@ -77,7 +77,10 @@ const SearchPage = (props: { query: string }) => {
   };
 
   useEffect(() => {
-    console.log(query);
+    console.log(
+      '🚀 ~ file: SearchPage.tsx ~ line 81 ~ useEffect ~ query',
+      query
+    );
     dispatch(setSearchQuery(query));
     dispatch(actions.fetchSearchCollectionResults());
     dispatch(actions.fetchSearchNftResults());

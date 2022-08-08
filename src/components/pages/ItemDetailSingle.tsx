@@ -16,6 +16,7 @@ import {
   getPriceAfterPercent,
   cancelSimpleListing,
   cancelAuctionListing,
+  approveContract,
   placeBid,
   terminateAuction,
   buySimple,
@@ -99,8 +100,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const nftLoader = nftDetailState.loading; // nft details loader
   const nftError = nftDetailState.error; // nft details error
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract, nftContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    nftMarketContract,
+    mockERC20Contract,
+    nftMarketSimpleContract,
+    nftMarketAuctionContract,
+    nftContract
+  } = web3State.web3.data;
   const userAddress = accounts[0];
 
   const bidsState = useSelector((state) => selectors.bidsState(state));
@@ -115,7 +123,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const [openBuy, setOpenBuy] = React.useState(false);
   const [openPlaceBid, setOpenPlaceBid] = React.useState(false);
   const [openCancelListing, setOpenCancelListing] = React.useState(false);
-  const [openTeminateAuction, setOpenTerminateAuction] = React.useState(false);
+  const [openTerminateAuction, setOpenTerminateAuction] = React.useState(false);
 
   useEffect(() => {
     dispatch(
@@ -196,6 +204,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const fetchNftBids = async () => {
     if (!nft) return;
+
     dispatch(
       fetchBids({
         listingId: nft.listingId,
@@ -276,7 +285,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       const myBalance = await getMyBalance(userAddress, web3);
       //* getting the market item from the contract
       const simpleMarketItem: ISimpleMarketItem =
-        await nftMarketContract.methods
+        await nftMarketSimpleContract.methods
           .simpleListingIdToMarketItem(Number(nft.listingId))
           .call();
 
@@ -325,7 +334,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* interaction with the nft market contract
       const itemSold = await buySimple({
-        nftMarketContract,
+        nftMarketSimpleContract,
         userAddress,
         listingId: Number(nft.listingId),
         quantity: SINGLE,
@@ -338,7 +347,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       // setOpenBuy(false);
     } catch (error) {
       setBuyState({ loader: false, error: getErrorMessage(error) });
-      console.log('error in buy', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 350 ~ buy ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
     }
   };
 
@@ -362,7 +374,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* getting the market item from the contract
       const auctionMarketItem = await getAuctionMarketItem({
-        nftMarketContract,
+        nftMarketAuctionContract,
         listingId: Number(nft.listingId)
       });
 
@@ -387,6 +399,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
       const now = moment().unix();
       const deadline = Number(auctionMarketItem.deadline);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 399 ~ placeBid ~ now, deadline',
+        now,
+        deadline
+      );
 
       if (now > deadline) {
         notification.error(ERRORS.AUCTION_IS_FINISHED);
@@ -400,6 +417,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         tokenId: nft.tokenId,
         networkId: nft.networkId
       };
+
       //* create tracking before place a bid
 
       await ApiService.createProcessTracking({
@@ -410,9 +428,21 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
+      //* approve contract
+      await approveContract({
+        mockERC20Contract,
+        spender: nftMarketAuctionContract._address,
+        owner: userAddress,
+        amount: bidWithCommissionWeiValue
+      });
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 434 ~ placeBid ~ nftMarketAuctionContract._address',
+        nftMarketAuctionContract._address
+      );
+
       //* place bid on contract
       await placeBid({
-        nftMarketContract,
+        nftMarketAuctionContract,
         userAddress,
         listingId: Number(nft.listingId),
         bid: bidWithCommissionWeiValue
@@ -467,11 +497,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       let res;
       if (nft.marketType === MARKET_TYPE.SIMPLE) {
-        //* mongo - before cacneling
+        //* mongo - before cancelling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const simpleMarketItem: ISimpleMarketItem =
-          await nftMarketContract.methods
+          await nftMarketSimpleContract.methods
             .simpleListingIdToMarketItem(Number(nft.listingId))
             .call();
 
@@ -494,16 +524,16 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
         //* cancel simple listing on contract
         res = await cancelSimpleListing({
-          nftMarketContract,
+          nftMarketSimpleContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
       } else if (nft.marketType === MARKET_TYPE.AUCTION) {
-        //* mongo - before cacneling
+        //* mongo - before cancelling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const auctionMarketItem: IAuctionMarketItem =
-          await nftMarketContract.methods
+          await nftMarketAuctionContract.methods
             .auctionListingIdToMarketItem(Number(nft.listingId))
             .call();
         const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
@@ -514,9 +544,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           throw new Error(ERRORS.ONLY_OWNER_CAN_CANCEL);
         }
         // if deadline is bigger than now you can cancel
-        // if now is bigger than auction dedline===>error
-        console.log('deadling', Number(auctionMarketItem.deadline));
-        console.log('now', now);
+        // if now is bigger than auction deadline===>error
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 543 ~ cancelListing ~ Number(auctionMarketItem.deadline)',
+          Number(auctionMarketItem.deadline)
+        );
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 544 ~ cancelListing ~ now',
+          now
+        );
 
         if (Number(auctionMarketItem.deadline) < now) {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
@@ -540,7 +576,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
         //* cancel auction listing on contract
         res = await cancelAuctionListing({
-          nftMarketContract,
+          nftMarketAuctionContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
@@ -549,7 +585,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log('error in cancelListing', error);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ cancelListing ~ error',
+        error
+      );
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -577,7 +616,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* checks
       const auctionMarketItem: IAuctionMarketItem =
-        await nftMarketContract.methods
+        await nftMarketAuctionContract.methods
           .auctionListingIdToMarketItem(Number(nft.listingId))
           .call();
       const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
@@ -623,7 +662,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
         //* terminate on contract
         await terminateAuction({
-          nftMarketContract,
+          nftMarketAuctionContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
@@ -639,7 +678,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
         //* terminate on contract
         await terminateAuction({
-          nftMarketContract,
+          nftMarketAuctionContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
@@ -648,7 +687,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         setTerminateAuctionState({ loader: false, error: null });
       }
     } catch (error) {
-      console.log('error in _terminateAuction', error);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error',
+        error
+      );
       setTerminateAuctionState({
         loader: false,
         error: getErrorMessage(error)
@@ -1046,7 +1088,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           />
         </div>
       )}
-      {openTeminateAuction && nft && (
+      {openTerminateAuction && nft && (
         <div className="checkout">
           <TerminateAuctionPopup
             onClose={closeTerminateAuctionPopUp}

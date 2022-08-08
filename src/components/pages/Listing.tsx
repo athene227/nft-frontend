@@ -87,8 +87,14 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
-      console.log('getUserNftQuantityFromNftContract params');
-      console.log({ nftContract, userAddress, tokenId: Number(nft.tokenId) });
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 98 ~ const_submit= ~ getUserNftQuantityFromNftContract params',
+        {
+          nftContract,
+          userAddress,
+          tokenId: Number(nft.tokenId)
+        }
+      );
 
       const _nftBalance = await getUserNftQuantityFromNftContract({
         nftContract,
@@ -227,7 +233,10 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       setSubmitSaleState({ error: null, loading: false });
       navigate('/myProfile');
     } catch (error) {
-      console.log('error in listing', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 237 ~ listing ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setSubmitSaleState({ error: getErrorMessage(error), loading: false });
     }
   };

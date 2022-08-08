@@ -147,7 +147,10 @@ const states = (
         )
       };
     case getType(actions.fetchNftMultipleDetails.success):
-      console.log(action.payload)
+      console.log(
+        '🚀 ~ file: nfts.tsx ~ line 151 ~ action.payload',
+        action.payload
+      );
       return {
         ...state,
         nftCollectibleDetails: entityLoadingSucceeded(

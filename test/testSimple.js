@@ -196,8 +196,10 @@ contract(
         assert.fail('Should throw');
         // ).to.be.revertedWith("Not enough items for sale");
       } catch (error) {
-        console.log('error', error);
-        console.log('error.message', error.message);
+        console.log(
+          '🚀 ~ file: testSimple.js ~ line 201 ~ it ~ error.message',
+          error.message
+        );
       }
     });
 

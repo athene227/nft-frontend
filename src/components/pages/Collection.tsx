@@ -39,9 +39,11 @@ const Colection = function (props: { collectionId: string }) {
       // setNfts(res.data);
       setCollectionState({ loader: false, error: null });
     } catch (error) {
+      console.log(
+        '🚀 ~ file: Collection.tsx ~ line 42 ~ fetchCollection ~ error',
+        error
+      );
       setCollectionState({ loader: false, error: getErrorMessage(error) });
-
-      console.log('error in fetchCollection', error);
     }
   };
 
@@ -53,8 +55,11 @@ const Colection = function (props: { collectionId: string }) {
       setNfts(res.data);
       setNftsState({ loader: false, error: null });
     } catch (error) {
+      console.log(
+        '🚀 ~ file: Collection.tsx ~ line 55 ~ fetchNftsByCollectionId ~ error',
+        error
+      );
       setNftsState({ loader: false, error: getErrorMessage(error) });
-      console.log('error in fetchNftsByCollectionId', error);
     }
   };
 

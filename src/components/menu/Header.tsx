@@ -192,8 +192,10 @@ const Header = function () {
     (window as any).ethereum?.on(
       'accountsChanged',
       async function (accounts: string[]) {
-        console.log('account changed');
-        console.log('accountsChanged - accounts -', accounts);
+        console.log(
+          '🚀 ~ file: Header.tsx ~ line 195 ~ accountsChanged',
+          accounts
+        );
         if (accounts.length) {
           loadWeb3({ fromConnectButton: false });
         } else {
@@ -296,7 +298,10 @@ const Header = function () {
         })
       );
     } catch (error) {
-      console.log('error in handleLoggedOut', error);
+      console.log(
+        '🚀 ~ file: Header.tsx ~ line 301 ~ handleLoggedOut ~ error',
+        error
+      );
     }
   };
 
@@ -455,7 +460,10 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in loadBlockchainData', error);
+      console.log(
+        '🚀 ~ file: Header.tsx ~ line 464 ~ loadBlockchainData ~ error',
+        error
+      );
     }
     setLoadingState({ loading: false, error: null });
   };
@@ -476,7 +484,7 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in web 3', error);
+      console.log('🚀 ~ file: Header.tsx ~ line 485 ~ Web3 ~ error', error);
       notification.error('Please connect to metamask');
       removeTokens();
     }

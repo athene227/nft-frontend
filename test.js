@@ -1,8 +1,11 @@
 var myDate = new Date(); // Set this to your date in whichever timezone.
-console.log(myDate);
+console.log('🚀 ~ file: test.js ~ line 3 ~ myDate', myDate);
 var utcDate = myDate.toUTCString();
-console.log(utcDate);
+console.log('🚀 ~ file: test.js ~ line 6 ~ utcDate', utcDate);
 
-console.log(moment(myDate).format().toISOString());
+console.log(
+  '🚀 ~ file: test.js ~ line 9 ~ moment(myDate).format().toISOString()',
+  moment(myDate).format().toISOString()
+);
 
 new Date().toISOString() > '2012-11-04T14:51:06.157Z';
