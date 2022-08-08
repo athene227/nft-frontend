@@ -52,6 +52,7 @@ const CreateSingle = () => {
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
+  const [tokentype, setTokenType] = useState('MRT');
   const [numberOfCopies, setNumberOfCopiesInput] = useState(0);
   const [royalties, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
@@ -324,18 +325,10 @@ const CreateSingle = () => {
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-    const frontData = {
-      name: data.name,
-      description: data.description,
-      imageUrl: imageUrl,
-      attributes: _attributes,
-      multiple: false,
-      collectionId: data.collectionId,
-      category: data.category
-    };
+
     //* dates
     const ts1 = moment(data.expirationDate).unix();
-    const expirationDate = data.expirationDate; // "2022-05-14T21:30"
+
     const _date = new Date(data.expirationDate); //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
     const startPriceInWei = web3.utils.toWei(
       data.minimumBid.toString(),
@@ -363,8 +356,13 @@ const CreateSingle = () => {
       category: data.category,
       // auction fields
       minimumBid: data.minimumBid,
+      priceTokenType: data.pricetokentype,
       expirationDate: _date
     };
+    console.log(
+      '🚀 ~ file: CreateSingle.tsx ~ line 360 ~ CreateSingle ~ data.pricetokentype',
+      data.pricetokentype
+    );
 
     //* create tracking before creating
     await ApiService.createProcessTracking({
@@ -612,6 +610,7 @@ const CreateSingle = () => {
                 setNameInput={setNameInput}
                 setDescriptionInput={setDescriptionInput}
                 setPriceInput={setPriceInput}
+                setTokenType={setTokenType}
                 setNumberOfCopiesInput={setNumberOfCopiesInput}
                 setRoyaltiesInput={setRoyaltiesInput}
                 setExpirationDateInput={setExpirationDateInput}

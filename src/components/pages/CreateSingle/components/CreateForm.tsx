@@ -47,6 +47,7 @@ interface IProps {
   setNameInput: (e: any) => void;
   setDescriptionInput: (e: any) => void;
   setPriceInput: (e: any) => void;
+  setTokenType: (e: any) => void;
   setNumberOfCopiesInput: (e: any) => void;
   setRoyaltiesInput: (e: any) => void;
   setExpirationDateInput: (e: any) => void;
@@ -65,6 +66,7 @@ export default function CreateForm(props: IProps) {
     setNameInput,
     setDescriptionInput,
     setPriceInput,
+    setTokenType,
     setNumberOfCopiesInput,
     setExpirationDateInput,
     multiple
@@ -253,6 +255,7 @@ export default function CreateForm(props: IProps) {
       numberOfCopies: 0,
       royalties: 0,
       minimumBid: 0,
+      pricetokentype: 'MRT',
       expirationDate: '',
       attributes: []
     };
@@ -270,6 +273,7 @@ export default function CreateForm(props: IProps) {
   const closeCreateCollectionPopup = () => {
     setCreateCollection(false);
   };
+
   const displayCreateSingleForm = ({
     handleSubmit,
     values,
@@ -292,6 +296,10 @@ export default function CreateForm(props: IProps) {
     const onChangePrice = (e: any) => {
       setFieldValue('price', e.target.value);
       setPriceInput && setPriceInput(e.target.value);
+    };
+    const onChangePriceTokenType = (e: any) => {
+      setFieldValue('pricetokentype', e.target.value);
+      setTokenType && setTokenType(e.target.value);
     };
     const onChangeNumberOfCopies = (e: any) => {
       setFieldValue('numberOfCopies', e.target.value);
@@ -333,6 +341,20 @@ export default function CreateForm(props: IProps) {
         </select>
       );
     };
+
+    const pricetokenSelectComponent = (props: any) => {
+      const list = ['MRT'];
+      return (
+        <select id="pet-select" {...props}>
+          {list.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      );
+    };
+
     const DatePickerField = (props: any) => {
       const { ...fieldProps } = props;
       const { setFieldValue } = useFormikContext();
@@ -589,13 +611,27 @@ export default function CreateForm(props: IProps) {
           {marketType === MARKET_TYPE.AUCTION && (
             <div>
               <h5>Minimum bid</h5>
-              <Field
-                type="text"
-                name="minimumBid"
-                id="item_price_bid"
-                className={`form-control ${classes.input__holder__single}`}
-                placeholder="enter minimum bid"
-              />
+
+              <div className="row">
+                <div className="col-9">
+                  <Field
+                    type="text"
+                    name="minimumBid"
+                    id="item_price_bid"
+                    className={`form-control ${classes.input__holder__single}`}
+                    placeholder="enter minimum bid"
+                  />
+                </div>
+                <div className="col-3">
+                  <Field
+                    name="pricetokentype"
+                    as={pricetokenSelectComponent}
+                    placeholder="PriceTokenType"
+                    className={`form-control ${classes.input__holder__single}`}
+                    onChange={onChangePriceTokenType}
+                  />
+                </div>
+              </div>
               <ErrorMessage name="minimumBid">
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
@@ -607,6 +643,7 @@ export default function CreateForm(props: IProps) {
           {marketType === MARKET_TYPE.AUCTION && (
             <div>
               <h5>Expiration date</h5>
+
               <Field
                 type="datetime-local"
                 name="expirationDate"

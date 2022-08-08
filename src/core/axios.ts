@@ -100,6 +100,7 @@ export class ApiService {
       data
     });
   };
+
   static refreshToken = async () => {
     const { refreshToken } = TokenService.getCurrentToken();
 
@@ -109,6 +110,7 @@ export class ApiService {
       data: { refreshToken }
     });
   };
+
   static createProcessTracking = async (data: any) => {
     return Axios.request({
       url: `${END_POINTS.PROCESS_TRACKING}`,
