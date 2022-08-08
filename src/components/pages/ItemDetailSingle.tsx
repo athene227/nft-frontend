@@ -204,6 +204,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const fetchNftBids = async () => {
     if (!nft) return;
+
     dispatch(
       fetchBids({
         listingId: nft.listingId,
@@ -399,7 +400,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       const now = moment().unix();
       const deadline = Number(auctionMarketItem.deadline);
       console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 399 ~ const_placeBid= ~ now, deadline',
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 399 ~ placeBid ~ now, deadline',
         now,
         deadline
       );
@@ -416,6 +417,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         tokenId: nft.tokenId,
         networkId: nft.networkId
       };
+
       //* create tracking before place a bid
 
       await ApiService.createProcessTracking({
@@ -433,6 +435,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         owner: userAddress,
         amount: bidWithCommissionWeiValue
       });
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 434 ~ placeBid ~ nftMarketAuctionContract._address',
+        nftMarketAuctionContract._address
+      );
 
       //* place bid on contract
       await placeBid({
@@ -491,7 +497,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       let res;
       if (nft.marketType === MARKET_TYPE.SIMPLE) {
-        //* mongo - before cacneling
+        //* mongo - before cancelling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const simpleMarketItem: ISimpleMarketItem =
@@ -523,7 +529,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           listingId: Number(nft.listingId)
         });
       } else if (nft.marketType === MARKET_TYPE.AUCTION) {
-        //* mongo - before cacneling
+        //* mongo - before cancelling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const auctionMarketItem: IAuctionMarketItem =
@@ -538,7 +544,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           throw new Error(ERRORS.ONLY_OWNER_CAN_CANCEL);
         }
         // if deadline is bigger than now you can cancel
-        // if now is bigger than auction dedline===>error
+        // if now is bigger than auction deadline===>error
         console.log(
           '🚀 ~ file: ItemDetailSingle.tsx ~ line 543 ~ cancelListing ~ Number(auctionMarketItem.deadline)',
           Number(auctionMarketItem.deadline)
@@ -579,7 +585,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log("🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ cancelListing ~ error", error);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ cancelListing ~ error',
+        error
+      );
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -678,7 +687,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         setTerminateAuctionState({ loader: false, error: null });
       }
     } catch (error) {
-      console.log("🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error", error);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error',
+        error
+      );
       setTerminateAuctionState({
         loader: false,
         error: getErrorMessage(error)

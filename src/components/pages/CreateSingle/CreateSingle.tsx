@@ -73,7 +73,7 @@ const CreateSingle = () => {
   const nftContract = nft721Contract;
 
   const userState = useSelector(selectors.userState);
-  const userDetailes = userState.user.data;
+  const userDetails = userState.user.data;
 
   const userAddress = accounts[0];
   const SINGLE = 1;
@@ -487,7 +487,7 @@ const CreateSingle = () => {
       return;
     }
 
-    // initialse popup status and event list
+    // initialize popup status and event list
     setOpenProgressPopup(true);
     if (!isRetry) {
       submitData.current = data;
@@ -623,7 +623,7 @@ const CreateSingle = () => {
               <h5>Preview item</h5>
               <PreviewNft
                 imageUrl={getImageUrl()}
-                userImage={getProfileImage(userDetailes?.profileImage)}
+                userImage={getProfileImage(userDetails?.profileImage)}
                 nft={{
                   name,
                   description,
