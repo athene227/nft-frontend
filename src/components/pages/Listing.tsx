@@ -47,8 +47,13 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
   const web3State = useSelector(selectors.web3State);
 
-  const { web3, accounts, nftMarketContract, nftContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    nftMarketSimpleContract,
+    nftMarketAuctionContract,
+    nftContract
+  } = web3State.web3.data;
   const userAddress = accounts[0];
   const nftDetailState = useSelector(selectors.nftDetailState);
   const nft = nftDetailState.data as INft;
@@ -172,7 +177,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
         //* create on contract
         listingId = await createSimpleMarketItem({
-          nftMarketContract,
+          nftMarketSimpleContract,
           userAddress,
           nftAddress: nft.nftAddress,
           tokenId,
@@ -204,7 +209,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
         //* create on contract
         listingId = await createAuctionMarketItem({
-          nftMarketContract,
+          nftMarketAuctionContract,
           userAddress,
           nftAddress: nft.nftAddress,
           tokenId,
@@ -283,6 +288,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           nft={{ ...nft, price: priceInput }}
           multiple={nft.multiple}
           marketType={marketType}
+          tokentype={nft?.priceToken[0]?.name}
           expirationDateInput={expirationDateInput}
           timer
         />

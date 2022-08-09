@@ -1,6 +1,7 @@
 // import { SIDE } from '../../src/enums';
 
 import { ICollection } from 'src/collections.types';
+import { IPriceToken } from './priceTokens.types';
 import {
   ATTRIBUTE_TYPE,
   ITEM_CREATE_STATUS,
@@ -51,6 +52,8 @@ export interface INft {
   listedAmount: number;
   amount: number;
   minimumBid: string;
+  priceTokenType: string;
+  priceToken: IPriceToken[];
   startingDate: Date;
   expirationDate: Date;
   users: IUser[];

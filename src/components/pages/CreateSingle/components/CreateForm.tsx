@@ -42,11 +42,15 @@ import { INftAttribute } from 'src/types/nfts.types';
 import 'react-datepicker/dist/react-datepicker.css';
 import { categories } from 'src/components/components/constants/filters';
 import classes from './CreateSingle.module.scss';
+import { ApiService } from '../../../../core/axios';
+import { IPriceToken } from 'src/types/priceTokens.types';
+
 interface IProps {
   onChangeImage: (e: any) => void;
   setNameInput: (e: any) => void;
   setDescriptionInput: (e: any) => void;
   setPriceInput: (e: any) => void;
+  setTokenType: (e: any) => void;
   setNumberOfCopiesInput: (e: any) => void;
   setRoyaltiesInput: (e: any) => void;
   setExpirationDateInput: (e: any) => void;
@@ -65,10 +69,12 @@ export default function CreateForm(props: IProps) {
     setNameInput,
     setDescriptionInput,
     setPriceInput,
+    setTokenType,
     setNumberOfCopiesInput,
     setExpirationDateInput,
     multiple
   } = props;
+  const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
   const [openCreateCollection, setCreateCollection] = useState(false);
   const [createCollectionState, setCreateCollectionState] = useState({
     error: null,
@@ -166,6 +172,19 @@ export default function CreateForm(props: IProps) {
     }
   }, [userAddress]);
 
+  useEffect(() => {
+    const getPriceTokens = async () => {
+      const res = await ApiService.getPriceTokens();
+      setPriceTokens(res.data as Array<IPriceToken>);
+      setTokenType((res.data as Array<IPriceToken>)[0].name);
+      console.log(
+        '🚀 ~ file: CreateForm.tsx ~ line 180 ~ getPriceTokens ~ priceTokens',
+        priceTokens
+      );
+    };
+    getPriceTokens();
+  }, []);
+
   // const getFormData = (data: any) => {
   //   console.log('data===>', data);
 
@@ -253,6 +272,7 @@ export default function CreateForm(props: IProps) {
       numberOfCopies: 0,
       royalties: 0,
       minimumBid: 0,
+      pricetokentype: priceTokens[0]?.name || 'ETH',
       expirationDate: '',
       attributes: []
     };
@@ -270,6 +290,7 @@ export default function CreateForm(props: IProps) {
   const closeCreateCollectionPopup = () => {
     setCreateCollection(false);
   };
+
   const displayCreateSingleForm = ({
     handleSubmit,
     values,
@@ -292,6 +313,10 @@ export default function CreateForm(props: IProps) {
     const onChangePrice = (e: any) => {
       setFieldValue('price', e.target.value);
       setPriceInput && setPriceInput(e.target.value);
+    };
+    const onChangePriceTokenType = (e: any) => {
+      setFieldValue('pricetokentype', e.target.value);
+      setTokenType && setTokenType(e.target.value);
     };
     const onChangeNumberOfCopies = (e: any) => {
       setFieldValue('numberOfCopies', e.target.value);
@@ -333,6 +358,19 @@ export default function CreateForm(props: IProps) {
         </select>
       );
     };
+
+    const pricetokenSelectComponent = (props: any) => {
+      return (
+        <select id="pet-select" {...props}>
+          {priceTokens?.map((item) => (
+            <option key={item.name} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      );
+    };
+
     const DatePickerField = (props: any) => {
       const { ...fieldProps } = props;
       const { setFieldValue } = useFormikContext();
@@ -589,13 +627,27 @@ export default function CreateForm(props: IProps) {
           {marketType === MARKET_TYPE.AUCTION && (
             <div>
               <h5>Minimum bid</h5>
-              <Field
-                type="text"
-                name="minimumBid"
-                id="item_price_bid"
-                className={`form-control ${classes.input__holder__single}`}
-                placeholder="enter minimum bid"
-              />
+
+              <div className="row">
+                <div className="col-9">
+                  <Field
+                    type="text"
+                    name="minimumBid"
+                    id="item_price_bid"
+                    className={`form-control ${classes.input__holder__single}`}
+                    placeholder="enter minimum bid"
+                  />
+                </div>
+                <div className="col-3">
+                  <Field
+                    name="pricetokentype"
+                    as={pricetokenSelectComponent}
+                    placeholder="PriceTokenType"
+                    className={`form-control ${classes.input__holder__single}`}
+                    onChange={onChangePriceTokenType}
+                  />
+                </div>
+              </div>
               <ErrorMessage name="minimumBid">
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
@@ -607,6 +659,7 @@ export default function CreateForm(props: IProps) {
           {marketType === MARKET_TYPE.AUCTION && (
             <div>
               <h5>Expiration date</h5>
+
               <Field
                 type="datetime-local"
                 name="expirationDate"
