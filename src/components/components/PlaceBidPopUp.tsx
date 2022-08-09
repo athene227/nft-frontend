@@ -153,7 +153,7 @@ const BuyPopUp = (props: IProps) => {
         </p>
         <div className="detailcheckout mt-4">
           <div className="listcheckout">
-            <h6>Your bid ({COIN})</h6>
+            <h6>Your bid ({nft?.priceToken[0]?.name || COIN})</h6>
             <Field
               type="number"
               name="price"
@@ -170,20 +170,20 @@ const BuyPopUp = (props: IProps) => {
         <div className="heading mt-3">
           <p>Your balance</p>
           <div className="subtotal">
-            {Number(balance).toFixed(8)} {COIN}
+            {Number(balance).toFixed(8)} {nft?.priceToken[0]?.name || COIN}
           </div>
         </div>
 
         <div className="heading">
           <p>Service fee 1%</p>
           <div className="subtotal">
-            {getComission()} {COIN}
+            {getComission()} {nft?.priceToken[0]?.name || COIN}
           </div>
         </div>
         <div className="heading">
           <p>You will pay</p>
           <div className="subtotal">
-            {getTotal()} {COIN}
+            {getTotal()} {nft?.priceToken[0]?.name || COIN}
           </div>
         </div>
         {lastBid && !placeBidState.loader && (

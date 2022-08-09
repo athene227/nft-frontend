@@ -52,7 +52,7 @@ const CreateSingle = () => {
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
-  const [tokentype, setTokenType] = useState('MRT');
+  const [tokentype, setTokenType] = useState('ETH');
   const [numberOfCopies, setNumberOfCopiesInput] = useState(0);
   const [royalties, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
@@ -628,6 +628,8 @@ const CreateSingle = () => {
                   description,
                   price
                 }}
+                tokentype={tokentype}
+                isPreview={true}
                 multiple={false}
                 timer={marketType === MARKET_TYPE.AUCTION}
                 marketType={marketType}

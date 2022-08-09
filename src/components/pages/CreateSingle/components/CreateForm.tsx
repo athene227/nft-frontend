@@ -42,6 +42,9 @@ import { INftAttribute } from 'src/types/nfts.types';
 import 'react-datepicker/dist/react-datepicker.css';
 import { categories } from 'src/components/components/constants/filters';
 import classes from './CreateSingle.module.scss';
+import { ApiService } from '../../../../core/axios';
+import { IPriceToken } from 'src/types/priceTokens.types';
+
 interface IProps {
   onChangeImage: (e: any) => void;
   setNameInput: (e: any) => void;
@@ -71,6 +74,7 @@ export default function CreateForm(props: IProps) {
     setExpirationDateInput,
     multiple
   } = props;
+  const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
   const [openCreateCollection, setCreateCollection] = useState(false);
   const [createCollectionState, setCreateCollectionState] = useState({
     error: null,
@@ -168,6 +172,19 @@ export default function CreateForm(props: IProps) {
     }
   }, [userAddress]);
 
+  useEffect(() => {
+    const getPriceTokens = async () => {
+      const res = await ApiService.getPriceTokens();
+      setPriceTokens(res.data as Array<IPriceToken>);
+      setTokenType((res.data as Array<IPriceToken>)[0].name);
+      console.log(
+        '🚀 ~ file: CreateForm.tsx ~ line 180 ~ getPriceTokens ~ priceTokens',
+        priceTokens
+      );
+    };
+    getPriceTokens();
+  }, []);
+
   // const getFormData = (data: any) => {
   //   console.log('data===>', data);
 
@@ -255,7 +272,7 @@ export default function CreateForm(props: IProps) {
       numberOfCopies: 0,
       royalties: 0,
       minimumBid: 0,
-      pricetokentype: 'MRT',
+      pricetokentype: priceTokens[0]?.name || 'ETH',
       expirationDate: '',
       attributes: []
     };
@@ -343,12 +360,11 @@ export default function CreateForm(props: IProps) {
     };
 
     const pricetokenSelectComponent = (props: any) => {
-      const list = ['MRT'];
       return (
         <select id="pet-select" {...props}>
-          {list.map((item) => (
-            <option key={item} value={item}>
-              {item}
+          {priceTokens?.map((item) => (
+            <option key={item.name} value={item.name}>
+              {item.name}
             </option>
           ))}
         </select>

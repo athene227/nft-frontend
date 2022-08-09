@@ -82,6 +82,7 @@ const END_POINTS = {
   GET_HOT_AUCTIONS: `${SERVER_URL}/${API_VERSION}/nfts/getHotAuctions`,
   GET_NFT_COUNTS_BY_CATEGORY: `${SERVER_URL}/${API_VERSION}/nfts/getCountByCategory`,
   GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/getImageUri`,
+  GET_PRICETOKENS_LIST: `${SERVER_URL}/${API_VERSION}/pricetokens`,
   GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
@@ -167,6 +168,7 @@ export class ApiService {
       params
     });
   };
+
   //* users
   static getTopBuyers = async (params: { limit: number; day: number }) => {
     return Axios.request({
@@ -362,6 +364,7 @@ export class ApiService {
       params
     });
   };
+
   static searchNfts = (params: any) => {
     return Axios.request<{ data: INft[]; totalCount: number }>({
       url: `${END_POINTS.SEARCH}/nft`,
@@ -369,6 +372,7 @@ export class ApiService {
       params
     });
   };
+
   static searchUsers = (params: any) => {
     return Axios.request<{ data: IUser[]; totalCount: number }>({
       url: `${END_POINTS.SEARCH}/user`,
@@ -384,11 +388,19 @@ export class ApiService {
       data
     });
   };
+
   static getUri = async (data: any) => {
     return Axios.request({
       url: END_POINTS.GET_URI,
       method: 'post',
       data
+    });
+  };
+
+  static getPriceTokens = async () => {
+    return Axios.request({
+      url: END_POINTS.GET_PRICETOKENS_LIST,
+      method: 'get'
     });
   };
 }

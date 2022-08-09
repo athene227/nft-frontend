@@ -14,6 +14,8 @@ interface IProps {
     leftAmount?: number;
   };
   marketType?: MARKET_TYPE;
+  tokentype: string;
+  isPreview?: boolean;
   timer?: boolean;
   multiple: boolean;
   expirationDateInput?: string;
@@ -25,6 +27,8 @@ export default function PreviewNft(props: IProps) {
     userImage,
     nft,
     marketType,
+    tokentype,
+    isPreview,
     timer,
     expirationDateInput,
     multiple
@@ -69,14 +73,16 @@ export default function PreviewNft(props: IProps) {
           <h4>{nft?.name || 'Pinky Ocean'}</h4>
         </span>
         <div className="nft__item_price">
-          {nft?.price || 0} {COIN}
+          {nft?.price || 0} {tokentype}
           {<span>{getNumberOfCopies()}</span>}
         </div>
-        <div className="nft__item_action">
-          <span>
-            {marketType === MARKET_TYPE.SIMPLE ? 'Buy Now' : 'Place a bid'}
-          </span>
-        </div>
+        {!isPreview && (
+          <div className="nft__item_action">
+            <span>
+              {marketType === MARKET_TYPE.SIMPLE ? 'Buy Now' : 'Place a bid'}
+            </span>
+          </div>
+        )}
         <div className="nft__item_like">
           <i className="fa fa-heart"></i>
           <span>50</span>

@@ -97,6 +97,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
   const nftDetailState = useSelector(selectors.nftDetailState);
   const nft = nftDetailState.data;
+  console.log(
+    '🚀 ~ file: ItemDetailSingle.tsx ~ line 100 ~ ItemDetailSingle ~ nft',
+    nft
+  );
   const nftLoader = nftDetailState.loading; // nft details loader
   const nftError = nftDetailState.error; // nft details error
   const web3State = useSelector(selectors.web3State);
@@ -800,7 +804,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <div className="p_list_info">
                   Bid{' '}
                   <b>
-                    {bid.price} {COIN}
+                    {bid.price} {nft?.priceToken[0]?.name || COIN}
                   </b>
                   <span>
                     by{' '}
@@ -937,13 +941,14 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             )}
             {nft.price > 0 && (
               <p>
-                Price: {nft?.price} {COIN}
+                Price: {nft?.price} {nft?.priceToken[0]?.name || COIN}
               </p>
             )}
             {nft.marketType === MARKET_TYPE.AUCTION &&
               nft?.status === STATUS.ON_SELL && (
                 <p>
-                  Minimum bid: {nft?.minimumBid} {COIN}
+                  Minimum bid: {nft?.minimumBid}{' '}
+                  {nft?.priceToken[0]?.name || COIN}
                 </p>
               )}
 
