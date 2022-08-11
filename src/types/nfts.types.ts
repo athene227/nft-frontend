@@ -1,5 +1,5 @@
 // import { SIDE } from '../../src/enums';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ICollection } from 'src/collections.types';
 import { IPriceToken } from './priceTokens.types';
 import {
@@ -99,6 +99,6 @@ export interface MarketItemCreateProgress {
   listingId: string | null;
   listingTransactionHash: string | null;
   error: any;
-  multiple: boolean;
-  nftAddress: any;
+  multiple?: boolean;
+  nftAddress?: any;
 }
