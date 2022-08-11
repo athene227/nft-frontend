@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import {
   Field,
@@ -215,7 +216,7 @@ export default function CreateForm(props: IProps) {
       if (!imgFile) {
         throw new Error(ERRORS.MISSING_IMAGE);
       }
-      const imageUrl = await ipfs.getImageUri(imgFile);
+      const imageUrl: string = (await ipfs.getImageUri(imgFile)) as string;
 
       // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
       const id = uuidv4();
@@ -711,7 +712,7 @@ export default function CreateForm(props: IProps) {
                         <Col md="12">
                           <NftAttribute {...attribute} />
                         </Col>
-                        <div className="sapcer-20" />
+                        <div className="spacer-20" />
                       </Row>
                     )
                   )}

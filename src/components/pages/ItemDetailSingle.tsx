@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Clock from '../components/Clock/Clock';
@@ -107,11 +108,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const {
     web3,
     accounts,
-    nftMarketContract,
     mockERC20Contract,
     nftMarketSimpleContract,
-    nftMarketAuctionContract,
-    nftContract
+    nftMarketAuctionContract
   } = web3State.web3.data;
   const userAddress = accounts[0];
 
@@ -337,7 +336,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with the nft market contract
-      const itemSold = await buySimple({
+      await buySimple({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(nft.listingId),
@@ -499,7 +498,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         status: STATUS.ON_SELL
       };
 
-      let res;
       if (nft.marketType === MARKET_TYPE.SIMPLE) {
         //* mongo - before cancelling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
@@ -527,7 +525,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
 
         //* cancel simple listing on contract
-        res = await cancelSimpleListing({
+        await cancelSimpleListing({
           nftMarketSimpleContract,
           userAddress,
           listingId: Number(nft.listingId)
@@ -579,7 +577,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
 
         //* cancel auction listing on contract
-        res = await cancelAuctionListing({
+        await cancelAuctionListing({
           nftMarketAuctionContract,
           userAddress,
           listingId: Number(nft.listingId)
@@ -804,7 +802,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <div className="p_list_info">
                   Bid{' '}
                   <b>
-                    {bid.price} {nft?.priceToken[0]?.name || COIN}
+                    {bid.price} {COIN}
                   </b>
                   <span>
                     by{' '}
@@ -941,7 +939,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             )}
             {nft.price > 0 && (
               <p>
-                Price: {nft?.price} {nft?.priceToken[0]?.name || COIN}
+                Price: {nft.price} {COIN}
               </p>
             )}
             {nft.marketType === MARKET_TYPE.AUCTION &&

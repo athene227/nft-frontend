@@ -45,7 +45,7 @@ const BuyPopUp = (props: IProps) => {
   });
 
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract } = web3State.web3.data;
+  const { web3, accounts, nftMarketSimpleContract } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
 
   const buyTransactionHash = nftEvents.find(
@@ -62,7 +62,7 @@ const BuyPopUp = (props: IProps) => {
 
   const _getSimpleMarketItem = async () => {
     const marketItem = await getSimpleMarketItem({
-      nftMarketContract,
+      nftMarketSimpleContract,
       listingId: Number(nft.listingId)
     });
     return marketItem;
@@ -144,7 +144,7 @@ const BuyPopUp = (props: IProps) => {
     return (
       <Form>
         <div className="heading">
-          <h3>Buy nft</h3>
+          <h3>Buy NFT</h3>
         </div>
         <p>
           You are about to purchase a{' '}

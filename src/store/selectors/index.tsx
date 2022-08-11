@@ -64,8 +64,8 @@ export const auctionedNfts = createSelector(listedNftsState, (nfts) => {
   if (!nfts.data) {
     return [];
   }
-  const acutioned = nfts.data.filter((nft) => !!nft.deadline);
-  return acutioned;
+  const auctioned = nfts.data.filter((nft) => !!nft.deadline);
+  return auctioned;
 });
 
 export const nftFilter = createStructuredSelector({

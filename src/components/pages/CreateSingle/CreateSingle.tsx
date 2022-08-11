@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRef, useState } from 'react';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as selectors from 'src/store/selectors';
@@ -33,9 +34,6 @@ import CreateItemProgressPopup from 'src/components/components/Popups/CreateItem
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import { initialItemCreateStatus } from 'src/components/components/constants';
 import { clearEvents } from 'src/store/actions';
-import classes from './CreateSingle.module.scss';
-import { createNft } from 'src/store/actions/thunks/nfts';
-import { FaSortAmountDown } from 'react-icons/fa';
 
 const CreateSingle = () => {
   const dispatch = useDispatch();
@@ -53,14 +51,12 @@ const CreateSingle = () => {
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
   const [tokentype, setTokenType] = useState('ETH');
-  const [numberOfCopies, setNumberOfCopiesInput] = useState(0);
-  const [royalties, setRoyaltiesInput] = useState(0);
+  const [, setNumberOfCopiesInput] = useState(0);
+  const [, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
   const [marketType, setMarketType] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
-  // const { web3, accounts, nftMarketContract, networkId, nftContract } =
-  //   web3State.web3.data;
   const {
     web3,
     accounts,
@@ -70,8 +66,6 @@ const CreateSingle = () => {
     nftMarketSimpleContract,
     nftMarketAuctionContract
   } = web3State.web3.data;
-
-  const nftContract = nft721Contract;
 
   const userState = useSelector(selectors.userState);
   const userDetails = userState.user.data;
@@ -139,11 +133,6 @@ const CreateSingle = () => {
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-    console.log(
-      '🚀 ~ file: CreateSingle.tsx ~ line 140 ~ CreateSingle ~ data.attributes, _attributes',
-      data.attributes,
-      _attributes
-    );
 
     // nft mongo item
     const nftToCreate: any = {
@@ -174,24 +163,10 @@ const CreateSingle = () => {
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
-    // const _attributes = data.attributes.map((item: any) => {
-    //   return { ...item, value: item.value.toString() };
-    // });
-
-    // const frontDataCreate = {
-    //   name: data.name,
-    //   description: data.description,
-    //   imageUrl: imageUrl,
-    //   attributes: _attributes,
-    //   multiple: false,
-    //   collectionId: data.collectionId,
-    //   category: data.category
-    // };
-
     if (!tokenId()) {
       //* creating nft in the nft contract
       const res = await createToken({
-        nftContract,
+        nftContract: nft721Contract,
         userAddress,
         jsonUri,
         quantity: SINGLE,
@@ -254,7 +229,7 @@ const CreateSingle = () => {
 
     if (!listingId()) {
       //* listing nft on contract
-      await nftContract.methods
+      await nft721Contract.methods
         .setApprovalForAll(nftMarketSimpleContract._address, true)
         .send({ from: userAddress });
 
@@ -270,7 +245,7 @@ const CreateSingle = () => {
 
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
-      const SellerNFTBalance = await nftContract.methods
+      const SellerNFTBalance = await nft721Contract.methods
         .balanceOf(userAddress)
         .call();
 
@@ -289,8 +264,8 @@ const CreateSingle = () => {
           price: data.price,
           tokenURI: jsonUri,
           status: STATUS.ON_SELL,
-          totalAmount: SellerNFTBalance + SINGLE,
-          leftAmount: SellerNFTBalance,
+          totalAmount: SINGLE,
+          leftAmount: 0,
           listedAmount: SINGLE
         }
       });
@@ -375,7 +350,7 @@ const CreateSingle = () => {
     if (!tokenId()) {
       //* creating nft in the nft contract
       const res = await createToken({
-        nftContract,
+        nftContract: nft721Contract,
         userAddress,
         jsonUri,
         quantity: SINGLE,
@@ -423,7 +398,7 @@ const CreateSingle = () => {
     });
 
     if (!listingId()) {
-      await nftContract.methods
+      await nft721Contract.methods
         .setApprovalForAll(nftMarketAuctionContract._address, true)
         .send({ from: userAddress });
 
@@ -628,7 +603,9 @@ const CreateSingle = () => {
                   description,
                   price
                 }}
-                tokentype={tokentype}
+                tokentype={
+                  marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'
+                }
                 isPreview={true}
                 multiple={false}
                 timer={marketType === MARKET_TYPE.AUCTION}
