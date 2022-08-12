@@ -59,7 +59,6 @@ const CreateSingle = () => {
     nftMarketSimpleContract
   } = web3State.web3.data;
 
-  // const nftMarketContract = nftMarketSimpleContract;
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
 
@@ -205,7 +204,6 @@ const CreateSingle = () => {
         });
       }
 
-      // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
       const NFT_NETWORK_DATA = await getNetworkData(web3, NFT1155);
       const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
       const nftToCreate: any = getItem(
@@ -305,6 +303,10 @@ const CreateSingle = () => {
           quantity: Number(data.numberOfCopies),
           deadline: 1680000000
         });
+        console.log(
+          '🚀 ~ file: CreateMultiple.tsx ~ line 308 ~ CreateSingle ~ res',
+          res
+        );
 
         const listingId = res.returnValues.listingId;
         const transactionHash = res.transactionHash;
