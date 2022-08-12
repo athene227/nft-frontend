@@ -226,7 +226,7 @@ describe('Market contract with simple market buy, without royalties', async () =
         market.connect(user2).buySimple(listingId, 1, { value: 101 })
       )
         .to.emit(market, 'SimpleItemSold')
-        .withArgs(1, 1);
+        .withArgs(1, 1, user2.address);
     });
 
     it('should fail if paused', async () => {

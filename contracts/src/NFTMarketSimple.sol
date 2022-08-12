@@ -26,7 +26,11 @@ contract NFTMarketSimple is ReentrancyGuard, MarketTools {
   }
 
   event SimpleItemCreated(uint256 indexed listingId);
-  event SimpleItemSold(uint256 indexed listingId, uint256 quantity);
+  event SimpleItemSold(
+    uint256 indexed listingId,
+    uint256 quantity,
+    address buyer
+  );
   event SimpleItemCancelled(uint256 indexed listingId);
 
   /**
@@ -153,7 +157,7 @@ contract NFTMarketSimple is ReentrancyGuard, MarketTools {
       quantity
     );
 
-    emit SimpleItemSold(listingId, quantity);
+    emit SimpleItemSold(listingId, quantity, msg.sender);
   }
 
   /**
