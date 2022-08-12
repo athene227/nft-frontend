@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import moment from 'moment';
 import {
   IAuctionMarketItem,
@@ -228,7 +229,8 @@ export const createToken = async (data: {
   royalty: number;
   nftType: string;
 }) => {
-  const { nftContract, userAddress, jsonUri, quantity, royalty, nftType } = data;
+  const { nftContract, userAddress, jsonUri, quantity, royalty, nftType } =
+    data;
   // created token with the nft contract
   let createdToken;
   if (nftType === 'NFT721') {
@@ -273,7 +275,10 @@ export const createSimpleMarketItem = async (data: {
     )
     .send({ from: userAddress });
 
-  console.log(res.events.SimpleItemCreated);
+  console.log(
+    '🚀 ~ file: utils.ts ~ line 278 ~ res.events.SimpleItemCreated',
+    res.events.SimpleItemCreated
+  );
   return res.events.SimpleItemCreated;
 };
 
@@ -307,7 +312,10 @@ export const createAuctionMarketItem = async (data: {
     )
     .send({ from: userAddress });
 
-  console.log(res.events.AuctionItemCreated);
+  console.log(
+    '🚀 ~ file: utils.ts ~ line 312 ~ res.events.AuctionItemCreated',
+    res.events.AuctionItemCreated
+  );
   return res.events.AuctionItemCreated;
   /*
     console.log('create a market on the contract');
@@ -327,24 +335,24 @@ export const getFromLocalStorage = (key: string) => {
 };
 
 export const cancelSimpleListing = async (data: {
-  nftMarketContract: any;
+  nftMarketSimpleContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketContract, userAddress, listingId } = data;
-  const res = await nftMarketContract.methods
+  const { nftMarketSimpleContract, userAddress, listingId } = data;
+  const res = await nftMarketSimpleContract.methods
     .cancelSimpleListing(listingId)
     .send({ from: userAddress });
   return res;
 };
 
 export const cancelAuctionListing = async (data: {
-  nftMarketContract: any;
+  nftMarketAuctionContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketContract, userAddress, listingId } = data;
-  const res = await nftMarketContract.methods
+  const { nftMarketAuctionContract, userAddress, listingId } = data;
+  const res = await nftMarketAuctionContract.methods
     .cancelAuctionListing(listingId)
     .send({ from: userAddress });
   return res;
@@ -359,63 +367,79 @@ export const cancelAuctionListing = async (data: {
 //   return res;
 // }
 
+export const approveContract = async (data: {
+  mockERC20Contract: any;
+  spender: string;
+  owner: string;
+  amount: number;
+}) => {
+  const { mockERC20Contract, spender, owner, amount } = data;
+  const res = await mockERC20Contract.methods
+    .approve(spender, BigInt(amount))
+    .send({ from: owner });
+  return res;
+};
+
 export const placeBid = async (data: {
-  nftMarketContract: any;
+  nftMarketAuctionContract: any;
   userAddress: string;
   listingId: number;
   bid: number;
 }) => {
-  const { nftMarketContract, userAddress, listingId, bid } = data;
-  const res = await nftMarketContract.methods
-    .bid(listingId)
-    .send({ from: userAddress, value: bid });
+  const { nftMarketAuctionContract, userAddress, listingId, bid } = data;
+  console.log('🚀 ~ file: utils.ts ~ line 383 ~ data', data);
+  const res = await nftMarketAuctionContract.methods
+    .bid(listingId, BigInt(bid))
+    .send({ from: userAddress });
   return res;
 };
 
 export const buySimple = async (data: {
-  nftMarketContract: any;
+  nftMarketSimpleContract: any;
   userAddress: string;
   listingId: number;
   quantity: number;
   value: number;
 }) => {
-  const { nftMarketContract, userAddress, listingId, quantity, value } = data;
-  const res = await nftMarketContract.methods
+  const { nftMarketSimpleContract, userAddress, listingId, quantity, value } =
+    data;
+  const res = await nftMarketSimpleContract.methods
     .buySimple(listingId, quantity)
     .send({ from: userAddress, value });
   return res;
 };
 
 export const terminateAuction = async (data: {
-  nftMarketContract: any;
+  nftMarketAuctionContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketContract, userAddress, listingId } = data;
-  const res = await nftMarketContract.methods
+  const { nftMarketAuctionContract, userAddress, listingId } = data;
+  const res = await nftMarketAuctionContract.methods
     .terminateAuction(listingId)
     .send({ from: userAddress });
   return res;
 };
 
 export const getSimpleMarketItem = async (data: {
-  nftMarketContract: any;
+  nftMarketSimpleContract: any;
   listingId: number;
 }): Promise<ISimpleMarketItem> => {
-  const { nftMarketContract, listingId } = data;
-  const marketItem = await nftMarketContract.methods
+  const { nftMarketSimpleContract, listingId } = data;
+  const marketItem = await nftMarketSimpleContract.methods
     .simpleListingIdToMarketItem(Number(listingId))
     .call();
   return marketItem;
 };
 export const getAuctionMarketItem = async (data: {
-  nftMarketContract: any;
+  nftMarketAuctionContract: any;
   listingId: number;
 }): Promise<IAuctionMarketItem> => {
-  const { nftMarketContract, listingId } = data;
-  const marketItem = await nftMarketContract.methods
+  const { nftMarketAuctionContract, listingId } = data;
+  const marketItem = await nftMarketAuctionContract.methods
     .auctionListingIdToMarketItem(Number(listingId))
     .call();
+  console.log('🚀 ~ file: utils.ts ~ line 435 ~ marketItem', marketItem);
   return marketItem;
 };
 

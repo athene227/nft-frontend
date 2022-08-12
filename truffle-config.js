@@ -30,12 +30,15 @@ const private_keys = [
   process.env.REACT_APP_INNOVATIO_PRIVATE_KEY ||
     '21a2360b561fbfeebdd5b012e48a9e16e473ec931406abd05d26b5dae840c2e6'
 ];
+console.log(
+  '🚀 ~ file: truffle-config.js ~ line 33 ~ private_keys',
+  private_keys
+);
 
 // infuraId
 const infuraId =
   process.env.REACT_APP_INFURA_ID || '3d3184cc421046c8b638d184e8fbe107';
-console.log('private_keys', private_keys);
-console.log('infuraId', infuraId);
+console.log('🚀 ~ file: truffle-config.js ~ line 37 ~ infuraId', infuraId);
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the

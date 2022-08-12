@@ -32,6 +32,7 @@ import NFT721 from 'src/abis/new/NFT721.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
 import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
 import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
+import NFTMarketOffers from 'src/abis/new/NFTMarketOffers.json';
 
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
@@ -160,7 +161,7 @@ const Header = function () {
           nft721Contract: null,
           nft1155Contract: null,
           nftMarketSimpleContract: null,
-          nftMarketAuctionContract: null,
+          nftMarketAuctionContract: null
         }
       })
     );
@@ -170,8 +171,10 @@ const Header = function () {
     (window as any).ethereum?.on(
       'accountsChanged',
       async function (accounts: string[]) {
-        console.log('account changed');
-        console.log('accountsChanged - accounts -', accounts);
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 174 ~ accountsChanged ~ accounts',
+          accounts
+        );
         if (accounts.length) {
           loadWeb3({ fromConnectButton: false });
         } else {
@@ -186,7 +189,10 @@ const Header = function () {
     (window as any).ethereum?.on(
       'networkChanged',
       function (networkId: string) {
-        console.log('networkChanged', networkId);
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 192 ~ networkChanged ~ networkId',
+          networkId
+        );
         loadWeb3({});
       }
     );
@@ -230,12 +236,15 @@ const Header = function () {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
+            nftMarketAuctionContract: null
           }
         })
       );
     } catch (error) {
-      console.log('error in handleLoggedOut', error);
+      console.log(
+        '🚀 ~ file: headerNew.tsx ~ line 244 ~ handleLoggedOut ~ error',
+        error
+      );
     }
   };
 
@@ -272,7 +281,6 @@ const Header = function () {
 
       // get accounts
       const accounts = await _web3.eth.getAccounts();
-      console.log(accounts[0]);
 
       TokenService.removeInvalidTokens();
       if (!fromConnectButton) {
@@ -286,7 +294,10 @@ const Header = function () {
           TokenService.removeCurrentToken(false);
           throw new Error('please login from this other account you using now');
         }
-        console.log(TokenService.getTokens(), '+++++++++++++++++');
+        console.log(
+          '🚀 ~ file: headerNew.tsx ~ line 295 ~ loadBlockchainData ~ TokenService.getTokens()',
+          TokenService.getTokens()
+        );
         TokenService.setCurrentToken(token);
         const {
           payload: { _id }
@@ -330,8 +341,14 @@ const Header = function () {
       const MockERC20_NETWORK_DATA = await getNetworkData(_web3, MockERC20);
       const NFT721_NETWORK_DATA = await getNetworkData(_web3, NFT721);
       const NFT1155_NETWORK_DATA = await getNetworkData(_web3, NFT1155);
-      const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(_web3, NFTMarketSimple);
-      const NFT_MARKET_AUCTION_NETWORK_DATA = await getNetworkData(_web3, NFTMarketAuction);
+      const NFT_MARKET_SIMPLE_NETWORK_DATA = await getNetworkData(
+        _web3,
+        NFTMarketSimple
+      );
+      const NFT_MARKET_AUCTION_NETWORK_DATA = await getNetworkData(
+        _web3,
+        NFTMarketAuction
+      );
 
       // set data in redux
       dispatch(
@@ -347,7 +364,7 @@ const Header = function () {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
+            nftMarketAuctionContract: null
           }
         })
       );
@@ -399,7 +416,7 @@ const Header = function () {
               nft721Contract: _nft721Contract,
               nft1155Contract: _nft1155Contract,
               nftMarketSimpleContract: _nftMarketSimpleContract,
-              nftMarketAuctionContract: _nftMarketAuctionContract,
+              nftMarketAuctionContract: _nftMarketAuctionContract
             }
           })
         );
@@ -409,7 +426,10 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in loadBlockchainData', error);
+      console.log(
+        '🚀 ~ file: headerNew.tsx ~ line 423 ~ loadBlockchainData ~ error',
+        error
+      );
       clearUserState();
       TokenService.removeCurrentToken();
     }
@@ -432,7 +452,7 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('error in web 3', error);
+      console.log('🚀 ~ file: headerNew.tsx ~ line 446 ~ web3 ~ error', error);
       notification.error('Please connect to metamask');
       TokenService.removeTokens();
     }

@@ -285,8 +285,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       // //* navigate to the nft multiple details page (refresh)
       // navigate(`/ItemDetailMultiple/${buyerNftResultAfterBuying.data.tokenId}/${buyerNftResultAfterBuying.data.nftAddress}`);
     } catch (error) {
-      setBuyState({ loader: false, error: getErrorMessage(error) });
-      console.log('error in buy', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 290 ~ buy ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
     }
   };
 
@@ -378,7 +380,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       setSellState({ loader: false, error: null });
     } catch (error) {
       setSellState({ loader: false, error: getErrorMessage(error) });
-      console.log('error in __sell', error);
+      console.log(
+        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 384 ~ sell ~ error',
+        error
+      );
     }
   };
 
@@ -475,7 +480,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log('cancelListing in error', error);
+      console.log(
+        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 483 ~ cancelListing ~ error',
+        error
+      );
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };

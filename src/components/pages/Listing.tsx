@@ -47,8 +47,13 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
   const web3State = useSelector(selectors.web3State);
 
-  const { web3, accounts, nftMarketContract, nftContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    nftMarketSimpleContract,
+    nftMarketAuctionContract,
+    nftContract
+  } = web3State.web3.data;
   const userAddress = accounts[0];
   const nftDetailState = useSelector(selectors.nftDetailState);
   const nft = nftDetailState.data as INft;
@@ -87,8 +92,14 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
-      console.log('getUserNftQuantityFromNftContract params');
-      console.log({ nftContract, userAddress, tokenId: Number(nft.tokenId) });
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 98 ~ const_submit= ~ getUserNftQuantityFromNftContract params',
+        {
+          nftContract,
+          userAddress,
+          tokenId: Number(nft.tokenId)
+        }
+      );
 
       const _nftBalance = await getUserNftQuantityFromNftContract({
         nftContract,
@@ -166,7 +177,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
         //* create on contract
         listingId = await createSimpleMarketItem({
-          nftMarketContract,
+          nftMarketSimpleContract,
           userAddress,
           nftAddress: nft.nftAddress,
           tokenId,
@@ -198,7 +209,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
         //* create on contract
         listingId = await createAuctionMarketItem({
-          nftMarketContract,
+          nftMarketAuctionContract,
           userAddress,
           nftAddress: nft.nftAddress,
           tokenId,
@@ -227,7 +238,10 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       setSubmitSaleState({ error: null, loading: false });
       navigate('/myProfile');
     } catch (error) {
-      console.log('error in listing', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 237 ~ listing ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setSubmitSaleState({ error: getErrorMessage(error), loading: false });
     }
   };
@@ -274,6 +288,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           nft={{ ...nft, price: priceInput }}
           multiple={nft.multiple}
           marketType={marketType}
+          tokentype={nft?.priceToken[0]?.name}
           expirationDateInput={expirationDateInput}
           timer
         />

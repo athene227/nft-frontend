@@ -72,7 +72,7 @@ export const getImageUri = async (file: File) => {
   const data = new FormData();
   data.append('file', file);
   const res = await ApiService.getImageUri(data);
-  console.log(res);
+  console.log('🚀 ~ file: ipfs.tsx ~ line 76 ~ getImageUri ~ res', res);
   return res.data;
 };
 
@@ -92,7 +92,7 @@ export const getUri = async (data: {
     pinataContent: metaData
   };
 
-  console.log(options);
+  console.log('🚀 ~ file: ipfs.tsx ~ line 96 ~ options', options);
   const res = await ApiService.getUri(options);
   return res.data;
 };

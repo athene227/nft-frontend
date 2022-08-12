@@ -87,11 +87,11 @@ const App = () => {
     const SERVER_URL = process.env.REACT_APP_BACKEND_API;
     const eventSource = new EventSource(`${SERVER_URL}/v1/events`);
     eventSource.onmessage = (e) => {
-      console.log(e, '+++++++++++');
+      console.log('🚀 ~ file: app.tsx ~ line 91 ~ useEffect ~ e', e);
 
       if (e.data.includes('eventName')) {
         const res = JSON.parse(e.data);
-        console.log('res', res);
+        console.log('🚀 ~ file: app.tsx ~ line 94 ~ useEffect ~ res', res);
 
         switch (res.eventName) {
           case MARKET_CONTRACT_EVENTS.BidCreated:

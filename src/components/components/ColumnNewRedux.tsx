@@ -33,7 +33,7 @@ const ColumnNewRedux = (props: {
   if (error) {
     return <Alert text={error} type={ALERT_TYPE.DANGER} />;
   }
-  console.log(data);
+  console.log('🚀 ~ file: ColumnNewRedux.tsx ~ line 37 ~ data', data);
   return (
     <div className="row">
       {data &&

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRef, useState } from 'react';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as selectors from 'src/store/selectors';
@@ -33,9 +34,6 @@ import CreateItemProgressPopup from 'src/components/components/Popups/CreateItem
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import { initialItemCreateStatus } from 'src/components/components/constants';
 import { clearEvents } from 'src/store/actions';
-import classes from './CreateSingle.module.scss';
-import { createNft } from 'src/store/actions/thunks/nfts';
-import { FaSortAmountDown } from 'react-icons/fa';
 
 const CreateSingle = () => {
   const dispatch = useDispatch();
@@ -52,14 +50,13 @@ const CreateSingle = () => {
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
-  const [numberOfCopies, setNumberOfCopiesInput] = useState(0);
-  const [royalties, setRoyaltiesInput] = useState(0);
+  const [tokentype, setTokenType] = useState('ETH');
+  const [, setNumberOfCopiesInput] = useState(0);
+  const [, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
   const [marketType, setMarketType] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
-  // const { web3, accounts, nftMarketContract, networkId, nftContract } =
-  //   web3State.web3.data;
   const {
     web3,
     accounts,
@@ -70,10 +67,8 @@ const CreateSingle = () => {
     nftMarketAuctionContract
   } = web3State.web3.data;
 
-  const nftContract = nft721Contract;
-
   const userState = useSelector(selectors.userState);
-  const userDetailes = userState.user.data;
+  const userDetails = userState.user.data;
 
   const userAddress = accounts[0];
   const SINGLE = 1;
@@ -111,7 +106,10 @@ const CreateSingle = () => {
   const onChangeImage = (e: any) => {
     e.preventDefault();
     if (e.target.files.length === 0) {
-      console.log(ERRORS.MISSING_IMAGE);
+      console.log(
+        '🚀 ~ file: CreateSingle.tsx ~ line 115 ~ onChangeImage ~ ERRORS.MISSING_IMAGE',
+        ERRORS.MISSING_IMAGE
+      );
       return;
     }
     const file = e.target.files[0];
@@ -135,8 +133,6 @@ const CreateSingle = () => {
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-
-    console.log(data.attributes, _attributes);
 
     // nft mongo item
     const nftToCreate: any = {
@@ -167,24 +163,10 @@ const CreateSingle = () => {
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
-    // const _attributes = data.attributes.map((item: any) => {
-    //   return { ...item, value: item.value.toString() };
-    // });
-
-    // const frontDataCreate = {
-    //   name: data.name,
-    //   description: data.description,
-    //   imageUrl: imageUrl,
-    //   attributes: _attributes,
-    //   multiple: false,
-    //   collectionId: data.collectionId,
-    //   category: data.category
-    // };
-
     if (!tokenId()) {
       //* creating nft in the nft contract
       const res = await createToken({
-        nftContract,
+        nftContract: nft721Contract,
         userAddress,
         jsonUri,
         quantity: SINGLE,
@@ -247,7 +229,7 @@ const CreateSingle = () => {
 
     if (!listingId()) {
       //* listing nft on contract
-      await nftContract.methods
+      await nft721Contract.methods
         .setApprovalForAll(nftMarketSimpleContract._address, true)
         .send({ from: userAddress });
 
@@ -263,15 +245,15 @@ const CreateSingle = () => {
 
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
-      const SellerNFTBalance = await nftContract.methods
+      const SellerNFTBalance = await nft721Contract.methods
         .balanceOf(userAddress)
         .call();
 
       console.log(
+        '🚀 ~ file: CreateSingle.tsx ~ line 276 ~ CreateSingle ~ listingId, transactionHash, SellerNFTBalance',
         listingId,
         transactionHash,
-        SellerNFTBalance,
-        '*** SellerNFTBalance ***'
+        SellerNFTBalance
       );
 
       await ApiService.createdNft({
@@ -282,13 +264,11 @@ const CreateSingle = () => {
           price: data.price,
           tokenURI: jsonUri,
           status: STATUS.ON_SELL,
-          totalAmount: SellerNFTBalance + SINGLE,
-          leftAmount: SellerNFTBalance,
+          totalAmount: SINGLE,
+          leftAmount: 0,
           listedAmount: SINGLE
         }
       });
-
-      console.log('I am here, test');
 
       await ApiService.createProcessTracking({
         ...nftToCreate,
@@ -298,7 +278,6 @@ const CreateSingle = () => {
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
-      console.log('I am here, test');
       // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
@@ -321,18 +300,10 @@ const CreateSingle = () => {
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-    const frontData = {
-      name: data.name,
-      description: data.description,
-      imageUrl: imageUrl,
-      attributes: _attributes,
-      multiple: false,
-      collectionId: data.collectionId,
-      category: data.category
-    };
+
     //* dates
     const ts1 = moment(data.expirationDate).unix();
-    const expirationDate = data.expirationDate; // "2022-05-14T21:30"
+
     const _date = new Date(data.expirationDate); //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
     const startPriceInWei = web3.utils.toWei(
       data.minimumBid.toString(),
@@ -360,8 +331,13 @@ const CreateSingle = () => {
       category: data.category,
       // auction fields
       minimumBid: data.minimumBid,
+      priceTokenType: data.pricetokentype,
       expirationDate: _date
     };
+    console.log(
+      '🚀 ~ file: CreateSingle.tsx ~ line 360 ~ CreateSingle ~ data.pricetokentype',
+      data.pricetokentype
+    );
 
     //* create tracking before creating
     await ApiService.createProcessTracking({
@@ -374,7 +350,7 @@ const CreateSingle = () => {
     if (!tokenId()) {
       //* creating nft in the nft contract
       const res = await createToken({
-        nftContract,
+        nftContract: nft721Contract,
         userAddress,
         jsonUri,
         quantity: SINGLE,
@@ -422,13 +398,13 @@ const CreateSingle = () => {
     });
 
     if (!listingId()) {
-      await nftContract.methods
+      await nft721Contract.methods
         .setApprovalForAll(nftMarketAuctionContract._address, true)
         .send({ from: userAddress });
 
       console.log(
-        mockERC20Contract._address,
-        '======= test mockerc20contract address '
+        '🚀 ~ file: CreateSingle.tsx ~ line 434 ~ CreateSingle ~ mockERC20Contract._address',
+        mockERC20Contract._address
       );
       //* listing nft on contract
       const res = await createAuctionMarketItem({
@@ -484,7 +460,7 @@ const CreateSingle = () => {
       return;
     }
 
-    // initialse popup status and event list
+    // initialize popup status and event list
     setOpenProgressPopup(true);
     if (!isRetry) {
       submitData.current = data;
@@ -609,6 +585,7 @@ const CreateSingle = () => {
                 setNameInput={setNameInput}
                 setDescriptionInput={setDescriptionInput}
                 setPriceInput={setPriceInput}
+                setTokenType={setTokenType}
                 setNumberOfCopiesInput={setNumberOfCopiesInput}
                 setRoyaltiesInput={setRoyaltiesInput}
                 setExpirationDateInput={setExpirationDateInput}
@@ -620,12 +597,16 @@ const CreateSingle = () => {
               <h5>Preview item</h5>
               <PreviewNft
                 imageUrl={getImageUrl()}
-                userImage={getProfileImage(userDetailes?.profileImage)}
+                userImage={getProfileImage(userDetails?.profileImage)}
                 nft={{
                   name,
                   description,
                   price
                 }}
+                tokentype={
+                  marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'
+                }
+                isPreview={true}
                 multiple={false}
                 timer={marketType === MARKET_TYPE.AUCTION}
                 marketType={marketType}

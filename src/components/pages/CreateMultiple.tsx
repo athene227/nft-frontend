@@ -1,7 +1,6 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef } from 'react';
-import { navigate } from '@reach/router';
 import { useDispatch, useSelector } from 'react-redux';
 import * as selectors from 'src/store/selectors';
 import { ApiService } from 'src/core/axios';
@@ -52,18 +51,20 @@ const CreateSingle = () => {
   const [marketType, _] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
-  // const { web3, accounts, nftMarketContract, nftContract, networkId } =
-  //   web3State.web3.data;
-  const { web3, accounts, nft1155Contract, networkId, nftMarketSimpleContract } =
-    web3State.web3.data;
+  const {
+    web3,
+    accounts,
+    nft1155Contract,
+    networkId,
+    nftMarketSimpleContract
+  } = web3State.web3.data;
 
   // const nftMarketContract = nftMarketSimpleContract;
-  const nftContract = nft1155Contract;
   const userState = useSelector(selectors.userState);
   const userDetailes = userState.user.data;
 
   const userAddress = accounts[0];
-
+  const [tokentype, setTokenType] = useState('ETH');
   const [openProgressPopup, setOpenProgressPopup] = useState(false);
   const [itemCreateProgress, setItemCreateProgress] =
     useState<MarketItemCreateProgress>(initialItemCreateStatus);
@@ -96,7 +97,10 @@ const CreateSingle = () => {
   const onChangeImage = (e: any) => {
     e.preventDefault();
     if (e.target.files.length === 0) {
-      console.log(ERRORS.MISSING_IMAGE);
+      console.log(
+        '🚀 ~ file: CreateMultiple.tsx ~ line 100 ~ onChangeImage ~ ERRORS.MISSING_IMAGE',
+        ERRORS.MISSING_IMAGE
+      );
       return;
     }
     const file = e.target.files[0];
@@ -145,7 +149,7 @@ const CreateSingle = () => {
       return;
     }
 
-    // initialse popup status and event list
+    // initialize popup status and event list
     setOpenProgressPopup(true);
     if (!isRetry) {
       submitData.current = data;
@@ -236,7 +240,7 @@ const CreateSingle = () => {
       if (!tokenId()) {
         //* create on contract
         const res = await createToken({
-          nftContract,
+          nftContract: nft1155Contract,
           userAddress,
           jsonUri: metaDataUrl() as string,
           quantity: Number(data.numberOfCopies),
@@ -288,7 +292,7 @@ const CreateSingle = () => {
       if (!listingId()) {
         //* list on contract
 
-        await nftContract.methods
+        await nft1155Contract.methods
           .setApprovalForAll(nftMarketSimpleContract._address, true)
           .send({ from: userAddress });
 
@@ -304,7 +308,7 @@ const CreateSingle = () => {
 
         const listingId = res.returnValues.listingId;
         const transactionHash = res.transactionHash;
-        const SellerNFTBalance = await nftContract.methods
+        const SellerNFTBalance = await nft1155Contract.methods
           .balanceOf(userAddress, 1)
           .call();
 
@@ -343,7 +347,10 @@ const CreateSingle = () => {
       //* turn off loader
       setCreateNftState({ loading: false, error: null });
     } catch (error) {
-      console.log('error in create mutiple', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: CreateMultiple.tsx ~ line 347 ~ CreateMultiple ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setCreateNftState({ loading: false, error: getErrorMessage(error) });
       updateItemCreateProgress({ error });
     }
@@ -400,6 +407,8 @@ const CreateSingle = () => {
                   totalAmount: numberOfCopies,
                   leftAmount: numberOfCopies
                 }}
+                isPreview={true}
+                tokentype={tokentype}
                 multiple={true}
                 timer={marketType === MARKET_TYPE.AUCTION}
                 marketType={marketType}
@@ -412,7 +421,7 @@ const CreateSingle = () => {
               <CreateItemProgressPopup
                 progress={itemCreateProgress}
                 events={eventList}
-                onRetry={() => submitForm(submitData.current, () => { }, true)}
+                onRetry={() => submitForm(submitData.current, () => null, true)}
                 onClose={() => setOpenProgressPopup(false)}
                 onReset={resetPage}
               />
