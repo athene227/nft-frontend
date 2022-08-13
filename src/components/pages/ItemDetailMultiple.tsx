@@ -79,8 +79,9 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
   const nftError = nftDetailState.error; // nft details loader
 
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketContract, nftContract } =
+  const { web3, accounts, nftMarketSimpleContract, nft1155Contract } =
     web3State.web3.data;
+  const nftContract = nft1155Contract;
   const userAddress = accounts[0];
 
   useEffect(() => {
@@ -167,7 +168,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         throw new Error(ERRORS.WRONG_NETWORK);
       }
       const simpleMarketItemBeforeBuying = await getSimpleMarketItem({
-        nftMarketContract: nftMarketContract,
+        nftMarketSimpleContract,
         listingId: Number(chosenCollectibleToBuyFrom.listingId)
       });
 
@@ -248,7 +249,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
       //* interaction with contract
       const itemSold = await buySimple({
-        nftMarketContract,
+        nftMarketSimpleContract,
         userAddress,
         listingId: Number(chosenCollectibleToBuyFrom.listingId),
         quantity: Number(data.amount),
@@ -257,7 +258,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
       //* get the market item so we can save in the db ow much listed nft the user have
       const simpleMarketItemAfterBuying = await getSimpleMarketItem({
-        nftMarketContract,
+        nftMarketSimpleContract,
         listingId: Number(chosenCollectibleToBuyFrom.listingId)
       });
 
@@ -307,7 +308,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       }
       // check if user already listed items with the same tokenid
       const userListedTokens = await getUserListedTokens({
-        nftMarketContract,
+        nftMarketContract: nftMarketSimpleContract,
         userAddress,
         nftAddress: chosenCollectibleToSell.nftAddress,
         tokenId: Number(chosenCollectibleToSell.tokenId)
@@ -352,19 +353,20 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         collectionId: chosenCollectibleToSell.collectionId,
         category: chosenCollectibleToSell.category
       };
+
       const listingId = await createSimpleMarketItem({
-        nftMarketContract,
+        nftMarketSimpleContract,
         userAddress,
         nftAddress: chosenCollectibleToSell.nftAddress,
         tokenId: chosenCollectibleToSell.tokenId,
         priceInWei,
         quantity: Number(data.numberOfCopies),
-        frontData
+        deadline: 1680000000
       });
 
       //* get the market item so we can save in the db ow much listed nft the user have
       const simpleMarketItem = await getSimpleMarketItem({
-        nftMarketContract,
+        nftMarketSimpleContract,
         listingId: Number(listingId)
       });
       //* get the user nft balance of this token
@@ -408,7 +410,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       }
 
       const simpleMarketItemBeforeCancel: ISimpleMarketItem =
-        await nftMarketContract.methods
+        await nftMarketSimpleContract.methods
           .simpleListingIdToMarketItem(
             Number(chosenCollectibleToCancel.listingId)
           )
@@ -453,7 +455,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
       // cancel listing on contract
       const res = await cancelSimpleListing({
-        nftMarketContract,
+        nftMarketSimpleContract,
         userAddress,
         listingId: Number(chosenCollectibleToCancel.listingId)
       });
@@ -467,7 +469,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
       const _userNftBalance = Number(userNftBalance);
       const simpleMarketItemAfterCancel: ISimpleMarketItem =
-        await nftMarketContract.methods
+        await nftMarketSimpleContract.methods
           .simpleListingIdToMarketItem(
             Number(chosenCollectibleToCancel.listingId)
           )
