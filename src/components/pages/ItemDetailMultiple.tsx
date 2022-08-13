@@ -353,6 +353,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         collectionId: chosenCollectibleToSell.collectionId,
         category: chosenCollectibleToSell.category
       };
+
       const listingId = await createSimpleMarketItem({
         nftMarketSimpleContract,
         userAddress,
