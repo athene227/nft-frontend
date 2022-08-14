@@ -77,7 +77,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     price: string;
   }
 
-  const _submit = async (data: InftInputs, resetForm: Function) => {
+  const _submit = async (data: InftInputs, resetForm: () => void) => {
     if (!nft) return;
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);

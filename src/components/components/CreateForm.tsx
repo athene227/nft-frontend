@@ -50,7 +50,7 @@ interface IProps {
   setNumberOfCopiesInput: (e: any) => void;
   setRoyaltiesInput: (e: any) => void;
   setExpirationDateInput: (e: any) => void;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
   submitCreateState: { error: null | string; loading: boolean };
   marketType: MARKET_TYPE;
   multiple: boolean;
@@ -188,7 +188,7 @@ export default function CreateForm(props: IProps) {
       description: string;
       imgFile: File | null;
     },
-    resetForm: Function
+    resetForm: () => void
   ) => {
     const { name, description, imgFile } = data;
     setCreateCollectionState({ loading: true, error: null });
@@ -225,7 +225,7 @@ export default function CreateForm(props: IProps) {
 
   const addAttribute = async (
     values: { type: ATTRIBUTE_TYPE },
-    resetForm: Function
+    resetForm: () => void
   ) => {
     const { type } = values;
     const newValue: any = { trait_type: '' };

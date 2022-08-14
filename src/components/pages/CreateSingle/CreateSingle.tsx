@@ -50,7 +50,7 @@ const CreateSingle = () => {
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
-  const [tokentype, setTokenType] = useState('ETH');
+  const [tokentype, setTokenType] = useState('MRT');
   const [, setNumberOfCopiesInput] = useState(0);
   const [, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');

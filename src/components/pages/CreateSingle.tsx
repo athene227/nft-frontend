@@ -330,7 +330,7 @@ const CreateSingle = () => {
 
   const submitForm = async (
     data: any,
-    resetForm: Function,
+    resetForm: () => void,
     isRetry = false
   ) => {
     if (!web3) {

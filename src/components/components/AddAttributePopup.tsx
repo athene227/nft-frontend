@@ -6,7 +6,7 @@ import { ATTRIBUTE_TYPE } from 'src/enums';
 
 interface IProps {
   onClose: () => void;
-  submitAttrType: (values: { type: string }, resetForm: Function) => void;
+  submitAttrType: (values: { type: string }, resetForm: () => void) => void;
 }
 
 const AddAttributePopup = (props: IProps) => {
