@@ -14,7 +14,7 @@ interface IProps {
   nft: INft;
   cancelListingState: { error: null | string; loader: boolean };
   onClose: (value: boolean) => void;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
 }
 
 const CancelListingPopUp = (props: IProps) => {

@@ -9,7 +9,7 @@ import Alert from './Alert';
 
 interface IProps {
   nft: INft;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
   setPriceInput: (val: string) => void;
   setAmountInput?: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };

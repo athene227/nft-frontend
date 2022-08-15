@@ -8,7 +8,7 @@ import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
 import moment from 'moment';
 interface IProps {
   nft: INft;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
   setMinimumBidInput: (val: string) => void;
   setExpirationDateInput: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };

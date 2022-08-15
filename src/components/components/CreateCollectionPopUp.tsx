@@ -9,7 +9,7 @@ interface IProps {
   onClose: () => void;
   submitCollection: (
     values: { name: string; description: string; imgFile: File | null },
-    resetForm: Function
+    resetForm: () => void
   ) => void;
   createCollectionState: { error: null | string; loading: boolean };
 }

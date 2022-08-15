@@ -11,7 +11,7 @@ interface IProps {
   onChangeImage: (e: any) => void;
   setNameInput: (e: any) => void;
   setDescriptionInput: (e: any) => void;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
   submitCreateState: { error: null | string; loading: boolean };
 }
 

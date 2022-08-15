@@ -454,30 +454,11 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       // cancel listing on contract
-      const res = await cancelSimpleListing({
+      await cancelSimpleListing({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(chosenCollectibleToCancel.listingId)
       });
-
-      //* get the user nft balance of this token
-      const userNftBalance = await getUserNftQuantityFromNftContract({
-        nftContract,
-        userAddress,
-        tokenId: Number(chosenCollectibleToCancel.tokenId)
-      });
-
-      const _userNftBalance = Number(userNftBalance);
-      const simpleMarketItemAfterCancel: ISimpleMarketItem =
-        await nftMarketSimpleContract.methods
-          .simpleListingIdToMarketItem(
-            Number(chosenCollectibleToCancel.listingId)
-          )
-          .call();
-
-      const _remainingQuantity = Number(
-        simpleMarketItemAfterCancel.remainingQuantity
-      );
 
       //* turn off loader
       setCancelListingState({ loader: false, error: null });

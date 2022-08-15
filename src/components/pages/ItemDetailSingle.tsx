@@ -495,6 +495,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         multiple: nft.multiple,
         attributes: nft.attributes,
         ownerAddress: userAddress,
+        priceToken: nft.priceToken,
         status: STATUS.ON_SELL
       };
 
