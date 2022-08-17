@@ -177,10 +177,6 @@ export default function CreateForm(props: IProps) {
     const getPriceTokens = async () => {
       const res = await ApiService.getPriceTokens();
       const pricetokens = res.data as Array<IPriceToken>;
-      console.log(
-        '🚀 ~ file: CreateForm.tsx ~ line 180 ~ getPriceTokens ~ pricetokens',
-        pricetokens
-      );
       setPriceTokens(pricetokens);
       setTokenType(pricetokens[0].name);
     };
@@ -274,7 +270,7 @@ export default function CreateForm(props: IProps) {
       numberOfCopies: 0,
       royalties: 0,
       minimumBid: 0,
-      pricetokentype: priceTokens[0]?.name || 'ETH',
+      pricetokentype: priceTokens[0]?.name || 'MRT',
       expirationDate: '',
       attributes: []
     };

@@ -76,13 +76,18 @@ export interface ISimpleMarketItem {
 
 export interface IAuctionMarketItem {
   nftContract: string;
-  tokenId: string;
+  nftTokenId: string;
+  priceTokenAddress: string;
   startPrice: string;
-  currentBid: string;
-  currentBidderAddress: string;
   ownerAddress: string;
-  deadline: string;
+  deadline: number;
   isClosed: boolean;
+}
+
+export interface IAuctionBidItem {
+  bidAmount: string;
+  bidder: string;
+  isCanceled: boolean;
 }
 
 export interface INftFilterQuery {
