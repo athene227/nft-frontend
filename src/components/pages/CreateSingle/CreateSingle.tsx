@@ -403,10 +403,6 @@ const CreateSingle = () => {
         .setApprovalForAll(nftMarketAuctionContract._address, true)
         .send({ from: userAddress });
 
-      console.log(
-        '🚀 ~ file: CreateSingle.tsx ~ line 434 ~ CreateSingle ~ mockERC20Contract._address',
-        mockERC20Contract._address
-      );
       //* listing nft on contract
       const res = await createAuctionMarketItem({
         nftMarketAuctionContract,
