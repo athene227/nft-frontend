@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getNftFilterQuery } from 'src/store/utils';
 import { SortOrder } from 'src/enums';
 import { ApiService, Axios, Canceler } from '../../../core/axios';

@@ -15,6 +15,7 @@ import {
   getProfileImage,
   getMyBalance,
   getPriceAfterPercent,
+  getAuctionBids,
   cancelSimpleListing,
   cancelAuctionListing,
   approveContract,
@@ -37,7 +38,11 @@ import {
 } from 'src/enums';
 import Loader from 'src/components/components/Loader';
 import { navigate } from '@reach/router';
-import { IAuctionMarketItem, ISimpleMarketItem } from 'src/types/nfts.types';
+import {
+  IAuctionMarketItem,
+  ISimpleMarketItem,
+  IAuctionBidItem
+} from 'src/types/nfts.types';
 import { IBid } from 'src/types/bids.types';
 import Alert from '../components/Alert';
 import CancelListingPopUp from '../components/CancelListingPopUp';
@@ -382,7 +387,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* checks
-      const currentBid = Number(auctionMarketItem.currentBid);
+      // const auctionBids: IAuctionBidItem[] =
+      //   await nftMarketAuctionContract.methods
+      //     .getAuctionBids(Number(nft.listingId))
+      //     .call();
+      // const currentBid = Number(auctionMarketItem.currentBid);
       const myBalanceinWei = await getMyBalance(userAddress, web3);
       const bidInWei = web3.utils.toWei(data.price.toString(), 'ether');
       const bidWithCommissionWeiValue =
@@ -392,7 +401,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.NOT_ENOUGH_BALANCE);
         throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
       }
-      if (bidInWei <= currentBid) {
+      if (Number(bidInWei) <= Number(auctionMarketItem.startPrice)) {
         notification.error(ERRORS.NOT_ABOVE_MINIMUM_PRICE);
         throw new Error(ERRORS.NOT_ABOVE_MINIMUM_PRICE);
       }
@@ -402,11 +411,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
       const now = moment().unix();
       const deadline = Number(auctionMarketItem.deadline);
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 399 ~ placeBid ~ now, deadline',
-        now,
-        deadline
-      );
 
       if (now > deadline) {
         notification.error(ERRORS.AUCTION_IS_FINISHED);
@@ -443,12 +447,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         nftMarketAuctionContract._address
       );
 
+      console.log('🚀 ~ file: ItemDetailSingle.tsx ~ line 452 ~ placeBid');
       //* place bid on contract
       await placeBid({
         nftMarketAuctionContract,
         userAddress,
         listingId: Number(nft.listingId),
-        bid: bidWithCommissionWeiValue
+        bid: bidInWei
       });
 
       //* turn off loader
@@ -539,7 +544,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           await nftMarketAuctionContract.methods
             .auctionListingIdToMarketItem(Number(nft.listingId))
             .call();
-        const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
+        const auctionBids: IAuctionBidItem[] = await getAuctionBids({
+          nftMarketAuctionContract,
+          listingId: Number(nft.listingId)
+        });
         const now = moment().unix();
 
         if (auctionMarketItem.ownerAddress.toLowerCase() !== nft.ownerAddress) {
@@ -565,7 +573,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
           throw new Error(ERRORS.AUCTION_IS_CLOSED);
         }
-        if (auctionMarketItem.currentBidderAddress !== ZERO_ADDRESS) {
+        if (auctionBids.length !== 0) {
           notification.error(ERRORS.THERE_ARE_BIDS);
           throw new Error(ERRORS.THERE_ARE_BIDS);
         }
@@ -622,7 +630,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         await nftMarketAuctionContract.methods
           .auctionListingIdToMarketItem(Number(nft.listingId))
           .call();
-      const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
+
       const now = moment().unix();
 
       if (auctionMarketItem.isClosed) {
@@ -654,41 +662,27 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         networkId: nft.networkId,
         minimumBid: nft.minimumBid
       };
+      const auctionBids: IAuctionBidItem[] = await getAuctionBids({
+        nftMarketAuctionContract,
+        listingId: Number(nft.listingId)
+      });
+      //* create tracking before terminate auction
+      await ApiService.createProcessTracking({
+        ...nftItem,
+        userAddress,
+        action: auctionBids.length
+          ? PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD
+          : PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_NOT_SOLD,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
+      });
+      //* terminate on contract
+      await terminateAuction({
+        nftMarketAuctionContract,
+        userAddress,
+        listingId: Number(nft.listingId)
+      });
 
-      if (auctionMarketItem.currentBidderAddress === ZERO_ADDRESS) {
-        //* create tracking before terminate auction
-        await ApiService.createProcessTracking({
-          ...nftItem,
-          userAddress,
-          action: PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_NOT_SOLD,
-          processStatus: PROCESS_TRAKING_STATUS.BEFORE
-        });
-        //* terminate on contract
-        await terminateAuction({
-          nftMarketAuctionContract,
-          userAddress,
-          listingId: Number(nft.listingId)
-        });
-
-        setTerminateAuctionState({ loader: false, error: null });
-      } else {
-        //* create tracking before terminate auction
-        await ApiService.createProcessTracking({
-          ...nftItem,
-          userAddress,
-          action: PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD,
-          processStatus: PROCESS_TRAKING_STATUS.BEFORE
-        });
-        //* terminate on contract
-        await terminateAuction({
-          nftMarketAuctionContract,
-          userAddress,
-          listingId: Number(nft.listingId)
-        });
-
-        //* turn off loader
-        setTerminateAuctionState({ loader: false, error: null });
-      }
+      setTerminateAuctionState({ loader: false, error: null });
     } catch (error) {
       console.log(
         '🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error',

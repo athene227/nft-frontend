@@ -12,10 +12,19 @@ import {
   ERRORS,
   INPUT_ERROS
 } from 'src/enums';
-import { IAuctionMarketItem, INft } from 'src/types/nfts.types';
+import {
+  IAuctionMarketItem,
+  INft,
+  IAuctionBidItem
+} from 'src/types/nfts.types';
 import Alert from './Alert';
 import * as selectors from '../../store/selectors';
-import { getAuctionMarketItem, getErrorMessage, placeBid } from 'src/utils';
+import {
+  getAuctionMarketItem,
+  getErrorMessage,
+  getAuctionBids
+  // placeBid
+} from 'src/utils';
 import { IBid } from 'src/types/bids.types';
 
 // const GlobalStyles = createGlobalStyle`
@@ -35,22 +44,20 @@ interface IProps {
 const BuyPopUp = (props: IProps) => {
   const { nft, onClose, submit, placeBidState, lastBid, bids } = props;
   const [balance, setBalance] = useState(0);
-  const [dataState, setDataState] = React.useState<{
+  const [highestBidAmount, setHighestBidAmount] = useState('');
+  const [dataState, setDataState] = useState<{
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
-  const [marketItem, setAuctionMarketItem] = React.useState<IAuctionMarketItem>(
-    {
-      nftContract: '',
-      tokenId: '',
-      startPrice: '',
-      currentBid: '',
-      currentBidderAddress: '',
-      ownerAddress: '',
-      deadline: '',
-      isClosed: false
-    }
-  );
+  const [marketItem, setAuctionMarketItem] = useState<IAuctionMarketItem>({
+    nftContract: '',
+    nftTokenId: '',
+    priceTokenAddress: '',
+    startPrice: '',
+    ownerAddress: '',
+    deadline: 0,
+    isClosed: false
+  });
 
   const web3State = useSelector(selectors.web3State);
   const { web3, accounts, nftMarketAuctionContract } = web3State.web3.data;
@@ -69,6 +76,15 @@ const BuyPopUp = (props: IProps) => {
     return _marketItem;
   };
 
+  const _getAuctionBids = async (): Promise<IAuctionBidItem[]> => {
+    const _auctionBids = await getAuctionBids({
+      nftMarketAuctionContract,
+      listingId: Number(nft.listingId)
+    });
+
+    return _auctionBids;
+  };
+
   const _getData = async (isUpdate = false) => {
     try {
       if (!nft) return;
@@ -76,8 +92,16 @@ const BuyPopUp = (props: IProps) => {
 
       const _eth_balance = await _getMyBalance();
       const _marketItem = await _getAuctionMarketItem();
+      const _auctionBids = await _getAuctionBids();
       setBalance(_eth_balance);
       setAuctionMarketItem(_marketItem);
+      let _highestBidAmount = Number(_marketItem.startPrice);
+
+      for (let i = 0; i < _auctionBids.length; i++) {
+        if (_highestBidAmount < Number(_auctionBids[i].bidAmount))
+          _highestBidAmount = Number(_auctionBids[i].bidAmount);
+      }
+      setHighestBidAmount(String(_highestBidAmount));
       setDataState({ loader: false, error: null });
     } catch (error) {
       console.log('error in getData in place bid popup');
@@ -86,14 +110,14 @@ const BuyPopUp = (props: IProps) => {
   };
 
   useEffect(() => {
-    const isUpdate = marketItem.tokenId !== '';
+    const isUpdate = marketItem.nftTokenId !== '';
     _getData(isUpdate);
   }, [bids.length]);
 
   const getLastBid = () => {
     if (!nft) return;
-    if (Number(marketItem.currentBid)) {
-      const eth_balance = web3?.utils.fromWei(marketItem.currentBid, 'ether');
+    if (Number(highestBidAmount)) {
+      const eth_balance = web3?.utils.fromWei(highestBidAmount, 'ether');
       return eth_balance;
     }
     return Number(nft.minimumBid);
@@ -102,7 +126,7 @@ const BuyPopUp = (props: IProps) => {
   const buySchema = Yup.object().shape({
     price: Yup.number()
       .typeError('you must specify a number')
-      .moreThan(getLastBid(), INPUT_ERROS.tooShort)
+      .moreThan(Number(nft?.minimumBid), INPUT_ERROS.tooShort)
       .required(INPUT_ERROS.requiredField)
   });
 
@@ -149,7 +173,7 @@ const BuyPopUp = (props: IProps) => {
           Minimum Bid is <span className="bold">{`${nft?.minimumBid} `}</span>
         </p>
         <p>
-          Last Bid is <span className="bold">{`${getLastBid()} `}</span>
+          Highest Bid is <span className="bold">{`${getLastBid()} `}</span>
         </p>
         <div className="detailcheckout mt-4">
           <div className="listcheckout">

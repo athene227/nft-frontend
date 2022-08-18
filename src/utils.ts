@@ -443,6 +443,18 @@ export const getAuctionMarketItem = async (data: {
   return marketItem;
 };
 
+export const getAuctionBids = async (data: {
+  nftMarketAuctionContract: any;
+  listingId: number;
+}): Promise<any> => {
+  const { nftMarketAuctionContract, listingId } = data;
+  const auctionBids = await nftMarketAuctionContract.methods
+    .getAuctionBids(listingId)
+    .call();
+  console.log('🚀 ~ file: utils.ts ~ line 454 ~ auctionBids', auctionBids);
+  return auctionBids;
+};
+
 export const getUserNftQuantityFromNftContract = async (data: {
   nftContract: any;
   userAddress: string;

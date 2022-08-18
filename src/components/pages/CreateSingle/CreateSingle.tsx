@@ -295,6 +295,11 @@ const CreateSingle = () => {
     jsonUri: string,
     imageUrl: string
   ) => {
+    console.log(
+      '🚀 ~ file: CreateSingle.tsx ~ line 298 ~ CreateSingle ~ data',
+      data
+    );
+
     const tokenId = () => itemCreateProgressRef.current.tokenId;
     const listingId = () => itemCreateProgressRef.current.listingId;
     const _attributes = data.attributes.map((item: any) => {
@@ -334,10 +339,6 @@ const CreateSingle = () => {
       priceTokenType: data.pricetokentype,
       expirationDate: _date
     };
-    console.log(
-      '🚀 ~ file: CreateSingle.tsx ~ line 360 ~ CreateSingle ~ data.pricetokentype',
-      data.pricetokentype
-    );
 
     //* create tracking before creating
     await ApiService.createProcessTracking({
@@ -402,10 +403,6 @@ const CreateSingle = () => {
         .setApprovalForAll(nftMarketAuctionContract._address, true)
         .send({ from: userAddress });
 
-      console.log(
-        '🚀 ~ file: CreateSingle.tsx ~ line 434 ~ CreateSingle ~ mockERC20Contract._address',
-        mockERC20Contract._address
-      );
       //* listing nft on contract
       const res = await createAuctionMarketItem({
         nftMarketAuctionContract,
