@@ -682,6 +682,19 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         listingId: Number(nft.listingId)
       });
 
+      const res = await ApiService.createdNft({
+        transactionHash: nft.transactionHash,
+        data: {
+          ...nftItem,
+          listingId: nft.listingId,
+          status: STATUS.NOT_LISTED
+        }
+      });
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 693 ~ const_terminateAuction= ~ res',
+        res
+      );
+
       setTerminateAuctionState({ loader: false, error: null });
     } catch (error) {
       console.log(

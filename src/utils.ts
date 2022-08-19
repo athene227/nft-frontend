@@ -317,14 +317,6 @@ export const createAuctionMarketItem = async (data: {
     res.events.AuctionItemCreated
   );
   return res.events.AuctionItemCreated;
-  /*
-    console.log('create a market on the contract');
-    console.log('res.events', res.events);
-  
-    const itemIdOnMarketContract =
-      res.events.AuctionItemCreated.returnValues['0'];
-    return itemIdOnMarketContract;
-  */
 };
 
 export const setInLocalStorage = (key: string, val: string) => {
@@ -461,9 +453,7 @@ export const getUserNftQuantityFromNftContract = async (data: {
   tokenId: number;
 }): Promise<string> => {
   const { nftContract, userAddress, tokenId } = data;
-  const balance = await nftContract.methods
-    .balanceOf(userAddress, tokenId)
-    .call();
+  const balance = await nftContract.methods.balanceOf(userAddress).call();
   return balance;
 };
 

@@ -63,6 +63,7 @@ export interface INft {
   nftCollection: ICollection[];
   bids?: [];
   totalBid?: number;
+  transactionHash: string;
 }
 
 export interface ISimpleMarketItem {
