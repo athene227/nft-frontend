@@ -324,6 +324,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         royalty: nft.royalty,
         collectionId: nft.collectionId,
         attributes: nft.attributes,
+        category: nft.category,
         listingId: '',
         isListedOnce: true,
         multiple: false,
@@ -341,12 +342,20 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with the nft market contract
-      await buySimple({
+      const res = await buySimple({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(nft.listingId),
         quantity: SINGLE,
         value
+      });
+
+      await ApiService.createdNft({
+        transactionHash: res.transactionHash,
+        data: {
+          ...nftItem,
+          status: STATUS.NOT_LISTED
+        }
       });
 
       //* turn off loader

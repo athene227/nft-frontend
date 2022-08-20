@@ -152,6 +152,12 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         }
       }
 
+      if (marketType === MARKET_TYPE.SIMPLE) {
+        if (data.price) {
+          itemToCreate.price = data.price;
+        }
+      }
+
       let marketitem;
       if (marketType === MARKET_TYPE.SIMPLE) {
         const SINGLE = 1;
