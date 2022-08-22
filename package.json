@@ -1,9 +1,11 @@
 {
   "name": "nftonpulse",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "homepage": "",
   "dependencies": {
+    "@americanexpress/react-seo": "^1.4.2",
+    "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.0",
@@ -16,16 +18,19 @@
     "axios": "^0.23.0",
     "bootstrap": "^5.1.1",
     "cra-template": "1.1.2",
+    "craco-less": "^1.6.0",
     "elegant-icons": "0.0.1",
     "emailjs-com": "^3.2.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "et-line": "^1.0.1",
     "font-awesome": "^4.7.0",
     "formik": "^2.2.9",
     "formik-material-ui": "^4.0.0-alpha.2",
     "ipfs-http-client": "^55.0.0",
     "jwt-decode": "^3.1.2",
+    "less-plugin-npm-import": "^2.1.0",
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-awesome-reveal": "^3.8.1",
@@ -36,6 +41,7 @@
     "react-copy-to-clipboard": "^5.0.4",
     "react-datepicker": "^4.7.0",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
     "react-icons": "^4.3.1",
     "react-loader-spinner": "^4.0.0",
     "react-notifications": "^1.7.3",
@@ -62,13 +68,14 @@
   },
   "scripts": {
     "dev": "react-scripts start",
-    "dev2": "react-scripts start",
+    "build2": "DISABLE_ESLINT_PLUGIN='true' craco build",
     "build": "DISABLE_ESLINT_PLUGIN='true' react-scripts build",
+    "dev2": "craco start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "compile": "truffle compile",
     "lint": "eslint --fix --ext .ts,.tsx .",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "format": "prettier --write ./**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc"
   },
   "engines": {
     "node": "14.19.0"
@@ -104,6 +111,7 @@
     ]
   },
   "devDependencies": {
+    "@types/americanexpress__react-seo": "^1.4.0",
     "@types/node": "^18.0.0",
     "@types/reach__router": "^1.3.9",
     "@types/react-blockies": "^1.4.1",

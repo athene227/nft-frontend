@@ -1,6 +1,5 @@
 import React from 'react';
 import { MARKET_TYPE } from 'src/enums';
-import classes from './CreateSingle.module.scss';
 interface IProps {
   marketType: MARKET_TYPE;
   onTab: (marketType: MARKET_TYPE) => void;
@@ -9,25 +8,31 @@ interface IProps {
 export default function MarketTypeTabs(props: IProps) {
   const { marketType, onTab } = props;
   return (
-    <div>
+    <div className="marketplace-tabs-main">
       <h5>Put on marketplace</h5>
       <p>Put your new NFT on NFTonPulse marketplace</p>
-      <div className="de_tab tab_methods">
-        <ul className={'de_nav'}>
+      <div className="de_tab tab_methods marketplace-tabs">
+        <ul className={'de_nav dynamic-tab-buttons'}>
           <li
             id="btn1"
             className={marketType === MARKET_TYPE.SIMPLE ? 'active' : ''}
             onClick={() => onTab(MARKET_TYPE.SIMPLE)}
           >
             <span
-              style={{
-                backgroundImage: `url(${'./img/background/bg-radius.png'})`,
-                height: 'fit-content'
-              }}
-              className={`${classes.bg__market}`}
+              style={
+                {
+                  // backgroundImage: `url(${'./img/background/bg-radius.png'})`,
+                  // height: 'fit-content'
+                }
+              }
+              className={`bg__market`}
             >
-              <img width="80" height="80" src="./img/fix.png" />
-              Fixed price
+              <strong>
+                <i>
+                  <img src="./img/tab-img1.png" />
+                </i>
+                Fixed price
+              </strong>
             </span>
           </li>
           <li
@@ -36,8 +41,12 @@ export default function MarketTypeTabs(props: IProps) {
             onClick={() => onTab(MARKET_TYPE.AUCTION)}
           >
             <span>
-              <i className="fa fa-hourglass-1"></i>
-              Timed auction
+              <strong>
+                <i>
+                  <img src="./img/tab-img2.png" alt="tab-img" />
+                </i>
+                Timed auction
+              </strong>
             </span>
           </li>
           {/* <li id='btn3' className={marketType === MARKET_TYPE.MORE ? "active" : ''} onClick={() => onTab(MARKET_TYPE.MORE)}>

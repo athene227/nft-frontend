@@ -1,9 +1,10 @@
+import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React from 'react';
-import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
 import Loader from 'src/components/components/Loader';
+import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
+import * as Yup from 'yup';
+
 import Alert from './Alert';
 // import { sellNft } from 'src/store/actions/thunks/nfts';
 

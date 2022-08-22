@@ -1,10 +1,8 @@
-import React, { memo, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
-import Loader from 'src/components/components/Loader';
 // import { createGlobalStyle } from 'styled-components';
-import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
+import React, { memo, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
   COIN,
@@ -13,9 +11,11 @@ import {
   MARKET_CONTRACT_EVENTS
 } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
-import Alert from './Alert';
-import * as selectors from '../../store/selectors';
 import { getErrorMessage } from 'src/utils';
+import * as Yup from 'yup';
+
+import * as selectors from '../../store/selectors';
+import Alert from './Alert';
 import TransactionHash from './TransactionHash';
 
 interface IProps {

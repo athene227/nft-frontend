@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as selectors from 'src/store/selectors';
+import NFT from 'src/abis/NFT.json';
 import { ApiService } from 'src/core/axios';
 import {
   ERRORS,
@@ -13,25 +13,27 @@ import {
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
+import { getImageUri, getUri } from 'src/services/ipfs';
+import notification from 'src/services/notification';
+import { clearEvents } from 'src/store/actions';
+import * as selectors from 'src/store/selectors';
+import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import {
   createSimpleMarketItem,
   createToken,
+  generatePreviewImage,
   getErrorMessage,
   getNetworkData,
   getNetworkId,
   getProfileImage
 } from 'src/utils';
-import { getImageUri, getUri } from 'src/services/ipfs';
 // import NFT from 'src/abis/NFT.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
 import PreviewNft from '../components/PreviewNft';
 import CreateForm from '../components/CreateForm';
 import Footer from '../components/footer';
-import notification from 'src/services/notification';
-import { MarketItemCreateProgress } from 'src/types/nfts.types';
-import { initialItemCreateStatus } from '../components/constants';
-import { clearEvents } from 'src/store/actions';
 import CreateItemProgressPopup from '../components/Popups/CreateItemProgressPopup';
+import { initialItemCreateStatus } from '../components/constants';
 
 const CreateSingle = () => {
   const [nftState, setCreateNftState] = useState<{
@@ -68,7 +70,8 @@ const CreateSingle = () => {
   const [itemCreateProgress, setItemCreateProgress] =
     useState<MarketItemCreateProgress>(initialItemCreateStatus);
   const itemCreateProgressRef = useRef(itemCreateProgress);
-  const resetFormRef = useRef<Function>();
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const resetFormRef = useRef<() => void>();
   const submitData = useRef();
   const eventList = useSelector(selectors.nftEvents);
 
@@ -107,11 +110,17 @@ const CreateSingle = () => {
     setImgFile(file);
   };
 
-  const getItem = (NFT_NETWORK_DATA: any, data: any, imageUrl: string) => {
+  const getItem = (
+    NFT_NETWORK_DATA: any,
+    data: any,
+    imageUrl: string,
+    previewImageUrl: string
+  ) => {
     const nftToCreate: any = {
       name: data.name,
       description: data.description,
       imageUrl,
+      previewImageUrl,
       attributes: data.attributes,
       creatorAddress: userAddress,
       ownerAddress: userAddress,
@@ -162,6 +171,8 @@ const CreateSingle = () => {
       //* set loader
       setCreateNftState({ loading: true, error: null });
       const imageUrl = () => itemCreateProgressRef.current.imageUrl;
+      const previewImageUrl = () =>
+        itemCreateProgressRef.current.previewImageUrl;
       const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
       const tokenId = () => itemCreateProgressRef.current.tokenId;
       const listingId = () => itemCreateProgressRef.current.listingId;
@@ -180,11 +191,14 @@ const CreateSingle = () => {
 
       if (!imageUrl()) {
         //* uploading image to ipfs
+        const previewFile = await generatePreviewImage(image, 600, 600);
         const imgUrl = await getImageUri(imgFile);
+        const previewImgUrl = await getImageUri(previewFile);
         // update item create progress to metadata
         updateItemCreateProgress({
           status: ITEM_CREATE_STATUS.IPFS_METADATA,
-          imageUrl: imgUrl
+          imageUrl: imgUrl,
+          previewImageUrl: previewImgUrl
         });
       }
 
@@ -194,8 +208,8 @@ const CreateSingle = () => {
           name: data.name,
           description: data.description,
           imageUrl: imageUrl() as string,
-          attributes: data.attributes,
-          previewImageUrl: ''
+          previewImageUrl: previewImageUrl() as string,
+          attributes: data.attributes
         });
         // update item create progress to metadata
         updateItemCreateProgress({
@@ -209,7 +223,8 @@ const CreateSingle = () => {
       const nftToCreate: any = getItem(
         NFT_NETWORK_DATA,
         data,
-        imageUrl() as string
+        imageUrl() as string,
+        previewImageUrl() as string
       );
       const _attributes = data.attributes.map((item: any) => {
         return { ...item, value: item.value.toString() };

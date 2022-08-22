@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { MdCheck } from 'react-icons/md';
+import React, { useState } from 'react';
+import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { BiSortAlt2 } from 'react-icons/bi';
+import { MdCheck } from 'react-icons/md';
 import { sortOrders } from 'src/components/components/constants/sort';
 import { SortOrder } from 'src/enums';
 

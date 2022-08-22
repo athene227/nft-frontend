@@ -1,5 +1,5 @@
-import React from 'react';
 import { navigate } from '@reach/router';
+import React from 'react';
 
 function CreateOption() {
   const navigateToSingle = () => {

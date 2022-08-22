@@ -1,0 +1,42 @@
+#form_quick_search {
+    display: inline-block;
+    margin-right: 0px;
+    position: relative;
+    top: 14px;
+  
+    input[type="text"] {
+      padding: 8px 12px;
+      width: 200px;
+      float: left;
+      color: $white;
+      border-radius: 5px 0 0 5px;
+      border: solid 1px rgba(255, 255, 255, 0.1);
+      border-right-color: rgb(221, 221, 221);
+      border-right-style: solid;
+      border-right-width: 1px;
+      border-right: none;
+      background: none;
+      box-shadow: 2px 2px 20px 0px rgba(20, 20, 20, 0.05);
+      font-size: 16px;
+    }
+  
+    #btn-submit {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background: none;
+  
+      i {
+        text-align: center;
+        font-size: 16px;
+        float: left;
+        width: 60px;
+        background: $pink_col;
+        color: $white;
+        display: table-cell;
+        padding: 13px 0;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+      }
+    }
+  }

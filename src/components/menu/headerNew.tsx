@@ -1,18 +1,28 @@
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import { styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import { Link, navigate } from '@reach/router';
+import jwtDecode from 'jwt-decode';
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+// contracts
+import useOnclickOutside from 'react-cool-onclickoutside';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useDispatch, useSelector } from 'react-redux';
 import Breakpoint, {
   BreakpointProvider,
   setDefaultBreakpoints
 } from 'react-socks';
-import jwtDecode from 'jwt-decode';
-import Blockies from 'react-blockies';
-import { Link, navigate } from '@reach/router';
-import Web3 from 'web3';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import useOnclickOutside from 'react-cool-onclickoutside';
 import ToggleTheme from 'src/components/menu/toggleTheme';
+import { ApiService } from 'src/core/axios';
+import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
+import TokenService from 'src/services/token';
+
+import { setupWeb3 } from 'src/store/actions/thunks/web3';
 import * as selectors from 'src/store/selectors';
+import { IToken, JwtDecoded } from 'src/types/auth.types';
 import { IUser } from 'src/types/users.types';
 import {
   getMyBalance,
@@ -20,10 +30,6 @@ import {
   getNetworkId,
   shortAddress
 } from 'src/utils';
-import { getImage } from 'src/services/ipfs';
-import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
-import { ApiService } from 'src/core/axios';
-import { setupWeb3 } from 'src/store/actions/thunks/web3';
 // contracts
 import NFT from 'src/abis/NFT.json';
 import NFTMarket from 'src/abis/NFTMarket.json';
@@ -34,12 +40,13 @@ import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
 import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
 import NFTMarketOffers from 'src/abis/new/NFTMarketOffers.json';
 
+import { dark, light } from '../../styles/theme/themeVariables';
 import { setUserProfile } from 'src/store/actions/thunks/users';
 import notification from 'src/services/notification';
 import GlobalSearchBar from '../components/GlobalSearchBar';
 import UserAvatar from '../components/UserAvatar';
-import TokenService from 'src/services/token';
-import { IToken, JwtDecoded } from 'src/types/auth.types';
+import HeaderWrapper from './header.styled';
+import Web3 from 'web3';
 
 setDefaultBreakpoints([{ xs: 0 }, { l: 1199 }, { xl: 1200 }]);
 
@@ -56,7 +63,10 @@ const NavLink = (props: any) => (
   />
 );
 
-const Header = function () {
+const Header = function (props) {
+  const { themeToggler } = props;
+  const currentThemevalue = JSON.parse(localStorage.getItem('current-theme'));
+  console.log('local storage value is', currentThemevalue.name);
   const dispatch = useDispatch();
   const [loadingState, setLoadingState] = useState<{
     loading: boolean;
@@ -87,16 +97,17 @@ const Header = function () {
   useEffect(() => {
     const header = document.getElementById('myHeader');
     const totop = document.getElementById('scroll-to-top');
-    const sticky = header.offsetTop;
+    const sticky = header?.offsetTop;
     const scrollCallBack = window.addEventListener('scroll', () => {
       btn_icon(false);
       if (window.pageYOffset > sticky) {
-        header.classList.add('sticky');
-        totop.classList.add('show');
+        header?.classList.add('sticky');
+        totop?.classList.add('show');
       } else {
-        header.classList.remove('sticky');
-        totop.classList.remove('show');
+        header?.classList.remove('sticky');
+        totop?.classList.remove('show');
       }
+      // eslint-disable-next-line no-empty
       if (window.pageYOffset > sticky) {
       }
     });
@@ -249,7 +260,7 @@ const Header = function () {
   };
 
   const addPulseNetwork = async () => {
-    await window.ethereum.request({
+    await window?.ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
@@ -459,7 +470,7 @@ const Header = function () {
   };
 
   const changeAccount = async () => {
-    const permissions = await window.ethereum.request({
+    const permissions = await window?.ethereum.request({
       method: 'wallet_requestPermissions',
       params: [
         {
@@ -468,7 +479,80 @@ const Header = function () {
       ]
     });
   };
-
+  const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+    width: 62,
+    height: 34,
+    padding: 7,
+    '& .MuiSwitch-switchBase': {
+      margin: 1,
+      padding: 0,
+      transform: 'translateX(6px)',
+      '&.Mui-checked': {
+        color: '#fff',
+        transform: 'translateX(22px)',
+        '& .MuiSwitch-thumb:before': {
+          backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+            '#fff'
+          )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`
+        },
+        '& + .MuiSwitch-track': {
+          opacity: 1,
+          backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be'
+        }
+      }
+    },
+    '& .MuiSwitch-thumb': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
+      width: 32,
+      height: 32,
+      '&:before': {
+        content: "''",
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        left: 0,
+        top: 0,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          '#fff'
+        )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`
+      }
+    },
+    '& .MuiSwitch-track': {
+      opacity: 1,
+      backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+      borderRadius: 20 / 2
+    }
+  }));
+  const ToggleTheme = () => {
+    const [checked, setChecked] = useState(
+      currentThemevalue.name === 'dark' ? true : false
+    );
+    console.log(currentThemevalue.name, 'is the vale of local storage');
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setChecked(event.target.checked);
+      if (event.target.checked) {
+        themeToggler();
+      } else {
+        themeToggler();
+      }
+    };
+    return (
+      <FormGroup className="themeSwitcher">
+        <FormControlLabel
+          control={
+            <MaterialUISwitch
+              sx={{ m: 1 }}
+              checked={checked}
+              onChange={handleChange}
+            />
+          }
+          label=""
+        />
+      </FormGroup>
+    );
+  };
   const renderConnectionView = () => {
     if (loadingState.loading) {
       return (
@@ -489,10 +573,10 @@ const Header = function () {
             </span>
             {/* <NavLink to="/wallet" className="btn-main">Connect Wallet</NavLink> */}
           </div>
-          <ToggleTheme />
         </>
       );
     }
+
     return (
       <>
         <div className="mainside" style={{ color: '#f5fdff' }}>
@@ -596,46 +680,81 @@ const Header = function () {
             )}
           </div>
         </div>
-        <ToggleTheme />
       </>
     );
   };
 
   return (
-    <header id="myHeader" className="navbar white">
-      <div className="container">
-        <div className="row w-100-nav">
-          <div className="logo px-0">
-            <div className="navbar-title navbar-item">
-              <NavLink to="/">
-                <img
-                  src="./img/NFT-BETA-LOGO.png"
-                  className="img-fluid d-3"
-                  alt="#"
-                  width={80}
-                />
-              </NavLink>
+    <HeaderWrapper>
+      <header id="myHeader" className="navbar white">
+        <div className="container">
+          <div className="row w-100-nav">
+            <div className="logo px-0">
+              <div className="navbar-title navbar-item">
+                <NavLink to="/">
+                  <img
+                    src="./img/NFT-BETA-LOGO.png"
+                    className="img-fluid d-3"
+                    alt="#"
+                    width={80}
+                  />
+                </NavLink>
+              </div>
             </div>
-          </div>
 
-          {
-            <div className="search global-search">
-              <GlobalSearchBar />
-            </div>
-          }
+            {
+              <div className="search global-search">
+                <GlobalSearchBar />
+              </div>
+            }
 
-          <BreakpointProvider>
-            <Breakpoint l down>
-              {showmenu && (
-                <div className="menu">
+            <BreakpointProvider>
+              <Breakpoint l down>
+                {showmenu && (
+                  <div className="menu">
+                    <div className="navbar-item">
+                      <NavLink
+                        to="/explore"
+                        onClick={() => btn_icon(!showmenu)}
+                      >
+                        Explore
+                        <span className="lines"></span>
+                      </NavLink>
+                    </div>
+                    <div className="navbar-item">
+                      <NavLink
+                        to="/explore"
+                        onClick={() => btn_icon(!showmenu)}
+                      >
+                        Ranking
+                        <span className="lines"></span>
+                      </NavLink>
+                    </div>
+                    <div className="d-flex justify-content-evenly align-items-center">
+                      <span className="col-6 btn-main btn-grad-outline mx-3">
+                        Design
+                      </span>
+                      <span
+                        className="col-6 btn-main btn-grad-outline mx-3"
+                        onClick={() => navigate('/CreateOption')}
+                      >
+                        Create
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </Breakpoint>
+
+              <Breakpoint xl>
+                <span className="menu">
                   <div className="navbar-item">
-                    <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>
+                    <NavLink to="/explore">
                       Explore
                       <span className="lines"></span>
                     </NavLink>
                   </div>
                   <div className="navbar-item">
-                    <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>
+                    <NavLink to="/explore">
                       Ranking
                       <span className="lines"></span>
                     </NavLink>
@@ -651,49 +770,22 @@ const Header = function () {
                       Create
                     </span>
                   </div>
-                </div>
-              )}
-            </Breakpoint>
+                </span>
+              </Breakpoint>
+            </BreakpointProvider>
 
-            <Breakpoint xl>
-              <span className="menu">
-                <div className="navbar-item">
-                  <NavLink to="/explore">
-                    Explore
-                    <span className="lines"></span>
-                  </NavLink>
-                </div>
-                <div className="navbar-item">
-                  <NavLink to="/explore">
-                    Ranking
-                    <span className="lines"></span>
-                  </NavLink>
-                </div>
-                <div className="d-flex justify-content-evenly align-items-center">
-                  <span className="col-6 btn-main btn-grad-outline mx-3">
-                    Design
-                  </span>
-                  <span
-                    className="col-6 btn-main btn-grad-outline mx-3"
-                    onClick={() => navigate('/CreateOption')}
-                  >
-                    Create
-                  </span>
-                </div>
-              </span>
-            </Breakpoint>
-          </BreakpointProvider>
+            {renderConnectionView()}
+            {ToggleTheme()}
+          </div>
 
-          {renderConnectionView()}
+          <button className="nav-icon" onClick={() => btn_icon(!showmenu)}>
+            <div className="menu-line white"></div>
+            <div className="menu-line1 white"></div>
+            <div className="menu-line2 white"></div>
+          </button>
         </div>
-
-        <button className="nav-icon" onClick={() => btn_icon(!showmenu)}>
-          <div className="menu-line white"></div>
-          <div className="menu-line1 white"></div>
-          <div className="menu-line2 white"></div>
-        </button>
-      </div>
-    </header>
+      </header>
+    </HeaderWrapper>
   );
 };
 export default Header;

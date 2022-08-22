@@ -161,7 +161,6 @@ const logintwo = () => (
       </div>
     </section>
 
-    <Footer />
   </div>
 );
 export default logintwo;

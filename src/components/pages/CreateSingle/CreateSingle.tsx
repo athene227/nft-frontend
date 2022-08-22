@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useState } from 'react';
 import moment from 'moment';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import * as selectors from 'src/store/selectors';
+import NFT from 'src/abis/NFT.json';
+import PreviewNft from 'src/components/components/PreviewNft';
 import { ApiService } from 'src/core/axios';
 import {
   ERRORS,
@@ -14,26 +15,28 @@ import {
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
+import { getImageUri, getUri } from 'src/services/ipfs';
+import notification from 'src/services/notification';
+import { clearEvents } from 'src/store/actions';
+import * as selectors from 'src/store/selectors';
+import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import {
+  createAuctionMarketItem,
+  createSimpleMarketItem,
+  createToken,
+  generatePreviewImage,
   getErrorMessage,
   getNetworkData,
-  getProfileImage,
-  createToken,
-  createSimpleMarketItem,
-  createAuctionMarketItem,
-  getNetworkId
+  getNetworkId,
+  getProfileImage
 } from 'src/utils';
-import { getImageUri, getUri } from 'src/services/ipfs';
-import PreviewNft from 'src/components/components/PreviewNft';
+
 import CreateForm from './components/CreateForm';
 // import NFT from 'src/abis/NFT.json';
 import NFT721 from 'src/abis/new/NFT721.json';
 import MarketTypeTabs from './components/MarketTypeTabs';
-import notification from 'src/services/notification';
 import CreateItemProgressPopup from 'src/components/components/Popups/CreateItemProgressPopup';
-import { MarketItemCreateProgress } from 'src/types/nfts.types';
 import { initialItemCreateStatus } from 'src/components/components/constants';
-import { clearEvents } from 'src/store/actions';
 
 const CreateSingle = () => {
   const dispatch = useDispatch();
@@ -77,7 +80,8 @@ const CreateSingle = () => {
   const [itemCreateProgress, setItemCreateProgress] =
     useState<MarketItemCreateProgress>(initialItemCreateStatus);
   const itemCreateProgressRef = useRef(itemCreateProgress);
-  const resetFormRef = useRef<Function>();
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const resetFormRef = useRef<() => void>();
   const submitData = useRef();
   const eventList = useSelector(selectors.nftEvents);
 
@@ -121,24 +125,23 @@ const CreateSingle = () => {
     return image || './img/collections/coll-item-3.jpg';
   };
 
-  const createSimple = async (
-    NFT_NETWORK_DATA: any,
-    data: any,
-    jsonUri: string,
-    imageUrl: string
-  ) => {
+  const createSimple = async (NFT_NETWORK_DATA: any, data: any) => {
     const tokenId = () => itemCreateProgressRef.current.tokenId;
     const listingId = () => itemCreateProgressRef.current.listingId;
+    const imageUrl = () => itemCreateProgressRef.current.imageUrl;
+    const previewImageUrl = () => itemCreateProgressRef.current.previewImageUrl;
+    const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
 
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
 
     // nft mongo item
-    const nftToCreate: any = {
+    const nftToCreate = {
       name: data.name,
       description: data.description,
-      imageUrl: imageUrl,
+      imageUrl: imageUrl(),
+      previewImageUrl: previewImageUrl(),
       // attributes: data.attributes,
       attributes: _attributes,
       creatorAddress: userAddress,
@@ -168,7 +171,7 @@ const CreateSingle = () => {
       const res = await createToken({
         nftContract: nft721Contract,
         userAddress,
-        jsonUri,
+        jsonUri: metaDataUrl() as string,
         quantity: SINGLE,
         royalty: Number(data.royalties),
         nftType: 'NFT721'
@@ -181,7 +184,7 @@ const CreateSingle = () => {
         transactionHash,
         data: {
           ...nftToCreate,
-          tokenURI: jsonUri,
+          tokenURI: metaDataUrl() as string,
           status: STATUS.NOT_LISTED,
           totalAmount: SINGLE,
           leftAmount: SINGLE,
@@ -262,7 +265,7 @@ const CreateSingle = () => {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
           price: data.price,
-          tokenURI: jsonUri,
+          tokenURI: metaDataUrl() as string,
           status: STATUS.ON_SELL,
           totalAmount: SINGLE,
           leftAmount: 0,
@@ -291,9 +294,7 @@ const CreateSingle = () => {
 
   const createAuction = async (
     NFT_NETWORK_DATA: any,
-    data: any,
-    jsonUri: string,
-    imageUrl: string
+    data: any
   ) => {
     console.log(
       '🚀 ~ file: CreateSingle.tsx ~ line 298 ~ CreateSingle ~ data',
@@ -302,6 +303,9 @@ const CreateSingle = () => {
 
     const tokenId = () => itemCreateProgressRef.current.tokenId;
     const listingId = () => itemCreateProgressRef.current.listingId;
+    const imageUrl = () => itemCreateProgressRef.current.imageUrl;
+    const previewImageUrl = () => itemCreateProgressRef.current.previewImageUrl;
+    const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
@@ -316,10 +320,11 @@ const CreateSingle = () => {
     );
 
     //* item to mongo
-    const nftToCreate: any = {
+    const nftToCreate = {
       name: data.name,
       description: data.description,
-      imageUrl: imageUrl,
+      imageUrl: imageUrl(),
+      previewImageUrl: previewImageUrl(),
       attributes: _attributes,
       creatorAddress: userAddress,
       ownerAddress: userAddress,
@@ -353,7 +358,7 @@ const CreateSingle = () => {
       const res = await createToken({
         nftContract: nft721Contract,
         userAddress,
-        jsonUri,
+        jsonUri: metaDataUrl() as string,
         quantity: SINGLE,
         royalty: Number(data.royalties),
         nftType: 'NFT721'
@@ -367,7 +372,7 @@ const CreateSingle = () => {
         data: {
           ...nftToCreate,
           tokenId,
-          tokenURI: jsonUri,
+          tokenURI: metaDataUrl() as string,
           status: STATUS.NOT_LISTED
         }
       });
@@ -393,7 +398,7 @@ const CreateSingle = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      tokenId,
+      tokenId: tokenId(),
       action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
@@ -423,7 +428,7 @@ const CreateSingle = () => {
           ...nftToCreate,
           listingId,
           tokenId: tokenId() as string,
-          tokenURI: jsonUri,
+          tokenURI: metaDataUrl(),
           status: STATUS.ON_SELL
         }
       });
@@ -449,7 +454,8 @@ const CreateSingle = () => {
 
   const submitForm = async (
     data: any,
-    resetForm: Function,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    resetForm: () => void,
     isRetry = false
   ) => {
     if (!web3) {
@@ -481,17 +487,22 @@ const CreateSingle = () => {
         throw new Error(ERRORS.MISSING_IMAGE);
       }
       const imageUrl = () => itemCreateProgressRef.current.imageUrl;
+      const previewImageUrl = () =>
+        itemCreateProgressRef.current.previewImageUrl;
       const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
       // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
       const NFT_NETWORK_DATA = await getNetworkData(web3, NFT721);
 
       if (!imageUrl()) {
         //* uploading image to ipfs
+        const previewFile = await generatePreviewImage(image, 600, 600);
         const imgUrl = await getImageUri(imgFile);
+        const previewImgUrl = await getImageUri(previewFile);
         // update item create progress to metadata
         updateItemCreateProgress({
           status: ITEM_CREATE_STATUS.IPFS_METADATA,
-          imageUrl: imgUrl
+          imageUrl: imgUrl,
+          previewImageUrl: previewImgUrl
         });
       }
 
@@ -501,8 +512,8 @@ const CreateSingle = () => {
           name: data.name,
           description: data.description,
           imageUrl: imageUrl() as string,
-          attributes: data.attributes,
-          previewImageUrl: ''
+          previewImageUrl: previewImageUrl() as string,
+          attributes: data.attributes
         });
 
         // update item create progress to metadata
@@ -514,20 +525,10 @@ const CreateSingle = () => {
 
       //* create and list on contract
       if (marketType === MARKET_TYPE.SIMPLE) {
-        await createSimple(
-          NFT_NETWORK_DATA,
-          data,
-          metaDataUrl() as string,
-          imageUrl() as string
-        );
+        await createSimple(NFT_NETWORK_DATA, data);
       } else {
         // marketType === MARKET_TYPE.AUCTION
-        await createAuction(
-          NFT_NETWORK_DATA,
-          data,
-          metaDataUrl() as string,
-          imageUrl() as string
-        );
+        await createAuction(NFT_NETWORK_DATA, data);
       }
 
       //* turn off loader
@@ -558,19 +559,18 @@ const CreateSingle = () => {
         }}
       >
         <section>
-          <div className="mainbreadcumb">
-            <div className="container">
-              <div className="row m-10-hor">
-                <div className="col-12">
-                  <h1 className="text-center">
-                    Create single item on PulseChain
-                  </h1>
-                </div>
+          <div className="container">
+            <div className="row m-10-hor">
+              <div className="col-12">
+                <h1 className="text-center create-single-head">
+                  Create single item
+                  <br /> on PulseChain
+                </h1>
               </div>
             </div>
           </div>
         </section>
-        <section className="container">
+        <section className="container create-single-section">
           <div className="row">
             <div className="col-lg-7 offset-lg-1 mb-5">
               <MarketTypeTabs marketType={marketType} onTab={onTab} />

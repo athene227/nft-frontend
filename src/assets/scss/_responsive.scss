@@ -1,0 +1,146 @@
+/*** media all ***/
+@media only screen and (max-width: 1199px) {
+    .item-dropdown {
+      position: relative;
+      width: 100%;
+      inset: unset;
+      padding-top: 10px;
+      border: 0;
+      background: none;
+      box-shadow: unset;
+
+      .dropdown {
+        a {
+          color: $white  !important;
+          padding: 10px 10px 10px 0px;
+          width: 100%;
+          text-align: left;
+          left: 10px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .navbar {
+      top: 0;
+
+      &.white a {
+        color: $white;
+      }
+    }
+
+    #myHeader .container {
+      max-width: unset !important;
+    }
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .m-10-hor {
+      padding-left: 2%;
+      padding-right: 2%;
+    }
+
+    .subfooter .de-flex,
+    .subfooter .de-flex-col {
+      display: block;
+    }
+
+    footer.footer-light .subfooter span.copy {
+      display: block;
+      margin: 20px 0;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .breadcumb .mainbreadcumb .list {
+      justify-content: left;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    .previousButton,
+    .nextButton {
+      opacity: 1 !important;
+    }
+
+    .xs-hide {
+      display: none;
+    }
+
+    .container {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+    .author_list {
+      column-count: 1;
+      column-gap: 20px;
+    }
+
+    #form_quick_search {
+      top: 0;
+      width: 100%;
+
+      .col {
+        padding-right: 0;
+      }
+    }
+
+    #form_quick_search input[type="text"] {
+      width: 80%;
+    }
+
+    #form_quick_search #btn-submit {
+      width: 20%;
+    }
+
+    #form_quick_search #btn-submit i {
+      width: 100%;
+    }
+
+    .items_filter .dropdownSelect {
+      margin-right: 0;
+      width: 96%;
+    }
+
+    .item_info {
+      margin-top: 30px;
+    }
+
+    .profile_avatar {
+      display: block;
+    }
+
+    .d_profile {
+      display: block;
+
+      .de-flex-col {
+        display: block;
+      }
+    }
+
+    .profile_name {
+      margin-left: 0;
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+    }
+
+    .profile_follow {
+      margin-top: 50px;
+      width: 100%;
+    }
+
+    .nft__item {
+      margin: 0 10px 30px 10px;
+    }
+
+    .de_nav.text-left {
+      margin-left: 0;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {}
+
+  @media only screen and (max-width: 420px) {}
+
+  @media only screen and (max-width: 378px) {}

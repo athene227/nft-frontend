@@ -1,13 +1,14 @@
-import React, { memo, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Form, Formik, FormikProps } from 'formik';
-import * as Yup from 'yup';
+import React, { memo, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import { ALERT_TYPE, COIN, ERRORS, MARKET_CONTRACT_EVENTS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
 import { getErrorMessage } from 'src/utils';
-import Loader from 'src/components/components/Loader';
-import Alert from './Alert';
+import * as Yup from 'yup';
+
 import * as selectors from '../../store/selectors';
+import Alert from './Alert';
 import TransactionHash from './TransactionHash';
 
 interface IProps {
@@ -157,7 +158,7 @@ const CancelListingPopUp = (props: IProps) => {
   };
 
   return (
-    <div className="maincheckout">
+    <div className="maincheckout modal-style-1">
       <button
         className="btn-close"
         onClick={() => onClose(cancelTransactionHash !== undefined)}

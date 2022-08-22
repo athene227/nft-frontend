@@ -1,18 +1,20 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { memo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Slider from 'react-slick';
-import styled from 'styled-components';
-import { navigate } from '@reach/router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+import { navigate } from '@reach/router';
+import React, { memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Slider from 'react-slick';
 import Clock from 'src/components/components/Clock/Clock';
-import { newItemsSettings } from './newItemsSettings';
-import * as selectors from 'src/store/selectors';
-import { fetchNewNfts } from 'src/store/actions/thunks';
-import { getImage } from 'src/services/ipfs';
-import { INft } from 'src/types/nfts.types';
 import UserAvatar from 'src/components/components/UserAvatar';
+import { getImage } from 'src/services/ipfs';
+import { fetchNewNfts } from 'src/store/actions/thunks';
+import * as selectors from 'src/store/selectors';
+import { INft } from 'src/types/nfts.types';
+import styled from 'styled-components';
+
+import { newItemsSettings } from './newItemsSettings';
 
 const Outer = styled.div`
   display: flex;
@@ -77,7 +79,8 @@ const NewItemsRedux = () => {
                       <Outer>
                         <span>
                           <img
-                            src={getImage(nft.imageUrl)}
+                            onClick={() => navigateToDetails(nft)}
+                            src={getImage(nft.previewImageUrl || nft.imageUrl)}
                             className="lazy nft__item_preview"
                             alt=""
                           />
@@ -133,9 +136,8 @@ const NewItemsRedux = () => {
                         <div className={`nft__item_price`}>
                           {nft.marketType === 'SIMPLE'
                             ? nft.price
-                            : nft.minimumBid}
+                            : nft.minimumBid}{' '}
                           <img
-                            className={`icon_margin`}
                             src="./img/items/PulseChain-Logo-Shape.png"
                             alt=""
                           ></img>{' '}

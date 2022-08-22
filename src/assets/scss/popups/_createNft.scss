@@ -1,0 +1,163 @@
+//   Create nft popup
+.stepper-container {
+    display: flex;
+    margin-bottom: 6px;
+  
+    .step-status {
+      margin-right: 13px;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+  
+      svg {
+        color: #31D891 !important;
+        border: 2px solid #31D891;
+        border-radius: 35px;
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+        ;
+      }
+    }
+  
+    .step-title {
+      &.current {
+        color: $white;
+        @include theme('themeLight', color, $black);
+        font-weight: 800;
+      }
+    }
+  }
+  
+  .collection-progress {
+    .nft-status-created {
+      margin-top: 15px;
+  
+      .highlight-title {
+        color: $white;
+        @include theme('themeLight', color, $text-light);
+        background: linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%);
+        backdrop-filter: blur(80px);
+        margin: 10px;
+        margin-top: 0;
+        padding: 15px;
+        margin-top: -75px;
+        border-radius: 10px;
+        text-shadow: 0px;
+  
+        span {
+          font-size: 24px;
+          font-size: 25px;
+          font-weight: 700;
+          font-style: italic;
+          display: block;
+          margin-bottom: 0px;
+          text-shadow: 3px 2px black;
+        }
+      }
+  
+      .nft-created-img {
+        max-width: 100%;
+        margin: 0 auto;
+        margin-top: 15px;
+        margin-bottom: 0px;
+        border-radius: 13px;
+      }
+  
+      .nft-image-final {
+        padding: 10px;
+      }
+  
+      .btn-main {
+        // background: #17244B;
+        width: 100%;
+        padding: 24px;
+        font-size: 20px;
+        line-height: 24px;
+  
+        &.view-nft-btn {
+          background: #17244B;
+  
+          &:hover {
+            box-shadow: 0px 0px 5px #17244b;
+          }
+        }
+      }
+    }
+  
+    .transaction-hash-container {
+      text-align: left;
+      margin-bottom: 15px;
+  
+      h6 {
+        color: $white;
+        @include theme('themeLight', color, $text-light);
+        padding-left: 7px;
+        font-size: 24px;
+        line-height: 31px;
+        margin-bottom: 5px;
+        font-weight: 700;
+        padding-left: 0;
+      }
+  
+      a {
+        font-size: 18px;
+        line-height: 23px;
+        color: #3EA2FF;
+        text-decoration: none;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  
+  .transaction-hash-container,
+  .bid-transaction-info {
+    h6 {
+      color: black;
+    }
+  
+    .transaction-hash {
+      word-break: break-all;
+      color: #0d758d;
+    }
+  }
+  
+  .highlight-title {
+    color: black;
+    font-weight: 700;
+  }
+  
+  .operation-failed-wrapper {
+    // display: flex;
+    align-items: center;
+    padding-left: 7px;
+    padding-top: 30px;
+  
+    div {
+      // color: $white;
+      color: #ff5b5b;
+      // @include theme("themeLight", color, $text-light);
+      margin-bottom: 15px;
+      font-size: 18px;
+  
+    }
+  
+    input {
+      margin: 0px !important;
+      margin-bottom: 0px !important;
+      width: 50%;
+      padding: 12px;
+      font-size: 24px;
+    }
+  }
+  
+  .responsive-popup {
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  
+  .nft-created-img {
+    max-width: 100%;
+  }
+  //   create nft popup ends here

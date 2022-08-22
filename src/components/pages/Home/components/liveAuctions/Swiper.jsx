@@ -1,28 +1,28 @@
-import React, { useEffect } from 'react';
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
-
 // Import Swiper styles
 import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
 // import "swiper/modules/effect/effect-coverflow.scss";
 import 'swiper/modules/pagination/pagination.scss';
 
-// import required modules
-import { EffectCoverflow, Pagination, Navigation } from 'swiper';
-import LiveAuctionItem from './LiveAuctionItem';
+import React, { useEffect } from 'react';
 import { BsArrowRight } from 'react-icons/bs';
 import { BsArrowLeft } from 'react-icons/bs';
 import { IoIosArrowDroprightCircle } from 'react-icons/io';
 import { IoIosArrowDropleftCircle } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
-import * as selectors from '../../../../../store/selectors';
+// import required modules
+import { EffectCoverflow, Navigation, Pagination } from 'swiper';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
+
 import { fetchHotAuctions } from '../../../../../store/actions/thunks';
+import * as selectors from '../../../../../store/selectors';
+import LiveAuctionItem from './LiveAuctionItem';
 
 const nfts = [
   {
     author: './img/eth.png',
-    image: './img/auctions/pic5.svg',
+    image: './img/auctions/pic5.jpg',
     title: 'Art Crypto',
     price: '0.25',
     user: '@cryptoage'
@@ -51,7 +51,7 @@ const nfts = [
   },
   {
     author: './img/eth.png',
-    image: './img/auctions/pic8.svg',
+    image: './img/auctions/pic8.png',
     title: 'Art Crypto',
     price: '0.25',
     user: '@cryptoage'
@@ -102,9 +102,12 @@ export default function Swiperr() {
           centeredSlides={true}
           slidesPerView={1}
           breakpoints={{
-            640: {
+            641: {
               slidesPerView: 1,
-              spaceBetween: 20
+              spaceBetween: 0,
+              depth: 0,
+              stretch: 0,
+              modifier: 0
             },
             768: {
               slidesPerView: 1,

@@ -1,0 +1,58 @@
+.switch-with-title {
+    h5 {
+      float: left;
+  
+      i {
+        color: $pink_col;
+        margin-right: 10px;
+      }
+    }
+  
+    .p-info {
+      font-size: 14px;
+      margin: 0;
+      padding: 0 0 10px 0;
+    }
+  
+    .de-switch {
+      float: right;
+      display: block;
+  
+      label {
+        transition: all 200ms ease-in-out;
+        display: inline-block;
+        position: relative;
+        height: 20px;
+        width: 40px;
+        border-radius: 40px;
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: transparent;
+  
+        &::after {
+          transition: all 200ms ease-in-out;
+          content: " ";
+          position: absolute;
+          height: 14px;
+          width: 14px;
+          border-radius: 50%;
+          background-color: white;
+          top: 3px;
+          left: 3px;
+          right: auto;
+        }
+      }
+  
+      input[type="checkbox"] {
+        display: none;
+      }
+  
+      input[type="checkbox"]:checked+label::after {
+        left: 23px;
+      }
+  
+      input[type="checkbox"]:checked+label {
+        background-color: $pink_col;
+      }
+    }
+  }

@@ -1,5 +1,6 @@
-import { ethers, network } from 'hardhat';
+import { artifacts, ethers, network } from 'hardhat';
 import * as fs from 'fs';
+import { BigNumber, Contract } from 'ethers';
 import hre from 'hardhat';
 import {
   MockERC20,
@@ -10,7 +11,7 @@ import {
   NFTMarketSimple
 } from '../typechain/pulse';
 
-const addressFile = 'goerli_contract_addresses.md';
+const addressFile = 'contract_addresses.md';
 
 const verify = async (addr: string, args: any[]) => {
   try {
@@ -23,13 +24,6 @@ const verify = async (addr: string, args: any[]) => {
       throw ex;
     }
   }
-};
-
-const writeAddr = (addr: string, name: string) => {
-  fs.appendFileSync(
-    addressFile,
-    `${name}: [https://goerli.etherscan.io/address/${addr}](https://goerli.etherscan.io/address/${addr})<br/>`
-  );
 };
 
 async function main() {
@@ -70,6 +64,13 @@ async function main() {
 
   const nft1155 = (await NFT1155Fact.connect(deployer).deploy()) as NFT1155;
   await nft1155.deployed();
+
+  const writeAddr = (addr: string, name: string) => {
+    fs.appendFileSync(
+      addressFile,
+      `${name}: [https://goerli.etherscan.io/address/${addr}](https://goerli.etherscan.io/address/${addr})<br/>`
+    );
+  };
 
   if (fs.existsSync(addressFile)) {
     fs.rmSync(addressFile);

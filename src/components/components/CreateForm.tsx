@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
+  ErrorMessage,
   Field,
+  FieldArray,
+  FieldArrayRenderProps,
   Form,
   Formik,
   FormikProps,
-  ErrorMessage,
-  FieldArray,
-  FieldArrayRenderProps,
-  useFormikContext,
-  useField
+  useField,
+  useFormikContext
 } from 'formik';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-import { Row, Col } from 'react-bootstrap';
-import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-
+import { categories } from 'src/components/components/constants/filters';
+import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
   ATTRIBUTE_TYPE,
@@ -25,22 +26,22 @@ import {
   INPUT_ERROS,
   MARKET_TYPE
 } from 'src/enums';
-import Loader from 'src/components/components/Loader';
+import ipfs from 'src/services/ipfs';
+import notification from 'src/services/notification';
+import {
+  createCollection,
+  fetchMyCollections
+} from 'src/store/actions/thunks/collections';
+import { INftAttribute } from 'src/types/nfts.types';
+import { getErrorMessage } from 'src/utils';
+import { v4 as uuidv4 } from 'uuid';
+import * as Yup from 'yup';
+
+import * as selectors from '../../store/selectors';
+import AddAttributePopup from './AddAttributePopup';
 import Alert from './Alert';
 import CreateCollectionPopUp from './CreateCollectionPopUp';
-import { getErrorMessage } from 'src/utils';
-import {
-  fetchMyCollections,
-  createCollection
-} from 'src/store/actions/thunks/collections';
-import ipfs from 'src/services/ipfs';
-import * as selectors from '../../store/selectors';
-import notification from 'src/services/notification';
 import NftAttribute from './NftAttributes';
-import AddAttributePopup from './AddAttributePopup';
-import { INftAttribute } from 'src/types/nfts.types';
-import 'react-datepicker/dist/react-datepicker.css';
-import { categories } from 'src/components/components/constants/filters';
 
 interface IProps {
   onChangeImage: (e: any) => void;

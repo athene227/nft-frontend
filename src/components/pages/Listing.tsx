@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchNftDetail } from '../../store/actions/thunks/nfts';
-import * as selectors from '../../store/selectors';
-
-import Footer from '../components/footer';
-// import { createGlobalStyle } from 'styled-components';
-import RegularSaleForm from '../components/RegularSaleForm';
-import AuctionSaleForm from '../components/AuctionSaleForm';
-import { INft } from 'src/types/nfts.types';
+import { navigate } from '@reach/router';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Alert from 'src/components/components/Alert';
+import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
   ERRORS,
@@ -17,7 +13,8 @@ import {
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
-import Alert from 'src/components/components/Alert';
+import notification from 'src/services/notification';
+import { INft } from 'src/types/nfts.types';
 import {
   createAuctionMarketItem,
   createSimpleMarketItem,
@@ -25,13 +22,16 @@ import {
   getNetworkId,
   getUserNftQuantityFromNftContract
 } from 'src/utils';
-import { ApiService } from 'src/core/axios';
-import { navigate } from '@reach/router';
-import PreviewNft from '../components/PreviewNft';
+
+import { fetchNftDetail } from '../../store/actions/thunks/nfts';
+import * as selectors from '../../store/selectors';
+import AuctionSaleForm from '../components/AuctionSaleForm';
+import Footer from '../components/footer';
 import Loader from '../components/Loader';
 import MarketTypeTabs from '../components/MarketTypeTabs';
-import notification from 'src/services/notification';
-import moment from 'moment';
+import PreviewNft from '../components/PreviewNft';
+// import { createGlobalStyle } from 'styled-components';
+import RegularSaleForm from '../components/RegularSaleForm';
 
 const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
@@ -42,6 +42,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     loading: boolean;
   }>({ error: null, loading: false });
 
+  const [priceTokenType, setTokenType] = useState('MRT');
   const [expirationDateInput, setExpirationDateInput] = useState<string>('');
   const [priceInput, setPriceInput] = useState<string>('');
 
@@ -52,7 +53,8 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     accounts,
     nftMarketSimpleContract,
     nftMarketAuctionContract,
-    nftContract
+    mockERC20Contract,
+    nft721Contract
   } = web3State.web3.data;
   const userAddress = accounts[0];
   const nftDetailState = useSelector(selectors.nftDetailState);
@@ -72,7 +74,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   };
   interface InftInputs {
     minimumBid: string;
-    startingDate: string;
+    pricetokentype: string;
     expirationDate: string;
     price: string;
   }
@@ -83,6 +85,11 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
       return;
     }
+    console.log(
+      '🚀 ~ file: Listing.tsx ~ line 134 ~ const_submit= ~ data',
+      data
+    );
+    console.log('🚀 ~ file: Listing.tsx ~ line 134 ~ const_submit= ~ nft', nft);
     try {
       //* show loader
       setSubmitSaleState({ error: null, loading: true });
@@ -92,17 +99,9 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
-      console.log(
-        '🚀 ~ file: Listing.tsx ~ line 98 ~ const_submit= ~ getUserNftQuantityFromNftContract params',
-        {
-          nftContract,
-          userAddress,
-          tokenId: Number(nft.tokenId)
-        }
-      );
 
       const _nftBalance = await getUserNftQuantityFromNftContract({
-        nftContract,
+        nftContract: nft721Contract,
         userAddress,
         tokenId: Number(nft.tokenId)
       });
@@ -124,6 +123,8 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         royalty: nft.royalty,
         tokenId: nft.tokenId,
         attributes: nft.attributes,
+        priceTokenType: 'ETH',
+        category: nft.category,
         networkId,
         marketType,
         isListedOnce: true,
@@ -135,28 +136,28 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       const tokenId = nft.tokenId;
       //* dates
       const ts1 = moment(data.expirationDate).unix();
-      const expirationDate = data.expirationDate; // "2022-05-14T21:30"
+
       const _date = new Date(data.expirationDate); //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
 
       if (marketType === MARKET_TYPE.AUCTION) {
         if (data.minimumBid) {
           itemToCreate.minimumBid = data.minimumBid;
         }
+        if (data.pricetokentype) {
+          itemToCreate.priceTokenType = data.pricetokentype;
+        }
         if (data.expirationDate) {
           itemToCreate.expirationDate = _date;
         }
       }
 
-      let listingId;
-      const frontData = {
-        name: nft.name,
-        description: nft.description,
-        imageUrl: nft.imageUrl,
-        attributes: nft.attributes,
-        multiple: false,
-        collectionId: nft.collectionId,
-        category: nft.category
-      };
+      if (marketType === MARKET_TYPE.SIMPLE) {
+        if (data.price) {
+          itemToCreate.price = data.price;
+        }
+      }
+
+      let marketitem;
       if (marketType === MARKET_TYPE.SIMPLE) {
         const SINGLE = 1;
         const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
@@ -170,20 +171,19 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           ...itemToCreate,
           userAddress,
           tokenId,
-          listingId,
           action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
           processStatus: PROCESS_TRAKING_STATUS.BEFORE
         });
 
         //* create on contract
-        listingId = await createSimpleMarketItem({
+        marketitem = await createSimpleMarketItem({
           nftMarketSimpleContract,
           userAddress,
           nftAddress: nft.nftAddress,
           tokenId,
           priceInWei,
           quantity: SINGLE,
-          frontData
+          deadline: 1680000000
         });
         //* create new row on the db
       } else if (marketType === MARKET_TYPE.AUCTION) {
@@ -202,32 +202,45 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           ...itemToCreate,
           userAddress,
           tokenId,
-          listingId,
           action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
           processStatus: PROCESS_TRAKING_STATUS.BEFORE
         });
 
         //* create on contract
-        listingId = await createAuctionMarketItem({
+        marketitem = await createAuctionMarketItem({
           nftMarketAuctionContract,
           userAddress,
+          priceTokenAddress: mockERC20Contract._address,
           nftAddress: nft.nftAddress,
           tokenId,
           startPriceInWei,
-          deadline: ts1,
-          frontData
+          deadline: ts1
         });
       }
 
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 206 ~ const_submit= ~ marketitem',
+        marketitem
+      );
       //* create new row on the db
-      // const afterListingItem = await ApiService.createdNft({ ...itemToCreate, listingId, status: STATUS.ON_SELL });
+      const res = await ApiService.createdNft({
+        transactionHash: marketitem.transactionHash,
+        data: {
+          ...itemToCreate,
+          listingId: marketitem.returnValues.listingId,
+          status: STATUS.ON_SELL
+        }
+      });
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 225 ~ const_submit= ~ res',
+        res
+      );
 
       //* create tracking before listing
       await ApiService.createProcessTracking({
         ...itemToCreate,
         userAddress,
         tokenId,
-        listingId,
         action:
           marketType === MARKET_TYPE.SIMPLE
             ? PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE
@@ -245,7 +258,6 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       setSubmitSaleState({ error: getErrorMessage(error), loading: false });
     }
   };
-
   const renderForm = () => {
     if (marketType === MARKET_TYPE.SIMPLE) {
       return (
@@ -258,12 +270,13 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       );
     } else if (marketType === MARKET_TYPE.AUCTION) {
       if (nft.multiple) {
-        return 'no auction on collectibale item';
+        return 'no auction on collectible item';
       }
       return (
         <AuctionSaleForm
           nft={nft}
           submit={_submit}
+          setTokenType={setTokenType}
           submitSaleState={submitSaleState}
           setMinimumBidInput={(val: string) => setPriceInput(val)}
           setExpirationDateInput={(val: string) => setExpirationDateInput(val)}
@@ -288,7 +301,10 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           nft={{ ...nft, price: priceInput }}
           multiple={nft.multiple}
           marketType={marketType}
-          tokentype={nft?.priceToken[0]?.name}
+          tokentype={
+            marketType === MARKET_TYPE.AUCTION ? priceTokenType : 'ETH'
+          }
+          isPreview={true}
           expirationDateInput={expirationDateInput}
           timer
         />
@@ -329,7 +345,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
                   <div className="spacer-single"></div>
 
                   {nft?.status === STATUS.ON_SELL ? (
-                    'This item is alreay on sale!'
+                    'This item is already on sale!'
                   ) : (
                     <div>
                       <MarketTypeTabs marketType={marketType} onTab={onTab} />

@@ -1,23 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
+  ErrorMessage,
   Field,
+  FieldArray,
+  FieldArrayRenderProps,
   Form,
   Formik,
   FormikProps,
-  ErrorMessage,
-  FieldArray,
-  FieldArrayRenderProps,
-  useFormikContext,
-  useField
+  useField,
+  useFormikContext
 } from 'formik';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-import { Row, Col } from 'react-bootstrap';
-import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-
+import AddAttributePopup from 'src/components/components/AddAttributePopup';
+import Alert from 'src/components/components/Alert';
+import { categories } from 'src/components/components/constants/filters';
+import CreateCollectionPopUp from 'src/components/components/CreateCollectionPopUp';
+import Loader from 'src/components/components/Loader';
+import NftAttribute from 'src/components/components/NftAttributes';
 import {
   ALERT_TYPE,
   ATTRIBUTE_TYPE,
@@ -26,23 +31,17 @@ import {
   INPUT_ERROS,
   MARKET_TYPE
 } from 'src/enums';
-import Loader from 'src/components/components/Loader';
-import Alert from 'src/components/components/Alert';
-import CreateCollectionPopUp from 'src/components/components/CreateCollectionPopUp';
-import { getErrorMessage } from 'src/utils';
-import {
-  fetchMyCollections,
-  createCollection
-} from 'src/store/actions/thunks/collections';
 import ipfs from 'src/services/ipfs';
-import * as selectors from 'src/store/selectors';
 import notification from 'src/services/notification';
-import NftAttribute from 'src/components/components/NftAttributes';
-import AddAttributePopup from 'src/components/components/AddAttributePopup';
+import {
+  createCollection,
+  fetchMyCollections
+} from 'src/store/actions/thunks/collections';
+import * as selectors from 'src/store/selectors';
 import { INftAttribute } from 'src/types/nfts.types';
-import 'react-datepicker/dist/react-datepicker.css';
-import { categories } from 'src/components/components/constants/filters';
-import classes from './CreateSingle.module.scss';
+import { getErrorMessage } from 'src/utils';
+import { v4 as uuidv4 } from 'uuid';
+import * as Yup from 'yup';
 import { ApiService } from '../../../../core/axios';
 import { IPriceToken } from 'src/types/priceTokens.types';
 
@@ -330,7 +329,7 @@ export default function CreateForm(props: IProps) {
     // }
     const collectionsComponent = (props: any) => (
       // <input className="my-custom-input" type="text" {...props} />
-      <select id="pet-select" {...props} className={` ${classes.upload__file}`}>
+      <select id="pet-select" {...props} className={` upload__file`}>
         {[
           <option onClick={openCreateCollectionPopup} key={''} value={''}>
             Choose Collection
@@ -397,7 +396,7 @@ export default function CreateForm(props: IProps) {
               placeholder="Value"
               value={attribute.value}
               name={`attributes.${index}.value`}
-              className={`form-control ${classes.input__holder__single}`}
+              className={`form-control input__holder__single`}
             />
             <ErrorMessage name={`attributes.${index}.value`}>
               {(msg) => <div className="error-form">{msg}</div>}
@@ -415,7 +414,7 @@ export default function CreateForm(props: IProps) {
                 type="number"
                 value={attribute.value}
                 name={`attributes.${index}.value`}
-                className={`form-control ${classes.input__holder__single}`}
+                className={`form-control input__holder__single`}
               />
             </Col>
             <Col sm="6">
@@ -424,7 +423,7 @@ export default function CreateForm(props: IProps) {
                 type="number"
                 value={attribute.max_value}
                 name={`attributes.${index}.max_value`}
-                className={`form-control ${classes.input__holder__single}`}
+                className={`form-control input__holder__single`}
               />
             </Col>
             <ErrorMessage name={`attributes.${index}.value`}>
@@ -440,7 +439,7 @@ export default function CreateForm(props: IProps) {
               type="number"
               value={attribute.value}
               name={`attributes.${index}.value`}
-              className={`form-control ${classes.input__holder__single}`}
+              className={`form-control input__holder__single`}
             />
             <ErrorMessage name={`attributes.${index}.value`}>
               {(msg) => <div className="error-form">{msg}</div>}
@@ -459,59 +458,64 @@ export default function CreateForm(props: IProps) {
       >
         <div className="spacer-30"></div>
         <div>
-          <h5>Upload file</h5>
-          <div className={`d-create-file ${classes.upload__file}`}>
-            <div className="browse">
-              <input
-                type="button"
-                id="get_file"
-                className={`btn-main ${classes.btn_gradient}`}
-                value="Choose File"
-              />
-              <input
-                id="upload_file"
-                type="file"
-                multiple
-                onChange={onChangeImage}
-              />
-              <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
+          <div className="upload-file-field">
+            <h5>Upload file</h5>
+            <div className={`d-create-file upload__file`}>
+              <div className="browse">
+                <input
+                  type="button"
+                  id="get_file"
+                  className={`btn-main btn_gradient`}
+                  value="Choose File"
+                />
+                <input
+                  id="upload_file"
+                  type="file"
+                  multiple
+                  onChange={onChangeImage}
+                />
+                <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
+              </div>
             </div>
           </div>
-          <div className="spacer-30"></div>
+          <div className="spacer-50"></div>
 
-          <h5>Name</h5>
-          <Field
-            type="text"
-            name="name"
-            id="item_name"
-            className={`form-control ${classes.input__holder__single}`}
-            placeholder={'enter name'}
-            onChange={onChangeName}
-          />
-          <ErrorMessage name="name">
-            {(msg) => <div className="error-form">{msg}</div>}
-          </ErrorMessage>
+          <div className="form-cfield">
+            <h5>Name</h5>
+            <Field
+              type="text"
+              name="name"
+              id="item_name"
+              className={`form-control input__holder__single`}
+              placeholder={'Enter Name'}
+              onChange={onChangeName}
+            />
+            <ErrorMessage name="name">
+              {(msg) => <div className="error-form">{msg}</div>}
+            </ErrorMessage>
 
-          <div className="spacer-20"></div>
-
-          <h5>Description</h5>
-          <Field
-            type="text"
-            name="description"
-            id="item_Description"
-            className={`form-control ${classes.input__holder__single}`}
-            placeholder={'enter description'}
-            onChange={onChangeDescription}
-          />
-          <ErrorMessage name="description">
-            {(msg: string) => <div className="error-form">{msg}</div>}
-          </ErrorMessage>
-          <div>
+            {/* <div className="spacer-50"></div> */}
+          </div>
+          <div className="form-cfield">
+            <h5>Description</h5>
+            <Field
+              type="text"
+              name="description"
+              id="item_Description"
+              className={`form-control input__holder__single`}
+              placeholder={'Enter Description'}
+              onChange={onChangeDescription}
+            />
+            <ErrorMessage name="description">
+              {(msg: string) => <div className="error-form">{msg}</div>}
+            </ErrorMessage>
+          </div>
+          <div className="form-cfield">
             <h5>Category</h5>
             <Field
               as="select"
               name="category"
-              className={`form-control ${classes.input__holder__single}`}
+              className={`form-control input__holder__single`}
             >
               <option key={''} value={''}>
                 {' '}
@@ -526,38 +530,43 @@ export default function CreateForm(props: IProps) {
             <ErrorMessage name="category">
               {(msg: string) => <div className="error-form">{msg}</div>}
             </ErrorMessage>
+            {/* <div className="spacer-20"></div> */}
           </div>
-          <div className="spacer-20"></div>
-          <div style={{ display: 'flex' }}>
-            {collectionsState.myCollections.data.length > 0 && (
-              <div style={{ marginRight: 50 }}>
-                <h5>Choose collection</h5>
-                <p className="p-info">
-                  This is the collection where your item will appear.
-                </p>
+          <div className="form-cfield">
+            <div style={{ display: 'flex' }}>
+              {collectionsState.myCollections.data.length > 0 && (
+                <div style={{ marginRight: 50 }}>
+                  <h5>Choose collection</h5>
+                  <p className="p-info">
+                    This is the collection where your item will appear.
+                  </p>
 
-                <Field
-                  name="collectionId"
-                  as={collectionsComponent}
-                  placeholder="Select Collection"
-                  className={`form-control ${classes.input__holder__single}`}
-                />
-                <ErrorMessage name="collectionId">
-                  {(msg) => <div className="error-form">{msg}</div>}
-                </ErrorMessage>
-              </div>
-            )}
-            <div>
-              <h5>Add a New Collection</h5>
-              <button
-                type="button"
-                className="create-collection"
-                onClick={openCreateCollectionPopup}
-              >
-                <img src="./img/misc/grey-coll-single.png" alt="" />
-                <h3>Create</h3>
-              </button>
-              {/* <div>
+                  <Field
+                    name="collectionId"
+                    as={collectionsComponent}
+                    placeholder="Select Collection"
+                    className={`form-control input__holder__single`}
+                  />
+                  <ErrorMessage name="collectionId">
+                    {(msg) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                </div>
+              )}
+              <div className="add-collection-field">
+                <h5>Add a new Collection</h5>
+                <button
+                  type="button"
+                  className="create-collection"
+                  onClick={openCreateCollectionPopup}
+                >
+                  <span>
+                    <strong>
+                      <i>+</i>
+                      Create
+                    </strong>
+                  </span>
+                </button>
+                {/* <div>
                     {collectionsState.myCollections.data.map(item =>
                         <button className={`create-collection`}
                         style={{ backgroundColor: selectedCollectionId === item._id ? 'red' : '' }}
@@ -567,18 +576,20 @@ export default function CreateForm(props: IProps) {
                         </button>
                         )}
                     </div> */}
+              </div>
             </div>
+            {/* <div className="spacer-50"></div> */}
           </div>
-          <div className="spacer-20"></div>
+
           {multiple && (
-            <div>
+            <div className="form-cfield">
               <h5>Number Of Copies</h5>
               <input
                 type="number"
                 name="numberOfCopies"
                 id="numberOfCopies"
-                className={`form-control ${classes.input__holder__single}`}
-                placeholder="enter Number Of Copies"
+                className={`form-control input__holder__single`}
+                placeholder="Enter Number Of Copies"
                 onChange={onChangeNumberOfCopies}
                 min="1"
                 step="1"
@@ -587,44 +598,47 @@ export default function CreateForm(props: IProps) {
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
 
-              <div className="spacer-20"></div>
+              {/* <div className="spacer-20"></div> */}
             </div>
           )}
           {marketType === MARKET_TYPE.SIMPLE && (
-            <div>
+            <div className="form-cfield">
               <h5>Price</h5>
               <Field
                 type="number"
                 name="price"
                 id="item_price"
-                className={`form-control ${classes.input__holder__single}`}
-                placeholder={`enter price for one item (${COIN})`}
+                className={`form-control input__holder__single`}
+                placeholder={`Enter price for one item (${COIN})`}
                 onChange={onChangePrice}
               />
               <ErrorMessage name="price">
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
-              <div className="spacer-20"></div>
+              {/* <div className="spacer-20"></div> */}
             </div>
           )}
 
-          <div>
+          <div className="form-cfield">
             <h5>Royalties</h5>
             <Field
               name="royalties"
               as={royaltiesComponent}
               placeholder="First Name"
-              className={`form-control ${classes.input__holder__single}`}
+              className={`form-control input__holder__single`}
             />
+            <span className="suggession-box">
+              Suggested: 0%, 10%, 20%, 30%. Maximum is 50%
+            </span>
             <ErrorMessage name="royalties">
               {(msg) => <div className="error-form">{msg}</div>}
             </ErrorMessage>
           </div>
 
-          <div className="spacer-20"></div>
+          {/* <div className="spacer-20"></div> */}
 
           {marketType === MARKET_TYPE.AUCTION && (
-            <div>
+            <div className="form-cfield">
               <h5>Minimum bid</h5>
 
               <div className="row">
@@ -633,16 +647,19 @@ export default function CreateForm(props: IProps) {
                     type="text"
                     name="minimumBid"
                     id="item_price_bid"
-                    className={`form-control ${classes.input__holder__single}`}
-                    placeholder="enter minimum bid"
+                    className={`form-control input__holder__single`}
+                    placeholder="Enter minimum bid"
                   />
+                  <span className="suggession-box">
+                    Bids below this amount won’t be allowed.
+                  </span>
                 </div>
                 <div className="col-3">
                   <Field
                     name="pricetokentype"
                     as={pricetokenSelectComponent}
                     placeholder="PriceTokenType"
-                    className={`form-control ${classes.input__holder__single}`}
+                    className={`form-control input__holder__single`}
                     onChange={onChangePriceTokenType}
                   />
                 </div>
@@ -651,81 +668,102 @@ export default function CreateForm(props: IProps) {
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
 
-              <div className="spacer-10"></div>
+              {/* <div className="spacer-10"></div> */}
             </div>
           )}
 
           {marketType === MARKET_TYPE.AUCTION && (
-            <div>
+            <div className="form-cfield">
               <h5>Expiration date</h5>
 
               <Field
                 type="datetime-local"
                 name="expirationDate"
                 id="bid_expiration_date"
-                className={`form-control ${classes.input__holder__single}`}
+                className={`form-control input__holder__single`}
                 onChange={onChangeExpirationDateInput}
                 min={moment().add(1, 'hours')}
               />
+              <span className="suggession-box">
+                Bids below this amount won’t be allowed.
+              </span>
               <ErrorMessage name="expirationDate">
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
             </div>
           )}
-          <h5>Add Properties</h5>
-          <FieldArray
-            name="attributes"
-            render={(arrayHelpers) => {
-              attrHelper = arrayHelpers;
-              return (
-                <div>
-                  {values.attributes.map(
-                    (attribute: INftAttribute, index: number) => (
-                      <Row key={index} className="mb-2">
-                        <span>{attribute.display_type.toUpperCase()}: </span>
-                        <div className="spacer-10" />
-                        <Col md="5" className="pr-2">
-                          <Field
-                            placeholder="Name"
-                            value={attribute.trait_type}
-                            name={`attributes.${index}.trait_type`}
-                            className={`form-control ${classes.input__holder__single}`}
-                          />
-                          <ErrorMessage name={`attributes.${index}.trait_type`}>
-                            {(msg) => <div className="error-form">{msg}</div>}
-                          </ErrorMessage>
-                        </Col>
-                        <Col md="5" className="pr-2">
-                          {getNftAttrValueInput(attribute, index)}
-                        </Col>
-                        <Col md="2" lg="1" className="text-center">
-                          <button
-                            type="button"
-                            className="btn-main btn-remove"
-                            onClick={() => arrayHelpers.remove(index)}
-                          >
-                            -
-                          </button>
-                        </Col>
-                        <Col md="12">
-                          <NftAttribute {...attribute} />
-                        </Col>
-                        <div className="spacer-20" />
-                      </Row>
-                    )
-                  )}
-                  <button
-                    type="button"
-                    className="btn-main btn-add"
-                    onClick={() => setAddAttributeVisible(true)}
-                  >
-                    +
-                  </button>
-                </div>
-              );
-            }}
-          />
+          <div className="form-cfield form-ccfield">
+            <div className="row align-items-center">
+              <div className="col-md-8">
+                <h5>Add Properties</h5>
+                <p className="sublabel">
+                  Textual traits that show up as rectangles
+                </p>
+              </div>
+              <div className="col-md-4 text-right">
+                <button
+                  type="button"
+                  className="btn-main btn-add"
+                  onClick={() => setAddAttributeVisible(true)}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
 
+            <div className="property-fields">
+              <FieldArray
+                name="attributes"
+                render={(arrayHelpers) => {
+                  attrHelper = arrayHelpers;
+                  return (
+                    <div>
+                      {values.attributes.map(
+                        (attribute: INftAttribute, index: number) => (
+                          <Row key={index} className="mb-2">
+                            <span className="form-label">
+                              {attribute.display_type.toUpperCase()}:{' '}
+                            </span>
+                            <Col md="5" className="pr-2">
+                              <Field
+                                placeholder="Name"
+                                value={attribute.trait_type}
+                                name={`attributes.${index}.trait_type`}
+                                className={`form-control input__holder__single`}
+                              />
+                              <ErrorMessage
+                                name={`attributes.${index}.trait_type`}
+                              >
+                                {(msg) => (
+                                  <div className="error-form">{msg}</div>
+                                )}
+                              </ErrorMessage>
+                            </Col>
+                            <Col md="5" className="pr-2">
+                              {getNftAttrValueInput(attribute, index)}
+                            </Col>
+                            <Col md="2" lg="1" className="text-center">
+                              <button
+                                type="button"
+                                className="btn-main btn-remove"
+                                onClick={() => arrayHelpers.remove(index)}
+                              >
+                                <i className="fa fa-trash"></i>
+                              </button>
+                            </Col>
+                            <Col md="12" className="property-info-box">
+                              <NftAttribute {...attribute} />
+                            </Col>
+                            <div className="spacer-20" />
+                          </Row>
+                        )
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            </div>
+          </div>
           <div className="spacer-20"></div>
           {submitCreateState.loading ? (
             <Loader />
@@ -733,7 +771,7 @@ export default function CreateForm(props: IProps) {
             <input
               type="submit"
               id="submit"
-              className="btn-main"
+              className="btn-main btn-main-submit"
               value="Create Nft"
             />
           )}

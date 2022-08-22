@@ -361,19 +361,37 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC1155/extensions/ERC1155Supply.sol)\n\npragma solidity ^0.8.0;\n\nimport \"../ERC1155.sol\";\n\n/**\n * @dev Extension of ERC1155 that adds tracking of total supply per id.\n *\n * Useful for scenarios where Fungible and Non-fungible tokens have to be\n * clearly identified. Note: While a totalSupply of 1 might mean the\n * corresponding is an NFT, there is no guarantees that no other token with the\n * same id are not going to be minted.\n */\nabstract contract ERC1155Supply is ERC1155 {\n    mapping(uint256 => uint256) private _totalSupply;\n\n    /**\n     * @dev Total amount of tokens in with a given id.\n     */\n    function totalSupply(uint256 id) public view virtual returns (uint256) {\n        return _totalSupply[id];\n    }\n\n    /**\n     * @dev Indicates whether any token exist with a given id, or not.\n     */\n    function exists(uint256 id) public view virtual returns (bool) {\n        return ERC1155Supply.totalSupply(id) > 0;\n    }\n\n    /**\n     * @dev See {ERC1155-_beforeTokenTransfer}.\n     */\n    function _beforeTokenTransfer(\n        address operator,\n        address from,\n        address to,\n        uint256[] memory ids,\n        uint256[] memory amounts,\n        bytes memory data\n    ) internal virtual override {\n        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);\n\n        if (from == address(0)) {\n            for (uint256 i = 0; i < ids.length; ++i) {\n                _totalSupply[ids[i]] += amounts[i];\n            }\n        }\n\n        if (to == address(0)) {\n            for (uint256 i = 0; i < ids.length; ++i) {\n                uint256 id = ids[i];\n                uint256 amount = amounts[i];\n                uint256 supply = _totalSupply[id];\n                require(supply >= amount, \"ERC1155: burn amount exceeds totalSupply\");\n                unchecked {\n                    _totalSupply[id] = supply - amount;\n                }\n            }\n        }\n    }\n}\n",
-  "sourcePath": "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol",
+  "sourcePath": "@openzeppelin\\contracts\\token\\ERC1155\\extensions\\ERC1155Supply.sol",
   "ast": {
     "absolutePath": "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol",
     "exportedSymbols": {
-      "Address": [3047],
-      "Context": [3069],
-      "ERC1155": [1262],
-      "ERC1155Supply": [1582],
-      "ERC165": [3370],
-      "IERC1155": [1384],
-      "IERC1155MetadataURI": [1597],
-      "IERC1155Receiver": [1425],
-      "IERC165": [3382]
+      "Address": [
+        3047
+      ],
+      "Context": [
+        3069
+      ],
+      "ERC1155": [
+        1262
+      ],
+      "ERC1155Supply": [
+        1582
+      ],
+      "ERC165": [
+        3370
+      ],
+      "IERC1155": [
+        1384
+      ],
+      "IERC1155MetadataURI": [
+        1597
+      ],
+      "IERC1155Receiver": [
+        1425
+      ],
+      "IERC165": [
+        3382
+      ]
     },
     "id": 1583,
     "license": "MIT",
@@ -381,7 +399,12 @@
     "nodes": [
       {
         "id": 1427,
-        "literals": ["solidity", "^", "0.8", ".0"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "126:23:4"
       },
@@ -423,7 +446,15 @@
         },
         "fullyImplemented": false,
         "id": 1582,
-        "linearizedBaseContracts": [1582, 1262, 1597, 1384, 3370, 3382, 3069],
+        "linearizedBaseContracts": [
+          1582,
+          1262,
+          1597,
+          1384,
+          3370,
+          3382,
+          3069
+        ],
         "name": "ERC1155Supply",
         "nameLocation": "540:13:4",
         "nodeType": "ContractDefinition",
@@ -813,7 +844,9 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [1086],
+            "baseFunctions": [
+              1086
+            ],
             "body": {
               "id": 1580,
               "nodeType": "Block",
@@ -1250,7 +1283,9 @@
                         },
                         "id": 1522,
                         "initializationExpression": {
-                          "assignments": [1501],
+                          "assignments": [
+                            1501
+                          ],
                           "declarations": [
                             {
                               "constant": false,
@@ -1444,7 +1479,9 @@
                           "src": "1642:337:4",
                           "statements": [
                             {
-                              "assignments": [1543],
+                              "assignments": [
+                                1543
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -1516,7 +1553,9 @@
                               "src": "1660:19:4"
                             },
                             {
-                              "assignments": [1549],
+                              "assignments": [
+                                1549
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -1588,7 +1627,9 @@
                               "src": "1697:27:4"
                             },
                             {
-                              "assignments": [1555],
+                              "assignments": [
+                                1555
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -1736,7 +1777,8 @@
                                   "name": "require",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [
-                                    4294967278, 4294967278
+                                    4294967278,
+                                    4294967278
                                   ],
                                   "referencedDeclaration": 4294967278,
                                   "src": "1793:7:4",
@@ -1929,7 +1971,9 @@
                         },
                         "id": 1577,
                         "initializationExpression": {
-                          "assignments": [1532],
+                          "assignments": [
+                            1532
+                          ],
                           "declarations": [
                             {
                               "constant": false,
@@ -2251,15 +2295,33 @@
   "legacyAST": {
     "absolutePath": "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol",
     "exportedSymbols": {
-      "Address": [3047],
-      "Context": [3069],
-      "ERC1155": [1262],
-      "ERC1155Supply": [1582],
-      "ERC165": [3370],
-      "IERC1155": [1384],
-      "IERC1155MetadataURI": [1597],
-      "IERC1155Receiver": [1425],
-      "IERC165": [3382]
+      "Address": [
+        3047
+      ],
+      "Context": [
+        3069
+      ],
+      "ERC1155": [
+        1262
+      ],
+      "ERC1155Supply": [
+        1582
+      ],
+      "ERC165": [
+        3370
+      ],
+      "IERC1155": [
+        1384
+      ],
+      "IERC1155MetadataURI": [
+        1597
+      ],
+      "IERC1155Receiver": [
+        1425
+      ],
+      "IERC165": [
+        3382
+      ]
     },
     "id": 1583,
     "license": "MIT",
@@ -2267,7 +2329,12 @@
     "nodes": [
       {
         "id": 1427,
-        "literals": ["solidity", "^", "0.8", ".0"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "126:23:4"
       },
@@ -2309,7 +2376,15 @@
         },
         "fullyImplemented": false,
         "id": 1582,
-        "linearizedBaseContracts": [1582, 1262, 1597, 1384, 3370, 3382, 3069],
+        "linearizedBaseContracts": [
+          1582,
+          1262,
+          1597,
+          1384,
+          3370,
+          3382,
+          3069
+        ],
         "name": "ERC1155Supply",
         "nameLocation": "540:13:4",
         "nodeType": "ContractDefinition",
@@ -2699,7 +2774,9 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [1086],
+            "baseFunctions": [
+              1086
+            ],
             "body": {
               "id": 1580,
               "nodeType": "Block",
@@ -3136,7 +3213,9 @@
                         },
                         "id": 1522,
                         "initializationExpression": {
-                          "assignments": [1501],
+                          "assignments": [
+                            1501
+                          ],
                           "declarations": [
                             {
                               "constant": false,
@@ -3330,7 +3409,9 @@
                           "src": "1642:337:4",
                           "statements": [
                             {
-                              "assignments": [1543],
+                              "assignments": [
+                                1543
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -3402,7 +3483,9 @@
                               "src": "1660:19:4"
                             },
                             {
-                              "assignments": [1549],
+                              "assignments": [
+                                1549
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -3474,7 +3557,9 @@
                               "src": "1697:27:4"
                             },
                             {
-                              "assignments": [1555],
+                              "assignments": [
+                                1555
+                              ],
                               "declarations": [
                                 {
                                   "constant": false,
@@ -3622,7 +3707,8 @@
                                   "name": "require",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [
-                                    4294967278, 4294967278
+                                    4294967278,
+                                    4294967278
                                   ],
                                   "referencedDeclaration": 4294967278,
                                   "src": "1793:7:4",
@@ -3815,7 +3901,9 @@
                         },
                         "id": 1577,
                         "initializationExpression": {
-                          "assignments": [1532],
+                          "assignments": [
+                            1532
+                          ],
                           "declarations": [
                             {
                               "constant": false,
@@ -4139,8 +4227,8 @@
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.6",
-  "updatedAt": "2022-06-07T17:36:30.240Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-06-29T11:27:08.386Z",
   "devdoc": {
     "details": "Extension of ERC1155 that adds tracking of total supply per id. Useful for scenarios where Fungible and Non-fungible tokens have to be clearly identified. Note: While a totalSupply of 1 might mean the corresponding is an NFT, there is no guarantees that no other token with the same id are not going to be minted.",
     "kind": "dev",

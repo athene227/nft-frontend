@@ -1,25 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import moment from 'moment';
+
 import {
   IAuctionMarketItem,
-  INft,
   INftAttribute,
   ISimpleMarketItem
 } from './types/nfts.types';
-
-export function debounce(func, wait, immediate) {
-  let timeout;
-  return function () {
-    const context = this,
-      args = arguments;
-    clearTimeout(timeout);
-    timeout = setTimeout(function () {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    }, wait);
-    if (immediate && !timeout) func.apply(context, args);
-  };
-}
 
 export function isMobile() {
   if (window) {
@@ -128,26 +114,6 @@ export function generateRandomId() {
   const tempId = Math.random().toString();
   const uid = tempId.substr(2, tempId.length - 1);
   return uid;
-}
-
-export function getQueryParam(prop) {
-  const params = {};
-  const search = decodeURIComponent(
-    window.location.href.slice(window.location.href.indexOf('?') + 1)
-  );
-  const definitions = search.split('&');
-  definitions.forEach(function (val, key) {
-    const parts = val.split('=', 2);
-    params[parts[0]] = parts[1];
-  });
-  return prop && prop in params ? params[prop] : params;
-}
-
-export function classList(classes) {
-  return Object.entries(classes)
-    .filter((entry) => entry[1])
-    .map((entry) => entry[0])
-    .join(' ');
 }
 
 export const getNetworkId = async (web3Instance: any) => {
@@ -317,14 +283,6 @@ export const createAuctionMarketItem = async (data: {
     res.events.AuctionItemCreated
   );
   return res.events.AuctionItemCreated;
-  /*
-    console.log('create a market on the contract');
-    console.log('res.events', res.events);
-  
-    const itemIdOnMarketContract =
-      res.events.AuctionItemCreated.returnValues['0'];
-    return itemIdOnMarketContract;
-  */
 };
 
 export const setInLocalStorage = (key: string, val: string) => {
@@ -461,9 +419,7 @@ export const getUserNftQuantityFromNftContract = async (data: {
   tokenId: number;
 }): Promise<string> => {
   const { nftContract, userAddress, tokenId } = data;
-  const balance = await nftContract.methods
-    .balanceOf(userAddress, tokenId)
-    .call();
+  const balance = await nftContract.methods.balanceOf(userAddress).call();
   return balance;
 };
 
@@ -525,3 +481,41 @@ export function numFormatterFull(num) {
 export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+
+export const generatePreviewImage: (
+  imgUrl: string,
+  width: number,
+  height: number
+) => Promise<File> = (imgUrl: string, width: number, height: number) => {
+  const canvas: HTMLCanvasElement = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  canvas.height = width;
+  canvas.width = height;
+
+  const image = new Image();
+
+  image.src = imgUrl;
+  context &&
+    context.drawImage(
+      image,
+      0,
+      0,
+      image.naturalWidth,
+      image.naturalHeight,
+      0,
+      0,
+      width,
+      height
+    );
+
+  return new Promise<File>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], 'preview.jpg', { type: blob.type });
+        resolve(file);
+      } else {
+        reject();
+      }
+    }, 'image/jpeg');
+  });
+};

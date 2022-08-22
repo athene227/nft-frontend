@@ -1,46 +1,45 @@
+import { navigate } from '@reach/router';
 import React, { memo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Footer from '../components/footer';
-import * as selectors from '../../store/selectors';
-
-import BuyPopUp from '../components/BuyPopUp';
-import {
-  getErrorMessage,
-  getProfileImage,
-  shortAddress,
-  getMyBalance,
-  getPriceAfterPercent,
-  cancelSimpleListing,
-  createSimpleMarketItem,
-  buySimple,
-  getNetworkId,
-  getSimpleMarketItem,
-  getUserNftQuantityFromNftContract,
-  getUserListedTokens
-} from 'src/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
   COIN,
-  MARKET_TYPE,
-  STATUS,
-  SELECTED_NETWORK,
   ERRORS,
+  MARKET_TYPE,
   PROCESS_TRAKING_ACTION,
-  PROCESS_TRAKING_STATUS
+  PROCESS_TRAKING_STATUS,
+  SELECTED_NETWORK,
+  STATUS
 } from 'src/enums';
-import Loader from 'src/components/components/Loader';
-import { navigate } from '@reach/router';
-import Alert from '../components/Alert';
-import { INft, ISimpleMarketItem } from 'src/types/nfts.types';
-import SellPopUp from '../components/SellPopUp';
-import CancelListingPopUp from '../components/CancelListingPopUp';
-import notification from 'src/services/notification';
-import OwnerAndQuantity from './OwnerAndQuantity';
-import { renderAttributes } from '../components/NftAttributes';
 import { getImage } from 'src/services/ipfs';
-import { fetchNftMultipleDetails } from '../../store/actions/thunks/nfts';
+import notification from 'src/services/notification';
+import { INft, ISimpleMarketItem } from 'src/types/nfts.types';
+import {
+  buySimple,
+  cancelSimpleListing,
+  createSimpleMarketItem,
+  getErrorMessage,
+  getMyBalance,
+  getNetworkId,
+  getPriceAfterPercent,
+  getSimpleMarketItem,
+  getUserListedTokens,
+  getUserNftQuantityFromNftContract,
+  shortAddress
+} from 'src/utils';
+
 import { clearEvents } from '../../store/actions';
+import { fetchNftMultipleDetails } from '../../store/actions/thunks/nfts';
+import * as selectors from '../../store/selectors';
+import Alert from '../components/Alert';
+import BuyPopUp from '../components/BuyPopUp';
+import CancelListingPopUp from '../components/CancelListingPopUp';
+import Footer from '../components/footer';
+import { renderAttributes } from '../components/NftAttributes';
+import OwnerAndQuantity from '../components/OwnerAndQuantity';
+import SellPopUp from '../components/SellPopUp';
 import UserAvatar from '../components/UserAvatar';
 
 enum TAB_TYPE {

@@ -26,48 +26,6 @@ export const getImage = (image: string | undefined | null) => {
   return image.replace('ipfs://', gatewayUrl);
 };
 
-// export const getImageUri = async (file: File) => {
-//   const data = new FormData(),
-//     createdAt = moment.now();
-//   data.append('title', file.name + createdAt);
-//   data.append('file', file);
-
-//   const metadata = JSON.stringify({
-//     name: file.name + createdAt,
-//     keyvalues: {
-//       size: file.size
-//     }
-//   });
-//   data.append('pinataMetadata', metadata);
-
-//   const result: PinataResponse = await pinata.post('/pinFileToIPFS', data, {
-//     maxContentLength: -1,
-//     headers: {
-//       'Content-Type': `multipart/form-data boundary=${data._boundary}`
-//     }
-//   });
-//   return `ipfs://${result.data.IpfsHash}`;
-// };
-
-// export const getUri = async (data: {
-//   name: string;
-//   description: string;
-//   imageUrl: string;
-//   attributes: any[];
-// }) => {
-//   const { name, description, imageUrl, attributes } = data;
-//   const createdAt = moment.now(),
-//     metaName = name + createdAt;
-//   const metaData = { name, description, imageUrl, attributes, createdAt };
-//   const options = {
-//     pinataMetadata: { name: metaName },
-//     pinataContent: metaData
-//   };
-
-//   const result: PinataResponse = await pinata.post('/pinJSONToIPFS', options);
-//   return `ipfs://${result.data.IpfsHash}`;
-// };
-
 export const getImageUri = async (file: File) => {
   const data = new FormData();
   data.append('file', file);

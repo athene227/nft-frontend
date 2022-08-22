@@ -1,0 +1,93 @@
+/*** table ***/
+
+.de-table.table-rank {
+    color: $white;
+    display: table;
+    margin-bottom: 0;
+    --bs-table-bg: transparent;
+    --bs-table-accent-bg: transparent;
+    --bs-table-striped-color: #212529;
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+    --bs-table-active-color: #212529;
+    --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+    --bs-table-hover-color: #212529;
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+    width: 100%;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    border-color: #dee2e6;
+  
+    thead {
+      border-style: hidden !important;
+      padding-bottom: 15px;
+    }
+  
+    tr {
+      border-bottom: solid 1px rgba(255, 255, 255, 0.1) !important;
+  
+      &.spacer-single {
+        border-bottom: 0 !important;
+      }
+    }
+  
+    th {
+      padding: 30px 0;
+    }
+  
+    td {
+      padding: 30px 0;
+    }
+  
+    .coll_list_pp {
+      position: absolute;
+      display: inline-block;
+      width: 50px;
+      height: auto;
+      margin-left: 10px;
+      margin-top: -12px;
+      z-index: 10;
+      left: 0;
+  
+      img {
+        width: 100%;
+        border-radius: 100% !important;
+        position: relative;
+        z-index: 1;
+      }
+  
+      i {
+        color: $white;
+        background: $pink_col;
+        font-size: 10px;
+        padding: 3px;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        border-radius: 100%;
+        z-index: 2;
+      }
+    }
+  
+    tbody th {
+      position: relative;
+      padding-left: 75px;
+    }
+  
+    .d-plus {
+      color: #34c77b;
+    }
+  
+    .d-min {
+      color: #eb5757;
+    }
+  }
+  .select1 {
+    .css-wenqhu-control {
+      background-color: #171c27;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+  
+      &>div>div {
+        color: $white;
+      }
+    }
+  }

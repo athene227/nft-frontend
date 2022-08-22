@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
-import Footer from '../components/footer';
-import { createGlobalStyle } from 'styled-components';
-import * as selectors from '../../store/selectors';
-import { fetchOwnerDetails } from '../../store/actions/thunks/users';
-import { ALERT_TYPE } from 'src/enums';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
-import Alert from '../components/Alert';
+import { ALERT_TYPE } from 'src/enums';
 import notification from 'src/services/notification';
-import { getImage } from 'src/services/ipfs';
-import NftsAndCollections from './NftsAndCollections';
+import { createGlobalStyle } from 'styled-components';
+
+import { fetchOwnerDetails } from '../../store/actions/thunks/users';
+import * as selectors from '../../store/selectors';
+import Alert from '../components/Alert';
+import Footer from '../components/footer';
 import UserAvatar from '../components/UserAvatar';
+import NftsAndCollections from './NftsAndCollections';
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {

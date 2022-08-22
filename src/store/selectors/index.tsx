@@ -1,24 +1,21 @@
 import { createSelector, createStructuredSelector } from 'reselect';
+import { INft } from 'src/types/nfts.types';
 
+import { IBids } from '../reducers/bids';
+import { ICollectionsState } from '../reducers/collections';
+import { IHotAuctions } from '../reducers/hotAuction';
+import { IHotCollections } from '../reducers/hotCollections';
 import {
   IListedNfts,
-  IUserNfts,
-  InftDetail,
   InftCollectibleDetail,
+  InftDetail,
   InftShowcase,
-  IsellNft
+  IsellNft,
+  IUserNfts
 } from '../reducers/nfts';
+import { ISearchState } from '../reducers/search';
 import { IUserState } from '../reducers/users';
 import { IWeb3State } from '../reducers/web3Reducer';
-import { ICollectionsState } from '../reducers/collections';
-import {
-  IHotCollections,
-  IHotCollectionsState
-} from '../reducers/hotCollections';
-import { ISearchState } from '../reducers/search';
-import { IBids } from '../reducers/bids';
-import { INft } from 'src/types/nfts.types';
-import { IHotAuctions } from '../reducers/hotAuction';
 
 //Store Selectors
 export const listedNftsState = (state: any) => ({
