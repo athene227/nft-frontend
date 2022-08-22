@@ -41,6 +41,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     error: null | string;
     loading: boolean;
   }>({ error: null, loading: false });
+  const [priceTokenType, setTokenType] = useState('MRT');
 
   const [priceTokenType, setTokenType] = useState('MRT');
   const [expirationDateInput, setExpirationDateInput] = useState<string>('');
