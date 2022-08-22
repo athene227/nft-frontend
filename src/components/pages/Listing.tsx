@@ -1,14 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchNftDetail } from '../../store/actions/thunks/nfts';
-import * as selectors from '../../store/selectors';
-
-import Footer from '../components/footer';
-// import { createGlobalStyle } from 'styled-components';
-import RegularSaleForm from '../components/RegularSaleForm';
-import AuctionSaleForm from '../components/AuctionSaleForm';
-import { INft } from 'src/types/nfts.types';
+import { navigate } from '@reach/router';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Alert from 'src/components/components/Alert';
+import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
   ERRORS,
@@ -18,7 +13,8 @@ import {
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
-import Alert from 'src/components/components/Alert';
+import notification from 'src/services/notification';
+import { INft } from 'src/types/nfts.types';
 import {
   createAuctionMarketItem,
   createSimpleMarketItem,
@@ -26,13 +22,16 @@ import {
   getNetworkId,
   getUserNftQuantityFromNftContract
 } from 'src/utils';
-import { ApiService } from 'src/core/axios';
-import { navigate } from '@reach/router';
-import PreviewNft from '../components/PreviewNft';
+
+import { fetchNftDetail } from '../../store/actions/thunks/nfts';
+import * as selectors from '../../store/selectors';
+import AuctionSaleForm from '../components/AuctionSaleForm';
+import Footer from '../components/footer';
 import Loader from '../components/Loader';
 import MarketTypeTabs from '../components/MarketTypeTabs';
-import notification from 'src/services/notification';
-import moment from 'moment';
+import PreviewNft from '../components/PreviewNft';
+// import { createGlobalStyle } from 'styled-components';
+import RegularSaleForm from '../components/RegularSaleForm';
 
 const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
@@ -44,6 +43,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   }>({ error: null, loading: false });
   const [priceTokenType, setTokenType] = useState('MRT');
 
+  const [priceTokenType, setTokenType] = useState('MRT');
   const [expirationDateInput, setExpirationDateInput] = useState<string>('');
   const [priceInput, setPriceInput] = useState<string>('');
 
@@ -259,7 +259,6 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
       setSubmitSaleState({ error: getErrorMessage(error), loading: false });
     }
   };
-
   const renderForm = () => {
     if (marketType === MARKET_TYPE.SIMPLE) {
       return (

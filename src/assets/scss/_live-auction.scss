@@ -1,135 +1,223 @@
-$stats-bg: #12121280;
-$live-bg-shadow: #040f2526;
-$live-bg-color: #0e1e45;
-.section-live-auction {
-    background-image: url("../images/liveauction-bg.png");
-    .themeLight & {
-        background-image: none;
-    }
-    background-size: 150% 110%;
-    background-repeat: no-repeat;
-    background-position: center center;
-    .swiper-wrapper {
-        margin-left: -12px;
-    }
-    .live_item {
-        .nft__item_preview {
-            width: 360px;
-            height: 360px;
-        }
+// $stats-bg: #12121280;
+// $live-bg-shadow: #040f2526;
+// $live-bg-color: #0e1e45;
+// .section-live-auction {
+//     background-image: url("../images/liveauction-bg.png");
+//     .themeLight & {
+//         background-image: none;
+//     }
+//     background-size: 150% 110%;
+//     background-repeat: no-repeat;
+//     background-position: center center;
+//     .swiper-wrapper {
+//         margin-left: -12px;
+//         @media screen and (max-width:641px){
+//             margin-left: 0;
+//         }
+//     }
+//     .live_item {Z
+//         .nft__item_preview {
+//             width: 360px;
+//             height: 360px;
+//             @media screen and (max-width:641px){
+//                 width: 100%;
+//                 min-height: 220px;
+//                 max-height: 220px;
+//             }
+//         }
 
-        .stats {
-            position: absolute;
-            bottom: 0%;
-            // border: 2px solid white;
-            z-index: 0;
-            width: 90%;
-            margin: 2%;
-            background: $stats-bg;
-            backdrop-filter: blur(50px);
-            border-radius: 10px;
-            // clip-path: polygon(20% 0%, 100% 0, 100% 20%, 100% 80%, 80% 100%, 0 100%, 0% 85%, 0 20%);
+//         .stats {
+//             position: absolute;
+//             bottom: 0%;
+//             // border: 2px solid white;
+//             z-index: 0;
+//             width: 90%;
+//             margin: 2%;
+//             background: $stats-bg;
+//             backdrop-filter: blur(50px);
+//             border-radius: 10px;
+//             // clip-path: polygon(20% 0%, 100% 0, 100% 20%, 100% 80%, 80% 100%, 0 100%, 0% 85%, 0 20%);
 
-            .stats_heading {
-                font-size: 25px;
-                font-weight: 700;
-                color: white;
-            }
+//             .stats_heading {
+//                 font-size: 25px;
+//                 font-weight: 700;
+//                 color: white;
+//             }
 
-            .stats_info {
-                font-size: 14px;
-                color: $white;
-                margin-bottom: 0;
-            }
+//             .stats_info {
+//                 font-size: 14px;
+//                 color: $white;
+//                 margin-bottom: 0;
+//             }
 
-            .stats_price {
-                color: var(--color);
-                font-size: 16px;
-                font-weight: 900;
-                @media only screen and (max-width: 641px) {
-                    font-size: 12px;
-                }
-            }
+//             .stats_price {
+//                 color: $color_primary;
+//                 font-size: 16px;
+//                 font-weight: 900;
+//                 @media only screen and (max-width: 641px) {
+//                     font-size: 12px;
+//                 }
+//             }
 
-            .stats_timer {
-                color: white;
-                font-size: 16px;
-                font-weight: 700;
-                @media only screen and (max-width: 641px) {
-                    font-size: 11px;
-                }
-            }
-        }
-    }
+//             .stats_timer {
+//                 color: white;
+//                 font-size: 16px;
+//                 font-weight: 700;
+//                 @media only screen and (max-width: 641px) {
+//                     font-size: 11px;
+//                 }
+//             }
+//         }
+//         .nft-outer{
+//             @media screen and (max-width:641px){
+//                 height: auto;
+//             }
+//         }
+//     }
 
-    .live_bg_col {
-        background: $live-bg-color;
-        .themeLight & {
-        }
-        border-radius: 20px;
-        width: 400px;
-        height: 620px;
-        @media screen and (max-width: 768px) {
-            margin: 0 auto;
-        }
-        box-shadow: 20px 30px 30px $live-bg-shadow;
-        backdrop-filter: blur(193.17px);
-        /* Note: backdrop-filter has minimal browser support */
+//     .live_bg_col {
+//         background: $live-bg-color;
+//         .themeLight & {
+//         }
+//         border-radius: 20px;
+//         width: 400px;
+//         height: 620px;
+//         @media screen and (max-width: 768px) {
+//             margin: 0 auto;
+//         }
+//         box-shadow: 20px 30px 30px $live-bg-shadow;
+//         backdrop-filter: blur(193.17px);
+//         /* Note: backdrop-filter has minimal browser support */
 
-        border-radius: 10px;
-        padding: 10px 20px 30px;
-        @media only screen and (max-width: 641px) {
-            width: 260px;
-        }
-    }
-    .swiper-slide-active.swiper-slide {
-        // backdrop-filter: blur(0px);
-        .live_bg_col {
-            background: $live-bg-color;
-        }
-    }
-    .swiper-slide {
-        // backdrop-filter: blur(10px);
-        .live_bg_col {
-            // background: rgba(14, 30, 69, 0.6);
-        }
-    }
-    .swiper-slide-next,
-    .swiper-slide-prev {
-        // backdrop-filter: blur(5px);
-        .live_bg_col {
-            // background: rgba(14, 30, 69, 0.5);
-        }
-    }
-    .themeLight .LiveAuctionItem_live_bg_col__13Njj {
-        background: $white;
-    }
-    .icon_font {
-        font-size: 20px;
-    }
+//         border-radius: 10px;
+//         padding: 10px 20px 30px;
+//         @media only screen and (max-width: 641px) {
+//             width: 100%;
+//             height: auto;
+//         }
+//     }
+//     .swiper-slide-active.swiper-slide {
+//         // backdrop-filter: blur(0px);
+//         .live_bg_col {
+//             background: $live-bg-color;
+//         }
+//     }
+//     .swiper-slide {
+//         // backdrop-filter: blur(10px);
+//         .live_bg_col {
+//             // background: rgba(14, 30, 69, 0.6);
+//         }
+//     }
+//     .swiper-slide-next,
+//     .swiper-slide-prev {
+//         // backdrop-filter: blur(5px);
+//         .live_bg_col {
+//             // background: rgba(14, 30, 69, 0.5);
+//         }
+//     }
+//     .themeLight .LiveAuctionItem_live_bg_col__13Njj {
+//         background: $white;
+//     }
+//     .icon_font {
+//         font-size: 20px;
+//     }
 
-    .author_list_dimensions {
-        width: 30px;
-        height: 30px;
-    }
-    .themeLight & {
-        .nft__item.sec-bg {
-            background-color: $white;
-        }
-        .swiper-button-prev-unique,
-        .swiper-button-next-unique {
-            color: $text-light;
-        }
-    }
-    .nft__item_info {
-        .author_list_pp {
-            margin-left: 0;
-        }
-        .nft__item_price {
-            // margin-right: -15px;
-        }
-    }
-    .author_icon_custom {
-        margin-left: -14px;
-    }
-}
+//     .author_list_dimensions {
+//         width: 30px;
+//         height: 30px;
+//     }
+//     .themeLight & {
+//         .nft__item.sec-bg {
+//             background-color: $white;
+//         }
+//         .swiper-button-prev-unique,
+//         .swiper-button-next-unique {
+//             color: $text-light;
+//         }
+//     }
+//     .nft__item_info {
+//         @media screen and (max-width:641px){
+//             height:auto;
+//         }
+//         .nft__item_action{
+//             @media screen and (max-width:641px){
+//                 position: static;
+//             }
+//         }
+//         .author_list_pp {
+//             margin-left: 0;
+//         }
+//         .nft__item_price {
+//             // margin-right: -15px;
+//         }
+//     }
+//     .author_icon_custom {
+//         margin-left: -14px;
+//     }
+// }
+// // Live Auctions Swiper Global Styles
+  
+// .swiper-slide {
+//     // backdrop-filter: blur(10px);
+//     filter: blur(2px);
+//   }
+  
+//   .swiper-slide-next {
+//     // backdrop-filter: blur(5px);
+//     filter: blur(1px);
+//   }
+  
+//   .swiper-slide-prev {
+//     // backdrop-filter: blur(5px);
+//     filter: blur(2px);
+//   }
+  
+//   .swiper-slide-active {
+//     // backdrop-filter: blur(0px);
+//     filter: none;
+//   }
+  
+//   .swiper-button-prev {
+//     color: $gray !important;
+//   }
+  
+//   .swiper-button-next {
+//     color: $gray !important;
+//   }
+  
+//   .swiper-pagination-bullet-active {
+//     background: $color_primary !important;
+//   }
+  
+//   .swiper-pagination {
+//     position: relative !important;
+//   }
+  
+//   .swiper-pagination-bullet {
+//     background: $gray !important;
+//   }
+  
+//   @mixin swiper-nav-hover {
+//     z-index: 10;
+//     position: absolute;
+//     top: 45%;
+//     font-size: 30px;
+//     color: #fff;
+//     cursor: pointer;
+//     transition: all ease-in-out 0.3s;
+//     &:hover {
+//       color: $color_primary;
+//     }
+//   }
+  
+//   .swiper-button-next-unique {
+//     @include swiper-nav-hover;
+//     right: -1%;
+//   }
+  
+//   .swiper-button-prev-unique {
+//     @include swiper-nav-hover;
+//     left: -1%;
+//   }
+  
+ 

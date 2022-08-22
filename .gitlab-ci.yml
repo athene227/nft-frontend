@@ -15,7 +15,7 @@ build_production:
     - cat "$DOT_ENV_PROD" > "$(pwd)/.env"
     - apk add --no-cache git
   script:
-    - npm install
+    - npm install --legacy-peer-deps
     - CI=false npm run build
   artifacts:
     paths:

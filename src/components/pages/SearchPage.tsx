@@ -1,19 +1,20 @@
+import { Box, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { Col, Row } from 'react-bootstrap';
-import * as selectors from '../../store/selectors';
-import * as actions from '../../store/actions/thunks';
+import { useDispatch, useSelector } from 'react-redux';
+
+import CollectionCard from '../../components/components/CollectionCard';
+import Loader from '../../components/components/Loader';
+import NftCard from '../../components/components/NftCard';
+import UserCard from '../../components/components/UserCard';
 import {
   setSearchCollectionCurrentPage,
   setSearchNftCurrentPage,
   setSearchQuery,
   setSearchUserCurrentPage
 } from '../../store/actions';
-import Loader from '../../components/components/Loader';
-import CollectionCard from '../../components/components/CollectionCard';
-import NftCard from '../../components/components/NftCard';
-import UserCard from '../../components/components/UserCard';
+import * as actions from '../../store/actions/thunks';
+import * as selectors from '../../store/selectors';
 import CheckboxFilter from '../components/CheckboxFilter';
 
 interface TabPanelProps {

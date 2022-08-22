@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import UserTopSeller from './UserTopSeller';
-import { IProcessTracking } from 'src/types/processTracking.types';
 import { USER_TYPE } from 'src/enums';
+import { IProcessTracking } from 'src/types/processTracking.types';
+
+import UserTopSeller from './UserTopSeller';
 
 interface Iprops {
   data: IProcessTracking[];

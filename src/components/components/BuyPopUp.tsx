@@ -1,8 +1,7 @@
-import React, { memo, useState, useEffect } from 'react';
+import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
+import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-
-import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
   COIN,
@@ -11,12 +10,14 @@ import {
   INPUT_ERROS,
   MARKET_CONTRACT_EVENTS
 } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
 import { INft, ISimpleMarketItem } from 'src/types/nfts.types';
-import Loader from 'src/components/components/Loader';
-import Alert from './Alert';
-import * as selectors from '../../store/selectors';
 import { getErrorMessage } from 'src/utils';
 import { getSimpleMarketItem } from 'src/utils';
+import * as Yup from 'yup';
+
+import * as selectors from '../../store/selectors';
+import Alert from './Alert';
 import TransactionHash from './TransactionHash';
 
 interface IProps {
@@ -142,85 +143,143 @@ const BuyPopUp = (props: IProps) => {
     console.log('buyTransactionHash in buy pop up', buyTransactionHash);
 
     return (
-      <Form>
-        <div className="heading">
-          <h3>Buy NFT</h3>
+      <div>
+        <div className="modal-header">
+          <div className="heading">
+            {/* <h5 className='modal-title'>Buy nft</h5> */}
+            <h5 className="modal-title">Buy Now</h5>
+          </div>
+          <button
+            className="btn-close"
+            onClick={() => onClose(buyTransactionHash !== undefined)}
+          >
+            x
+          </button>
         </div>
-        <p>
-          You are about to purchase a{' '}
-          <span className="bold">{`${nft?.name} `}</span>
-          <span className="bold">
-            from{' '}
-            {nft?.owner[0]?.username ||
-              nft?.owner[0]?.publicAddress ||
-              nft?.ownerAddress}
-          </span>
-        </p>
-        {multiple && <p>available: {marketItem.remainingQuantity}</p>}
-        {multiple ? (
-          <div className="detailcheckout mt-4">
-            <div className="listcheckout">
-              <h6>Quantity</h6>
-              <Field
-                type="number"
-                name="amount"
-                id="item_amount"
-                className="form-control"
-                placeholder={'Enter amount'}
-                min="1"
-                step="1"
-              />
-              <ErrorMessage name="amount">
-                {(msg) => <div className="error-form">{msg}</div>}
-              </ErrorMessage>
+        <div className="modal-content">
+          <div className="row">
+            <div className="col-md-7">
+              <Form>
+                <div className="form-header">
+                  <p>
+                    You are about to purchase a{' '}
+                    <span className="bold">{`${nft?.name} `}</span>
+                    <span className="bold">
+                      from{' '}
+                      {nft?.owner[0]?.username ||
+                        nft?.owner[0]?.publicAddress ||
+                        nft?.ownerAddress}
+                    </span>
+                  </p>
+                </div>
+                <div className="buy-detail-table">
+                  {multiple && <p>available: {marketItem.remainingQuantity}</p>}
+                  {multiple ? (
+                    <div className="detailcheckout mt-4">
+                      <div className="listcheckout">
+                        <h6>Quantity</h6>
+                        <Field
+                          type="number"
+                          name="amount"
+                          id="item_amount"
+                          className="form-control"
+                          placeholder={'Enter amount'}
+                          min="1"
+                          step="1"
+                        />
+                        <ErrorMessage name="amount">
+                          {(msg) => <div className="error-form">{msg}</div>}
+                        </ErrorMessage>
+                      </div>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  <div className="heading mt-3">
+                    <p>Your balance</p>
+                    <div className="subtotal">
+                      {Number(userBalance).toFixed(8)} {COIN}
+                    </div>
+                  </div>
+
+                  <div className="heading">
+                    <p>Nft price</p>
+                    <div className="subtotal">
+                      {nft?.price} {COIN}
+                    </div>
+                  </div>
+                  <div className="heading">
+                    <p>Service fee 1%</p>
+                    <div className="subtotal">
+                      {getComission()} {COIN}
+                    </div>
+                  </div>
+                </div>
+                <div className="total-pay">
+                  <div className="heading">
+                    <p>Total Price</p>
+                    <div className="subtotal">
+                      {getTotal()} {COIN}
+                    </div>
+                  </div>
+                </div>
+                <div className="detail_button">
+                  {buyTransactionHash && (
+                    <TransactionHash hash={buyTransactionHash} />
+                  )}
+                  {placeBidState.loader ? (
+                    <Loader />
+                  ) : (
+                    buyTransactionHash === undefined && (
+                      <input
+                        type="submit"
+                        id="submit"
+                        className="btn-main"
+                        value="Buy Now"
+                      />
+                    )
+                  )}
+                  {placeBidState.error && (
+                    <Alert
+                      text={placeBidState.error}
+                      type={ALERT_TYPE.DANGER}
+                    />
+                  )}
+                </div>
+              </Form>
+            </div>
+            <div className="col-md-5">
+              <div className="buy-popup-image">
+                <div className="buy-popup-img">
+                  <img
+                    className="img-fluid"
+                    src={getImage(nft?.imageUrl)}
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                <div className="buy-popup-imgdesc">
+                  <h2>{nft?.name}</h2>
+                  <p>{nft?.description}</p>
+                  <div className="buy-popup-price">
+                    {nft.price > 0 && (
+                      <p className="item_detail_price">
+                        <i>
+                          <img src="./../../img/icon/price-pulse.png" />
+                        </i>{' '}
+                        <strong>
+                          {nft?.price} {COIN}
+                        </strong>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="spacer-20"></div>
-        )}
-
-        <div className="heading mt-3">
-          <p>Your balance</p>
-          <div className="subtotal">
-            {Number(userBalance).toFixed(8)} {COIN}
-          </div>
         </div>
-
-        <div className="heading">
-          <p>Nft price</p>
-          <div className="subtotal">
-            {nft?.price} {COIN}
-          </div>
-        </div>
-        <div className="heading">
-          <p>Service fee 1%</p>
-          <div className="subtotal">
-            {getComission()} {COIN}
-          </div>
-        </div>
-        <div className="heading">
-          <p>You will pay</p>
-          <div className="subtotal">
-            {getTotal()} {COIN}
-          </div>
-        </div>
-        {buyTransactionHash && <TransactionHash hash={buyTransactionHash} />}
-        {placeBidState.loader ? (
-          <Loader />
-        ) : (
-          buyTransactionHash === undefined && (
-            <input
-              type="submit"
-              id="submit"
-              className="btn-main"
-              value="Buy Now"
-            />
-          )
-        )}
-        {placeBidState.error && (
-          <Alert text={placeBidState.error} type={ALERT_TYPE.DANGER} />
-        )}
-      </Form>
+      </div>
     );
   };
 
@@ -248,17 +307,7 @@ const BuyPopUp = (props: IProps) => {
     );
   };
 
-  return (
-    <div className="maincheckout">
-      <button
-        className="btn-close"
-        onClick={() => onClose(buyTransactionHash !== undefined)}
-      >
-        x
-      </button>
-      {renderView()}
-    </div>
-  );
+  return <div className="maincheckout modal-style-1">{renderView()}</div>;
 };
 
 export default memo(BuyPopUp);

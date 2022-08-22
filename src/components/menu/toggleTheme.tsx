@@ -1,9 +1,11 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { useState } from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+
+import { dark, light } from '../../styles/theme/themeVariables';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -68,7 +70,6 @@ export default function ToggleTheme() {
       element?.setAttribute('class', 'themeLight');
     }
   };
-
   return (
     <FormGroup className="themeSwitcher">
       <FormControlLabel

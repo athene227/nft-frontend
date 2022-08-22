@@ -1,10 +1,11 @@
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
-  initEntityState,
+  entityLoadingFailed,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  entityLoadingFailed
+  initEntityState
 } from '../utils';
 
 export interface IWeb3State {

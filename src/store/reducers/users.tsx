@@ -1,12 +1,13 @@
 import { IUser } from 'src/types/users.types';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
-  initEntityState,
+  entityLoadingFailed,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  entityLoadingFailed
+  initEntityState
 } from '../utils';
 
 export interface IUserState {

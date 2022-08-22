@@ -27,3 +27,5 @@ yarn-error.log*
 .env
 .truffle-config.js
 .idea/workspace.xml
+
+package-lock.json

@@ -1,0 +1,164 @@
+.d-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+.nft_pic {
+    overflow: hidden;
+    border-radius: 10px;
+    position: relative;
+    margin: 0 10px 10px;
+    transition: 0.7s;
+    cursor: pointer;
+  
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: 1s;
+    }
+  
+    &:hover {
+      img {
+        transition: 3s;
+        transform: scale(1.2);
+      }
+    }
+  }
+  
+  .nft_pic_info {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    z-index: 1;
+    font-size: 28px;
+    color: $white;
+  }
+  
+  .nft_pic_title {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .nft_pic_by {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .nft-big {
+    width: 100%;
+  
+    .slick-prev {
+      left: 10px;
+      display: block;
+      width: 40px;
+      height: 60px;
+      overflow: hidden;
+      line-height: 60px;
+      z-index: 1;
+      transition: all 0.3s ease;
+  
+      &::before {
+        display: block;
+        content: "\f053" !important;
+        font-size: 0.9rem;
+        font-family: FontAwesome !important;
+        font-style: normal;
+        font-weight: normal;
+        color: $black;
+        position: relative;
+        line-height: 60px;
+        width: 60px;
+        height: 60px;
+        padding-left: 20px;
+        border-radius: 60px;
+        background: $white;
+        left: -25px;
+        opacity: 1;
+      }
+    }
+  
+    .slick-next {
+      right: 9px;
+      display: block;
+      width: 40px;
+      height: 60px;
+      line-height: 60px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+  
+      &::before {
+        display: block;
+        content: "\f054" !important;
+        font-size: 0.9rem;
+        font-family: FontAwesome !important;
+        font-style: normal;
+        font-weight: normal;
+        color: $black;
+        position: relative;
+        line-height: 60px;
+        width: 60px;
+        height: 60px;
+        padding-right: 20px;
+        border-radius: 60px;
+        background: $white;
+        right: -4px;
+        opacity: 1;
+      }
+    }
+  
+    &:hover {
+  
+      .slick-prev,
+      .slick-next {
+        opacity: 1;
+        transition: all 0.3s ease;
+      }
+    }
+  
+    .blockquote {
+      font-size: 0.98rem;
+      text-align: left;
+      margin: 15px 30px 30px;
+      display: flex;
+  
+      .fa {
+        font-size: 1.3rem;
+        display: inline-block;
+        margin: 5px 15px 0 0;
+        color: $white;
+        height: max-content;
+      }
+  
+      p {
+        line-height: 1.8;
+        display: inline-block;
+      }
+  
+      .bytesti {
+        font-size: 0.9rem;
+        font-weight: 400;
+      }
+    }
+  
+    .slick-dots {
+      bottom: -40px;
+  
+      li.slick-active button::before {
+        opacity: 0.75;
+        color: $white;
+      }
+  
+      li button::before {
+        color: $white;
+      }
+    }
+  }
+  .carousel-nft-item {
+    width: calc(100% - 30px);
+    margin: auto;
+  }

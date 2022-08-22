@@ -30,7 +30,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nftContractAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"royalty\",\"type\":\"uint256\"}],\"name\":\"initializeItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/src/contracts/INFTMarket.sol\":\"INFTMarket\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/src/contracts/INFTMarket.sol\":{\"keccak256\":\"0xeaa466bb5d356deb644734f589660eed2f8ea2baa1c4d34bb5d8e4bb23749a08\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7d8e8ec178e58ffd01122a7a732ea6ff460791fa2f14d88827c063d24a96c236\",\"dweb:/ipfs/QmSZap1EA4XWyzUCstaqvw74nAzMmqA3hynmfVQZt4c9qA\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"nftContractAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"royalty\",\"type\":\"uint256\"}],\"name\":\"initializeItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/src/contracts/INFTMarket.sol\":\"INFTMarket\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/src/contracts/INFTMarket.sol\":{\"keccak256\":\"0x261dd807cbe4738bbdc2d6c8b136bda6f27c9e88cd031ed29b7fcc1cc9cb2fa0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6b05fa4a75f19e874fa981192ff097dcf11d2906af37d84f50f10182eb72bf3d\",\"dweb:/ipfs/QmWHvDn7ZV6K2Q6R2AgYrtDrEWMEGAMdLjSyZdSxaPLz1e\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -38,12 +38,14 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.4;\n\n\n// import \"./NFTMarket.sol\"; \ninterface INFTMarket {\n    function initializeItem(\n        address nftContractAddress,\n        uint256 tokenId,\n        address creator,\n        uint256 royalty\n        // NFTMarket.FrontData memory frontData\n    ) external;\n}\n",
-  "sourcePath": "/Users/timor/Desktop/nftOnPulse/nft-front/src/contracts/INFTMarket.sol",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.4;\r\n\r\n\r\n// import \"./NFTMarket.sol\"; \r\ninterface INFTMarket {\r\n    function initializeItem(\r\n        address nftContractAddress,\r\n        uint256 tokenId,\r\n        address creator,\r\n        uint256 royalty\r\n        // NFTMarket.FrontData memory frontData\r\n    ) external;\r\n}\r\n",
+  "sourcePath": "E:\\Dev\\2022-4-25-pulsechain-nft\\nft-front-grey\\src\\contracts\\INFTMarket.sol",
   "ast": {
     "absolutePath": "project:/src/contracts/INFTMarket.sol",
     "exportedSymbols": {
-      "INFTMarket": [3526]
+      "INFTMarket": [
+        3526
+      ]
     },
     "id": 3527,
     "license": "MIT",
@@ -51,9 +53,14 @@
     "nodes": [
       {
         "id": 3514,
-        "literals": ["solidity", "^", "0.8", ".4"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:19"
+        "src": "33:23:19"
       },
       {
         "abstract": false,
@@ -62,9 +69,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "id": 3526,
-        "linearizedBaseContracts": [3526],
+        "linearizedBaseContracts": [
+          3526
+        ],
         "name": "INFTMarket",
-        "nameLocation": "98:10:19",
+        "nameLocation": "103:10:19",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -74,7 +83,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "initializeItem",
-            "nameLocation": "124:14:19",
+            "nameLocation": "130:14:19",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 3523,
@@ -85,10 +94,10 @@
                   "id": 3516,
                   "mutability": "mutable",
                   "name": "nftContractAddress",
-                  "nameLocation": "156:18:19",
+                  "nameLocation": "163:18:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "148:26:19",
+                  "src": "155:26:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -99,7 +108,7 @@
                     "id": 3515,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "148:7:19",
+                    "src": "155:7:19",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -113,10 +122,10 @@
                   "id": 3518,
                   "mutability": "mutable",
                   "name": "tokenId",
-                  "nameLocation": "192:7:19",
+                  "nameLocation": "200:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "184:15:19",
+                  "src": "192:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -127,7 +136,7 @@
                     "id": 3517,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "184:7:19",
+                    "src": "192:7:19",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -140,10 +149,10 @@
                   "id": 3520,
                   "mutability": "mutable",
                   "name": "creator",
-                  "nameLocation": "217:7:19",
+                  "nameLocation": "226:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "209:15:19",
+                  "src": "218:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -154,7 +163,7 @@
                     "id": 3519,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "209:7:19",
+                    "src": "218:7:19",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -168,10 +177,10 @@
                   "id": 3522,
                   "mutability": "mutable",
                   "name": "royalty",
-                  "nameLocation": "242:7:19",
+                  "nameLocation": "252:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "234:15:19",
+                  "src": "244:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -182,7 +191,7 @@
                     "id": 3521,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "234:7:19",
+                    "src": "244:7:19",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -191,32 +200,34 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "138:165:19"
+              "src": "144:171:19"
             },
             "returnParameters": {
               "id": 3524,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "312:0:19"
+              "src": "324:0:19"
             },
             "scope": 3526,
-            "src": "115:198:19",
+            "src": "121:204:19",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
         "scope": 3527,
-        "src": "88:227:19",
+        "src": "93:235:19",
         "usedErrors": []
       }
     ],
-    "src": "32:284:19"
+    "src": "33:297:19"
   },
   "legacyAST": {
     "absolutePath": "project:/src/contracts/INFTMarket.sol",
     "exportedSymbols": {
-      "INFTMarket": [3526]
+      "INFTMarket": [
+        3526
+      ]
     },
     "id": 3527,
     "license": "MIT",
@@ -224,9 +235,14 @@
     "nodes": [
       {
         "id": 3514,
-        "literals": ["solidity", "^", "0.8", ".4"],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".4"
+        ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:19"
+        "src": "33:23:19"
       },
       {
         "abstract": false,
@@ -235,9 +251,11 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "id": 3526,
-        "linearizedBaseContracts": [3526],
+        "linearizedBaseContracts": [
+          3526
+        ],
         "name": "INFTMarket",
-        "nameLocation": "98:10:19",
+        "nameLocation": "103:10:19",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -247,7 +265,7 @@
             "kind": "function",
             "modifiers": [],
             "name": "initializeItem",
-            "nameLocation": "124:14:19",
+            "nameLocation": "130:14:19",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 3523,
@@ -258,10 +276,10 @@
                   "id": 3516,
                   "mutability": "mutable",
                   "name": "nftContractAddress",
-                  "nameLocation": "156:18:19",
+                  "nameLocation": "163:18:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "148:26:19",
+                  "src": "155:26:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -272,7 +290,7 @@
                     "id": 3515,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "148:7:19",
+                    "src": "155:7:19",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -286,10 +304,10 @@
                   "id": 3518,
                   "mutability": "mutable",
                   "name": "tokenId",
-                  "nameLocation": "192:7:19",
+                  "nameLocation": "200:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "184:15:19",
+                  "src": "192:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -300,7 +318,7 @@
                     "id": 3517,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "184:7:19",
+                    "src": "192:7:19",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -313,10 +331,10 @@
                   "id": 3520,
                   "mutability": "mutable",
                   "name": "creator",
-                  "nameLocation": "217:7:19",
+                  "nameLocation": "226:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "209:15:19",
+                  "src": "218:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -327,7 +345,7 @@
                     "id": 3519,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "209:7:19",
+                    "src": "218:7:19",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -341,10 +359,10 @@
                   "id": 3522,
                   "mutability": "mutable",
                   "name": "royalty",
-                  "nameLocation": "242:7:19",
+                  "nameLocation": "252:7:19",
                   "nodeType": "VariableDeclaration",
                   "scope": 3525,
-                  "src": "234:15:19",
+                  "src": "244:15:19",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -355,7 +373,7 @@
                     "id": 3521,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "234:7:19",
+                    "src": "244:7:19",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -364,35 +382,35 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "138:165:19"
+              "src": "144:171:19"
             },
             "returnParameters": {
               "id": 3524,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "312:0:19"
+              "src": "324:0:19"
             },
             "scope": 3526,
-            "src": "115:198:19",
+            "src": "121:204:19",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
         "scope": 3527,
-        "src": "88:227:19",
+        "src": "93:235:19",
         "usedErrors": []
       }
     ],
-    "src": "32:284:19"
+    "src": "33:297:19"
   },
   "compiler": {
     "name": "solc",
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.6",
-  "updatedAt": "2022-06-07T17:36:30.268Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-06-29T11:27:08.545Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

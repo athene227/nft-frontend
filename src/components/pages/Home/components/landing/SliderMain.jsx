@@ -53,7 +53,7 @@ const SliderMain = () => (
   <div className="container">
     <BanrLayer />
     <div className="h_500 d-flex align-items-center flex-wrap">
-      <div className="col-12 col-sm-4">
+      <div className="col-12 col-lg-4 col-md-5">
         <div className="spacer-single"></div>
         {/* <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
           <h6 className=""><span className="text-uppercase color">NFTonPulse</span></h6>
@@ -93,7 +93,7 @@ const SliderMain = () => (
         </Reveal>
       </div>
 
-      <div className="col-12 col-sm-5 xs-hide justify-content-end text-right">
+      <div className="col-12 col-lg-5 col-md-5 xs-hide justify-content-end text-right">
         <Reveal
           className="onStep"
           keyframes={fadeIn}
@@ -109,9 +109,9 @@ const SliderMain = () => (
         </Reveal>
       </div>
 
-      <div className="max_width_21 col-12 sol-sm-2 d-flex flex-column justify-content-between h-100">
+      <div className="banner-small-slider max_width_21 col-12 col-lg-2 col-md-12 d-flex flex-column justify-content-between h-100">
         <Reveal
-          className="onStep"
+          className="onStep banner-small-carousel"
           keyframes={fadeIn}
           delay={900}
           duration={1500}
@@ -130,7 +130,7 @@ const SliderMain = () => (
         </Reveal>
         <div className="spacer-20"></div>
         <Reveal
-          className="onStep"
+          className="onStep banner-small-carousel banner-carousel2"
           keyframes={fadeIn}
           delay={900}
           duration={1500}
