@@ -172,9 +172,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     setOpenPlaceBid(true);
   };
 
-  const closePlaceBidPopup = () => {
+  const closePlaceBidPopup = (shouldRefresh = false) => {
     setPlaceBidState({ loader: false, error: null });
     setOpenPlaceBid(false);
+    if (shouldRefresh && nft) {
+      const { tokenId, nftAddress } = nft;
+      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
+    }
   };
 
   const openCancelListingPopUp = () => {

@@ -347,7 +347,7 @@ const CreateSingle = () => {
 
       //* set loader
       setCreateNftState({ loading: true, error: null });
-      // initialse popup status and event list
+      // initialize popup status and event list
       setOpenProgressPopup(true);
       if (!isRetry) {
         submitData.current = data;

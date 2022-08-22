@@ -50,7 +50,7 @@ const BuyPopUp = (props: IProps) => {
 
   const buyTransactionHash = nftEvents.find(
     ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
-      eventName === MARKET_CONTRACT_EVENTS.BuySimpleEvent &&
+      eventName === MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent &&
       tokenId === nft.tokenId
   )?.transactionHash;
 

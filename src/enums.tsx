@@ -143,7 +143,7 @@ export enum MARKET_CONTRACT_EVENTS {
   Mint = 'Mint',
   SimpleMarketItemCreated = 'SimpleMarketItemCreated',
   AuctionMarketItemCreated = 'AuctionMarketItemCreated',
-  BuySimpleEvent = 'BuySimpleEvent',
+  SimpleItemSoldEvent = 'SimpleItemSold',
   BidCreated = 'BidCreated',
   CancelSimpleEvent = 'CancelSimpleEvent',
   CancelAuctionEvent = 'CancelAuctionEvent',

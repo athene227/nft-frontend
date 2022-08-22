@@ -57,7 +57,7 @@ export const renderAttributes = (nft: INft) => {
           <NftAttribute key={index} {...attr} />
         ))}
       </div>
-      <div className="spa cer-10" />
+      <div className="spacer-10" />
       {rankings.length > 0 && <h6>Rankings</h6>}
       <div className="nft-attr-container">
         {rankings.map((attr, index) => (

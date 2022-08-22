@@ -1,5 +1,5 @@
 {
-  "contractName": "NFT721",
+  "contractName": "MockERC20",
   "abi": [
     { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
     {
@@ -172,7 +172,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x749217350920905D422CbfeBD0d05b7745b99840",
+      "address": "0xa882cfec68fD18f8Ef6791cA48d08bF638719321",
       "transactionHash": "0xc1006d1bd6ff766fa6e763fdee1c6bf5146e55ec0eabbeee584d2402ad37623d"
     }
   }

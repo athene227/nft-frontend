@@ -12,7 +12,7 @@ import { IUser } from './users.types';
 
 export interface INftAttribute {
   trait_type: string;
-  value: string | number;
+  value: number;
   display_type: ATTRIBUTE_TYPE;
   max_value?: number;
 }

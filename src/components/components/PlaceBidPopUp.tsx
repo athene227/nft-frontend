@@ -34,7 +34,7 @@ import { IBid } from 'src/types/bids.types';
 // `;
 interface IProps {
   nft: INft;
-  onClose: () => void;
+  onClose: (value: boolean) => void;
   submit: (values: any, resetForm: () => void) => void;
   bids: IBid[];
   lastBid: IBid | null;
@@ -266,7 +266,10 @@ const BuyPopUp = (props: IProps) => {
 
   return (
     <div className="maincheckout">
-      <button className="btn-close" onClick={onClose}>
+      <button
+        className="btn-close"
+        onClick={() => onClose(lastBid !== undefined)}
+      >
         x
       </button>
       {renderView()}

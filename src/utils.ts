@@ -450,9 +450,8 @@ export const getAuctionBids = async (data: {
 export const getUserNftQuantityFromNftContract = async (data: {
   nftContract: any;
   userAddress: string;
-  tokenId: number;
 }): Promise<string> => {
-  const { nftContract, userAddress, tokenId } = data;
+  const { nftContract, userAddress } = data;
   const balance = await nftContract.methods.balanceOf(userAddress).call();
   return balance;
 };
