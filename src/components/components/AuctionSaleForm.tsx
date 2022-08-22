@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { INft } from 'src/types/nfts.types';
 import Loader from 'src/components/components/Loader';
 import Alert from './Alert';
@@ -6,10 +6,14 @@ import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
 import moment from 'moment';
+
+import { IPriceToken } from 'src/types/priceTokens.types';
+import { ApiService } from '../../core/axios';
 interface IProps {
   nft: INft;
   submit: (values: any, resetForm: () => void) => void;
   setMinimumBidInput: (val: string) => void;
+  setTokenType: (val: string) => void;
   setExpirationDateInput: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };
 }
@@ -20,8 +24,21 @@ export default function AuctionSaleForm(props: IProps) {
     submit,
     submitSaleState,
     setExpirationDateInput,
+    setTokenType,
     setMinimumBidInput
   } = props;
+
+  const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
+
+  useEffect(() => {
+    const getPriceTokens = async () => {
+      const res = await ApiService.getPriceTokens();
+      const pricetokens = res.data as Array<IPriceToken>;
+      setPriceTokens(pricetokens);
+      setTokenType(pricetokens[0].name);
+    };
+    getPriceTokens();
+  }, []);
 
   const SignupSchema = Yup.object().shape({
     minimumBid: Yup.number()
@@ -76,18 +93,48 @@ export default function AuctionSaleForm(props: IProps) {
       setExpirationDateInput && setExpirationDateInput(e.target.value);
     };
 
+    const onChangePriceTokenType = (e: any) => {
+      setFieldValue('pricetokentype', e.target.value);
+      setTokenType && setTokenType(e.target.value);
+    };
+
+    const pricetokenSelectComponent = (props: any) => {
+      setTokenType(priceTokens[0]?.name);
+      return (
+        <select id="pet-select" {...props}>
+          {priceTokens?.map((item) => (
+            <option key={item.name} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      );
+    };
+
     return (
       <Form onSubmit={handleSubmit}>
         <div style={{ marginTop: 150 }}>
           <h5>Minimum bid</h5>
-          <Field
-            type="text"
-            name="minimumBid"
-            id="item_price_bid"
-            className="form-control"
-            placeholder="enter minimum bid"
-            onChange={onChangeMinimumBid}
-          />
+          <div className="row">
+            <div className="col-9">
+              <Field
+                type="text"
+                name="minimumBid"
+                id="item_price_bid"
+                className={`form-control`}
+                placeholder="Enter minimum bid"
+              />
+            </div>
+            <div className="col-3">
+              <Field
+                name="pricetokentype"
+                as={pricetokenSelectComponent}
+                placeholder="PriceTokenType"
+                className={`form-control`}
+                onChange={onChangePriceTokenType}
+              />
+            </div>
+          </div>
           <ErrorMessage name="minimumBid">
             {(msg) => <div className="error-form">{msg}</div>}
           </ErrorMessage>
