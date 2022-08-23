@@ -15,7 +15,6 @@ interface IProps {
   submit: (values: any, resetForm: () => void) => void;
   setMinimumBidInput: (val: string) => void;
   setTokenType: (val: string) => void;
-  setTokenType: (val: string) => void;
   setExpirationDateInput: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };
 }
@@ -58,7 +57,8 @@ export default function AuctionSaleForm(props: IProps) {
       minimumBid: '',
       expirationDate: '',
       price: '',
-      royalties: ''
+      royalties: '',
+      pricetokentype: 'MRT'
     };
     return result;
   };

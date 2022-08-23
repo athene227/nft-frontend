@@ -209,7 +209,8 @@ const BuyPopUp = (props: IProps) => {
                 <div className="heading mt-3">
                   <p>Your balance</p>
                   <div className="subtotal">
-                    {Number(balance).toFixed(8)} {COIN}
+                    {Number(balance).toFixed(8)}{' '}
+                    {nft?.priceToken[0]?.name || COIN}
                   </div>
                 </div>
 

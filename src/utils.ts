@@ -230,6 +230,7 @@ export const createSimpleMarketItem = async (data: {
     quantity,
     deadline
   } = data;
+  console.log('🚀 ~ file: utils.ts ~ line 233 ~ data', data);
   // create on the market contract
   const res = await nftMarketSimpleContract.methods
     .createSimpleMarketItem(
@@ -418,6 +419,7 @@ export const getUserNftQuantityFromNftContract = async (data: {
   userAddress: string;
 }): Promise<string> => {
   const { nftContract, userAddress } = data;
+  console.log('🚀 ~ file: utils.ts ~ line 423 ~ data', data);
   const balance = await nftContract.methods.balanceOf(userAddress).call();
   return balance;
 };

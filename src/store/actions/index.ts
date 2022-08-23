@@ -178,7 +178,7 @@ export const createCollection: any = asyncAction(
   'collections/createCollection_FAIL'
 )();
 
-export const getColletions: any = asyncAction(
+export const getCollections: any = asyncAction(
   'collections/getCollections',
   'collections/getCollections_SUCCESS',
   'collections/getCollections_FAIL'

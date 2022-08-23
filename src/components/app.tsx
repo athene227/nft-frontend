@@ -127,7 +127,7 @@ const App = () => {
               console.log('this is NOT the user who listed the nft');
             }
             break;
-          case MARKET_CONTRACT_EVENTS.BuySimpleEvent:
+          case MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent:
             if (res.ownerAddress === userAddress) {
               console.log('this is the user who listed the nft');
               dispatch(addBuySimpleEvent(res));
