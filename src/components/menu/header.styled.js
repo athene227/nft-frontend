@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const HeaderWrapper = styled.div`
- /*navbar*/
-  
- .navbar {
+  /*navbar*/
+
+  .navbar {
     padding: 0;
     position: absolute;
     top: 0;
@@ -12,8 +12,8 @@ const HeaderWrapper = styled.div`
     height: auto;
     display: flex;
     align-items: center;
-    background:${({theme})=> theme.colors.navBg};
-    color: ${({theme})=> theme.colors.navColor};
+    background: ${({ theme }) => theme.colors.navBg};
+    color: ${({ theme }) => theme.colors.navColor};
     border-bottom: solid 1px rgba(255, 255, 255, 0);
     z-index: 999;
     transition: all 0.6s ease;
@@ -24,16 +24,16 @@ const HeaderWrapper = styled.div`
         // @include theme("themeDark", color, $white);
         // @include theme("themeLight", color, $text-light);
       }
-  
+
       .btn {
-        color: ${({theme})=> theme.colors.white};
-  
+        color: ${({ theme }) => theme.colors.white};
+
         .lines {
           top: 24px;
         }
       }
     }
-  
+
     .w-100-nav {
       margin: 0;
       width: 100%;
@@ -41,27 +41,27 @@ const HeaderWrapper = styled.div`
       align-items: center;
       flex-wrap: nowrap;
     }
-  
+
     a {
       position: relative;
       font-size: 14px;
       font-weight: 600;
       padding: 0 5px 0 0;
       text-decoration: none !important;
-      color: ${({theme})=> theme.colors.white};
+      color: ${({ theme }) => theme.colors.white};
       outline: none;
       transition: all 0.3s ease;
-  
+
       &:hover {
-        color: ${({theme})=> theme.colors.white};
+        color: ${({ theme }) => theme.colors.white};
         transition: all 0.3s ease;
       }
-  
+
       &.active {
         transition: all 0.3s ease;
-  
+
         &:before {
-          content: "";
+          content: '';
           width: 100%;
           height: 100%;
           position: absolute;
@@ -73,29 +73,29 @@ const HeaderWrapper = styled.div`
         }
       }
     }
-  
+
     .navbar-title {
       margin-right: auto;
       font-size: 150%;
       padding: 12px 16px;
     }
-  
+
     .navbar-item {
       position: relative;
       display: inline-block;
       padding: 30px 6px;
       height: max-content;
       cursor: default;
-  
+
       .lines {
         position: absolute;
         top: 22px;
         display: block;
         width: 0;
-        border-bottom: 2px solid ${({theme})=> theme.colors.color_primary};
+        border-bottom: 2px solid ${({ theme }) => theme.colors.color_primary};
         transition: 0.7s;
       }
-  
+
       &:hover {
         .lines {
           width: 90%;
@@ -103,16 +103,16 @@ const HeaderWrapper = styled.div`
         }
       }
     }
-  
+
     .breakpoint__xl-only {
       width: max-content;
       margin-left: auto;
     }
-  
+
     .logo {
       width: max-content;
       padding-right: 30px;
-  
+
       .navbar-item {
         position: relative;
         top: 2px;
@@ -120,26 +120,26 @@ const HeaderWrapper = styled.div`
         padding: 0;
         width: max-content;
         border-bottom: none;
-  
+
         a {
           padding: 0;
-  
+
           .d-3 {
             // display: none;
           }
         }
       }
     }
-  
+
     .menu {
       display: flex;
       justify-content: flex-end;
     }
-  
+
     .nav-icon {
       display: none;
     }
-  
+
     @media only screen and (max-width: 1199px) {
       .m-2-hor {
         padding: 0px 2%;
@@ -150,33 +150,33 @@ const HeaderWrapper = styled.div`
       }
       &.navbar {
         position: relative;
-  
+
         .logo {
           display: inline-block;
         }
-  
+
         .search {
           display: inline-block;
           position: relative;
           // top: -22px;
           top: 0px;
-  
+
           #quick_search {
             width: 100%;
           }
         }
-  
+
         .mainside {
           position: absolute;
           right: 60px;
           top: 18px;
         }
-  
+
         .dropdown-custom.btn {
-          color: ${({theme})=> theme.colors.white};
+          color: ${({ theme }) => theme.colors.white};
           width: 100%;
           text-align: left;
-  
+
           &::after {
             float: right;
             font-size: 0.9rem;
@@ -230,21 +230,21 @@ const HeaderWrapper = styled.div`
         width: 100%;
         height: 2px;
         top: 0px;
-        background-color: ${({theme})=> theme.colors.white};
+        background-color: ${({ theme }) => theme.colors.white};
       }
       .menu-line1 {
         position: absolute;
         width: 100%;
         height: 2px;
         top: 5px;
-        background-color: ${({theme})=> theme.colors.white};
+        background-color: ${({ theme }) => theme.colors.white};
       }
       .menu-line2 {
         position: absolute;
         width: 100%;
         height: 2px;
         top: 10px;
-        background-color: ${({theme})=> theme.colors.white};
+        background-color: ${({ theme }) => theme.colors.white};
       }
       &.sticky {
         position: absolute !important;
@@ -255,84 +255,85 @@ const HeaderWrapper = styled.div`
         .search {
           display: none;
         }
-  
+
         .mainside {
           a {
             font-size: 13px;
             padding: 4px 10px;
           }
         }
-  
+
         .logo {
           display: inline-block;
         }
       }
     }
-  
+
     &.sticky {
       position: fixed;
       top: 0;
       width: 100%;
-      background: ${({theme})=> theme.colors.navsticky};
+      background: ${({ theme }) => theme.colors.navsticky};
       border-bottom: 0;
       transition: all 0.6s ease;
-  
+
       &.white {
-        background: ${({theme})=> theme.colors.navsticky};
-        box-shadow: ${({theme})=> theme.colors.navWhitebs};
-  
+        background: ${({ theme }) => theme.colors.navsticky};
+        box-shadow: ${({ theme }) => theme.colors.navWhitebs};
+
         .btn {
-          color:${({theme})=> theme.colors['theme-light']};
+          color: ${({ theme }) => theme.colors['theme-light']};
         }
-  
+
         a {
-          color: ${({theme})=> theme.colors['theme-light']};
+          color: ${({ theme }) => theme.colors['theme-light']};
         }
       }
     }
-  
+
     .search {
       display: flex;
       width: max-content;
       padding-left: 30px;
       position: relative;
-  
+
       #quick_search {
         padding: 4px 11px;
         padding-left: 2rem;
         border: none;
         border-radius: 10px;
         font-size: 15px;
-        color: ${({theme})=> theme.colors.white};
+        color: ${({ theme }) => theme.colors.white};
         background: rgba(255, 255, 255, 0.1);
         width: 274px;
         height: 34px;
         outline: none;
         transition: 0.7s;
-  
+
         &:hover {
           transition: 0.7s;
-          box-shadow: 0px 0px 0px 4px ${({theme})=> theme.colors.color_primary};;
+          box-shadow: 0px 0px 0px 4px
+            ${({ theme }) => theme.colors.color_primary};
         }
       }
-  
+
       i {
-        color: ${({theme})=> theme.colors.color_placeholder};
+        color: ${({ theme }) => theme.colors.color_placeholder};
         left: 40px;
         position: absolute;
         top: 8px;
       }
     }
-  
+
     .mainside {
       width: max-content;
       padding-left: 0;
       padding-right: 0;
-  
+
       a {
         text-align: center;
         color: #fff !important;
-        background: ${({theme})=> theme.colors.color_primary};
+        background: ${({ theme }) => theme.colors.color_primary};
         border-radius: 30px;
         letter-spacing: normal;
         outline: 0;
@@ -344,32 +345,34 @@ const HeaderWrapper = styled.div`
         cursor: pointer;
         box-shadow: 2px 2px 20px 0px rgba(131, 100, 226, 0);
         transition: all 0.3s ease;
-  
+
         &:hover {
-          box-shadow: 2px 2px 20px 0px ${({theme})=> theme.colors.color_primary};
+          box-shadow: 2px 2px 20px 0px
+            ${({ theme }) => theme.colors.color_primary};
           transition: all 0.3s ease;
         }
       }
     }
-  
+
     .profile_image_container {
       cursor: pointer;
       // position: absolute;
       display: inline-block;
       width: 50px;
       height: 50px;
-      background: ${({theme})=> theme.colors.color_primary};
+      background: ${({ theme }) => theme.colors.color_primary};
       margin-right: 10px;
       border-radius: 100% !important;
       z-index: 1;
       transition: 0.3s;
-  
+
       &:hover img {
         padding: 3px;
-        -webkit-box-shadow: 0px 0px 0px 2px ${({theme})=> theme.colors.color_primary};
+        -webkit-box-shadow: 0px 0px 0px 2px
+          ${({ theme }) => theme.colors.color_primary};
         transition: 0.3s;
       }
-  
+
       .profile_image {
         width: 100%;
         height: 100%;
@@ -381,13 +384,13 @@ const HeaderWrapper = styled.div`
       }
     }
   }
-    //header
+  //header
   .de-menu-profile {
     position: relative;
     cursor: pointer;
     display: flex;
     align-items: center;
-  
+
     img {
       width: 38px;
       border-radius: 30px;
@@ -396,12 +399,16 @@ const HeaderWrapper = styled.div`
       // margin-left: 5px;
       margin-bottom: 2px;
     }
-  
+
     .popshow {
       cursor: default;
       width: 350px;
       position: absolute;
-      background: linear-gradient(to right, rgba(254, 0, 199, 0.2), rgba(14, 30, 69, 0.2));
+      background: linear-gradient(
+        to right,
+        rgba(254, 0, 199, 0.2),
+        rgba(14, 30, 69, 0.2)
+      );
       backdrop-filter: blur(20px);
       border-radius: 5px;
       overflow: hidden;
@@ -411,10 +418,10 @@ const HeaderWrapper = styled.div`
       -webkit-animation: smoothDrop 0.2s ease;
       box-shadow: 2px 2px 30px 0px rgba(20, 20, 20, 0.1);
       z-index: 1;
-  
+
       .d-name {
         margin-bottom: 15px;
-  
+
         h4 {
           font-weight: bold;
           display: block;
@@ -424,19 +431,19 @@ const HeaderWrapper = styled.div`
           margin-top: 5px;
           color: gray;
         }
-  
+
         span.name {
-          color: ${({theme})=> theme.colors.pink_col};;
+          color: ${({ theme }) => theme.colors.pink_col};
           cursor: pointer;
         }
-  
+
         span.d-wallet-address {
           float: right;
           cursor: pointer;
           padding-top: 5px;
         }
       }
-  
+
       .d-balance {
         font-size: 18px;
         margin-bottom: 15px;
@@ -446,7 +453,7 @@ const HeaderWrapper = styled.div`
         text-align: center;
         font-weight: 600;
         border: 1px solid #fe00c7;
-  
+
         h4 {
           font-weight: bold;
           display: block;
@@ -457,12 +464,12 @@ const HeaderWrapper = styled.div`
           color: gray;
         }
       }
-  
+
       .d-wallet {
         font-size: 14px;
         margin-bottom: 15px;
-        color: ${({theme})=> theme.colors.pink_col};;
-  
+        color: ${({ theme }) => theme.colors.pink_col};
+
         h4 {
           font-weight: bold;
           display: block;
@@ -472,31 +479,31 @@ const HeaderWrapper = styled.div`
           margin-top: 5px;
           color: black;
         }
-  
+
         .d-wallet-address {
           display: inline-block;
           max-width: 64%;
           overflow: hidden;
         }
-  
+
         /*#btn_copy {
           margin-left: 15px;
         }*/
       }
-  
+
       .d-line {
         margin: 15px 0 15px 0;
         border-top: solid 1px #bbbbbb;
       }
-  
+
       .de-submenu-profile {
         list-style: none;
         margin: 0;
         padding: 0;
-  
+
         li {
           padding: 5px 0;
-  
+
           span {
             cursor: pointer;
             color: white;
@@ -506,11 +513,11 @@ const HeaderWrapper = styled.div`
             font-size: 14px;
             display: block;
             text-align: left;
-  
+
             &:hover {
               box-shadow: none;
             }
-  
+
             i {
               color: white;
               font-size: 16px;
@@ -520,26 +527,26 @@ const HeaderWrapper = styled.div`
           }
         }
       }
-  
+
       @media screen and (max-width: 992px) {
         width: 320px;
         inset: 55px auto auto -230px;
       }
     }
-  
+
     .p_collectible_quantity {
       font-weight: 400;
       padding-left: 70px;
-  
+
       span {
         display: block;
         font-size: 14px;
         font-weight: 400;
         line-height: 1.2em;
       }
-  
+
       b {
-        color: ${({theme})=> theme.colors.white};
+        color: ${({ theme }) => theme.colors.white};
       }
     }
   }

@@ -4,6 +4,8 @@ import { ICollection } from 'src/collections.types';
 
 import * as actions from '../../store/actions/thunks';
 import CollectionCard from './CollectionCard';
+import NftItems from './nftItems/nftItems.style';
+
 interface IProps {
   collections: ICollection[];
   showLoadMore: boolean;
@@ -30,6 +32,7 @@ const ColumnNewRedux = ({
   };
 
   return (
+    <NftItems>
     <div className="nft-general-style ">
       <div className="nft_items__holder">
         <div className="nft row">
@@ -54,6 +57,7 @@ const ColumnNewRedux = ({
         </div>
       </div>
     </div>
+    </NftItems>
   );
 };
 

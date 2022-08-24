@@ -6,6 +6,7 @@ import Alert from './Alert';
 import CollectionCard from './CollectionCard';
 import Loader from './Loader';
 import NftCard from './NftCard';
+import NftItems from './nftItems/nftItems.style';
 
 // react functional component
 const ColumnNewRedux = (props: {
@@ -37,6 +38,7 @@ const ColumnNewRedux = (props: {
   }
   console.log('🚀 ~ file: ColumnNewRedux.tsx ~ line 37 ~ data', data);
   return (
+    <NftItems>
     <div className="nft-general-style ">
       <div className="nft_items__holder">
         <div className="nft row">
@@ -58,6 +60,7 @@ const ColumnNewRedux = (props: {
         </div>
       </div>
     </div>
+    </NftItems>
   );
 };
 

@@ -40,6 +40,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.colors['background']};
     font-family: "DM Sans", Helvetica, Arial, sans-serif;
+    font-family: 'Neulis Alt';
     font-weight: 300;
     font-size: 16px;
     color: ${({ theme }) => theme.colors['general']};
@@ -70,6 +71,12 @@ h1,.h1 {
   margin-bottom: 20px;
   line-height: 1.2em;
   letter-spacing: -1px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; 
 }
 
 h1{
@@ -514,7 +521,8 @@ p.lead {
     z-index: -1;
     transition: opacity 0.5s linear;
     opacity: 0;
-    border-radius: ${({ theme }) => theme.colors.btn_border};
+    border-radius: 5px;;
+    /* border-radius: ${({ theme }) => theme.colors.btn_border}; */
     border-width: 1px;
   }
 }
@@ -2113,7 +2121,7 @@ img.img-rounded {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 20px;
+  padding: 20px 10px;
   margin: 10px;
   border-top: solid 1px rgba(255, 255, 255, 0.1);
   border-radius: 15px;
@@ -2123,6 +2131,7 @@ img.img-rounded {
   background: rgba(255, 255, 255, 0.025);
   transition: 0.7s;
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(33.1712px);
   position: relative;
 
   &:hover {
@@ -2134,38 +2143,60 @@ img.img-rounded {
     border-color: ${({ theme }) =>
       theme.colors['transparent_border']}!important;
     box-shadow: ${({ theme }) => theme.colors['nft_light_bxshadow']}!important;
-    background: ${({ theme }) => theme.colors['nft_custom_bg']} !important;
-
+    background: ${({ theme }) => theme.colors['new__item_bg']};
+    border: 0.829279px solid #282A53;
+        border-radius: 8.2928px;
+    /* background: ${({ theme }) =>
+      theme.colors['nft_custom_bg']} !important; */
+    .nft-item-customcontent{
+       /* &:before{
+        content: '';    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top:0;
+       } */
+    }
     &:hover {
       .nft-item-customcontent {
-        position: relative;
-        z-index: 1;
-        background: ${({ theme }) => theme.colors['nft_custom_bg']};
-        margin: -20px -10px;
-        padding: 20px 10px;
+        /* position: relative; */
+        /* z-index: 1;
+        background: ${({ theme }) => theme.colors['new__item_bg']}; */
+        /* margin: -20px -10px; */
+        /* padding: 20px 10px; */
+        /* border: 0.829279px solid #282A53;
+        border-radius: 8.2928px; */
+}
+.nft__item_info{
+  background: rgba(0, 0, 0, 0.01);
+  backdrop-filter: blur(14px);
+}
       }
-
+/* 
       &:after {
         content: "";
         background: linear-gradient(to left, ${({ theme }) =>
           theme.colors['color_secondary']}, ${({ theme }) =>
   theme.colors['color_primary']}) !important;
-        width: 102.5%;
-        height: 102%;
-        position: absolute;
-        top: -1%;
-        // left: -1%;
-        left: -1.2%;
-        z-index: -2;
-        border-radius: 5px;
-        transition: 0.3s all ease-in;
-        -webkit-transition: 0.3s all ease-in;
-        -moz-transition: 0.3s all ease-in;
-        -ms-transition: 0.3s all ease-in;
-        -o-transition: 0.3s all ease-in;
-      }
+          width: 102.5%;
+          height: 102%;
+          position: absolute;
+          top: -1%;
+          // left: -1%;
+          left: -1.2%;
+          z-index: -2;
+          border-radius: 5px;
+          transition: 0.3s all ease-in;
+          -webkit-transition: 0.3s all ease-in;
+          -moz-transition: 0.3s all ease-in;
+          -ms-transition: 0.3s all ease-in;
+          -o-transition: 0.3s all ease-in;
+      } */
 
     }
+
   }
   
   .custom_col & {
@@ -2193,15 +2224,29 @@ img.img-rounded {
 .nft__item_info {
   cursor: pointer;
   line-height: 28px;
-  margin-bottom: -22px;
+  margin-bottom: -20px;
   height: 110px;
+  transition: 0.3s all ease-in;
+  /* backdrop-filter: blur(14px); */
+  margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top:32px;
+    margin-top: -28px;
+/* Note: backdrop-filter has minimal browser support */
+
+border-radius: 8px;
 }
 
 .nft__item h4 {
-  font-weight: 800;
-  font-size: 15px;
+  /* font-weight: 800; */
+  font-size: 14px;
   margin-bottom: 5px;
   white-space: nowrap;
+  line-height:17px;
+  font-weight: 700;
+    text-decoration: none;
 }
 
 .nft__item_price {
@@ -2223,7 +2268,7 @@ img.img-rounded {
   left: 0;
 
   span {
-    font-weight: bold;
+    /* font-weight: 400; */
     color: ${({ theme }) => theme.colors['pink_col']};;
   }
 }
@@ -2721,17 +2766,25 @@ input[type=number]::-webkit-outer-spin-button {
   
   .de_countdown {
     position: relative;
-    font-size: 0.8rem;
+    /* font-size: 0.8rem; */
+    font-size:12px;
+    line-height:15px;
+    font-weight:700;
     position: absolute;
     right: 20px;
     background: #171c27;
     padding: 6px 10px;
+    letter-spacing: 0.01em;
     border-radius: 30px;
     -moz-border-radius: 30px;
     -webkit-border-radius: 30px;
     border: solid 2px ${({ theme }) => theme.colors['pink_col']};
+    display: flex;
     z-index: 1;
     color: ${({ theme }) => theme.colors['white']};
+    padding-top: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 2, 88, 0.5);
+    padding-bottom: 7px;
   
     .Clock-days {
       font-weight: bold;
@@ -2756,6 +2809,18 @@ input[type=number]::-webkit-outer-spin-button {
       display: inline-block;
       margin-right: 5px;
     }
+    &:before{
+      content:'🔥';
+      display:inline-block;
+      margin-right:3px;
+    }
+    &:after{
+      content:'Left';
+      display:inline-block;
+      margin-right:3px;
+      color:#202A5D80;
+      padding-left: 3px;
+    }
   }
   
   .author_list_pp {
@@ -2764,7 +2829,7 @@ input[type=number]::-webkit-outer-spin-button {
     display: inline-block;
     width: 50px;
     height: 50px;
-    background: ${({ theme }) => theme.colors['pink_col']};
+    /* background: ${({ theme }) => theme.colors['pink_col']}; */
     margin-left: 10px;
     margin-top: -3px;
     border-radius: 100% !important;

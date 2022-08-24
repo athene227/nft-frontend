@@ -12,6 +12,7 @@ const Outer = styled.div`
   align-items: center;
   height: 260px;
   overflow: hidden;
+  overflow: visible;
   border-radius: 8px;
 `;
 

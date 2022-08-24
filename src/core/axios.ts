@@ -19,7 +19,7 @@ Axios.interceptors.request.use(
     }
     config.headers = {
       ...config.headers,
-      ...{ ...config.headers, ...headers }
+      ...headers
     };
     return config;
   },
