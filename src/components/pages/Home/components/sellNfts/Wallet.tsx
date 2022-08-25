@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Wallet = () => (
-  <div className="row">
+  <div className="row ">
     <div className="col-lg-3 mb30 text-center">
       <span className="box-url">
         <img src="./img/sellnfts/setwallet.svg" alt="" className="mb20" />
@@ -25,6 +25,8 @@ const Wallet = () => (
         <p>
           Click My Collections and set up your collection. Add social links, a
           description, profile & banner images, and set a secondary sales fee.
+          <br></br>
+          <br></br>
         </p>
       </span>
     </div>

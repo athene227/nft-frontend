@@ -92,7 +92,7 @@ const ExploreItemCard = ({
               </Outer>
             </div>
             <div className="nft__item_info d-flex flex-column ">
-              <div className="col-12 d-flex justify-content-between mb-2">
+              <div className="col-12 d-flex justify-content-between mb-0 pl-0">
                 <div>
                   <h4 className={`mb-0 nft__item__name_hover`}>{nft.name}</h4>
                 </div>

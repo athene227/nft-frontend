@@ -11,7 +11,7 @@ import { IoIosArrowDroprightCircle } from 'react-icons/io';
 import { IoIosArrowDropleftCircle } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 // import required modules
-import { EffectCoverflow, Navigation, Pagination } from 'swiper';
+import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
 
@@ -71,7 +71,7 @@ export default function Swiperr() {
     hotAuctions
   );
   return (
-    <>
+    <div>
       <div className="swiper-button-prev-unique swiper-arrow-btn ">
         <svg
           width="57"
@@ -101,6 +101,14 @@ export default function Swiperr() {
           loop={true}
           centeredSlides={true}
           slidesPerView={1}
+          autoplay={{
+            delay: 4500,
+            disableOnInteraction: false
+          }}
+          pagination={{
+            clickable: true
+          }}
+          // navigation={true}
           breakpoints={{
             641: {
               slidesPerView: 1,
@@ -111,7 +119,6 @@ export default function Swiperr() {
             },
             768: {
               slidesPerView: 1,
-              spaceBetween: 40,
               stretch: 0,
               spaceBetween: 20,
               depth: 0
@@ -127,15 +134,15 @@ export default function Swiperr() {
             spaceBetween: 20,
             depth: 120,
             modifier: 2,
-            slideShadows: false,
+            slideShadows: true,
             scale: 1
           }}
-          pagination={true}
+          // pagination={true}
           navigation={{
             nextEl: '.swiper-button-next-unique',
             prevEl: '.swiper-button-prev-unique'
           }}
-          modules={[EffectCoverflow, Pagination, Navigation]}
+          modules={[Autoplay, EffectCoverflow, Pagination, Navigation]}
           className="mySwiper"
         >
           {hotAuctions &&
@@ -172,6 +179,6 @@ export default function Swiperr() {
           </svg>
         </div>
       </div>
-    </>
+    </div>
   );
 }

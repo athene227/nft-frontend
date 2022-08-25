@@ -1,5 +1,6 @@
 import SellIcon from '@mui/icons-material/Sell';
 import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
 import React, { useState } from 'react';
 import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { BiPulse } from 'react-icons/bi';
@@ -18,8 +19,20 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
     { name: 'Ethereum', icon: <SiEthereum className="m-1" />, unit: 'ETH' }
   ];
   const [pricePopShow, setPricePopShow] = useState(false);
-  const [networkIndex, setNetworkIndex] = useState(0);
+  const [networkIndex, setNetworkIndex] = useState('0');
   const [wrongPriceRange, setWrongPriceRange] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleChange = (event: SelectChangeEvent<typeof networkIndex>) => {
+    setNetworkIndex(event.target.value);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const getPriceFilterText = () => {
     if (!data) return 'Price Range';
@@ -73,8 +86,14 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
         <Row>
           <Col sm={12} className="mb-3">
             <Select
+              open={open}
+              onClose={handleClose}
+              onOpen={handleOpen}
               className={`price-network-select price__select`}
               value={networkIndex.toString()}
+              onChange={(e: SelectChangeEvent) =>
+                setNetworkIndex(Number.parseInt(e.target.value))
+              }
             >
               {networks.map(({ name, icon }, index) => (
                 <MenuItem key={index} value={index}>
@@ -145,7 +164,7 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
       trigger="click"
       placement="bottom"
       overlay={PriceFilterPopover}
-      rootClose
+      // rootClose
     >
       <button
         className={`filter-button filter__button`}

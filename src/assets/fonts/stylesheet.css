@@ -1,0 +1,239 @@
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Bold.eot');
+    src: local('Neulis Alt Bold'), local('NeulisAlt-Bold'),
+        url('NeulisAlt-Bold.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Bold.woff2') format('woff2'),
+        url('NeulisAlt-Bold.woff') format('woff'),
+        url('NeulisAlt-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-ExtraBold.eot');
+    src: local('Neulis Alt Extra Bold'), local('NeulisAlt-ExtraBold'),
+        url('NeulisAlt-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-ExtraBold.woff2') format('woff2'),
+        url('NeulisAlt-ExtraBold.woff') format('woff'),
+        url('NeulisAlt-ExtraBold.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Black.eot');
+    src: local('Neulis Alt Black'), local('NeulisAlt-Black'),
+        url('NeulisAlt-Black.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Black.woff2') format('woff2'),
+        url('NeulisAlt-Black.woff') format('woff'),
+        url('NeulisAlt-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Regular.eot');
+    src: local('Neulis Alt'), local('NeulisAlt-Regular'),
+        url('NeulisAlt-Regular.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Regular.woff2') format('woff2'),
+        url('NeulisAlt-Regular.woff') format('woff'),
+        url('NeulisAlt-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-SemiBold.eot');
+    src: local('Neulis Alt Semi Bold'), local('NeulisAlt-SemiBold'),
+        url('NeulisAlt-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-SemiBold.woff2') format('woff2'),
+        url('NeulisAlt-SemiBold.woff') format('woff'),
+        url('NeulisAlt-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Thin.eot');
+    src: local('Neulis Alt Thin'), local('NeulisAlt-Thin'),
+        url('NeulisAlt-Thin.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Thin.woff2') format('woff2'),
+        url('NeulisAlt-Thin.woff') format('woff'),
+        url('NeulisAlt-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Medium.eot');
+    src: local('Neulis Alt Medium'), local('NeulisAlt-Medium'),
+        url('NeulisAlt-Medium.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Medium.woff2') format('woff2'),
+        url('NeulisAlt-Medium.woff') format('woff'),
+        url('NeulisAlt-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Light.eot');
+    src: local('Neulis Alt Light'), local('NeulisAlt-Light'),
+        url('NeulisAlt-Light.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Light.woff2') format('woff2'),
+        url('NeulisAlt-Light.woff') format('woff'),
+        url('NeulisAlt-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-ExtraLight.eot');
+    src: local('Neulis Alt Extra Light'), local('NeulisAlt-ExtraLight'),
+        url('NeulisAlt-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-ExtraLight.woff2') format('woff2'),
+        url('NeulisAlt-ExtraLight.woff') format('woff'),
+        url('NeulisAlt-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+/* extra fonts */
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-BoldItalic.eot');
+    src: local('Neulis Alt Bold Italic'), local('NeulisAlt-BoldItalic'),
+        url('NeulisAlt-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-BoldItalic.woff2') format('woff2'),
+        url('NeulisAlt-BoldItalic.woff') format('woff'),
+        url('NeulisAlt-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt Extra';
+    src: url('NeulisAlt-ExtraBoldItalic.eot');
+    src: local('Neulis Alt Extra Bold Italic'), local('NeulisAlt-ExtraBoldItalic'),
+        url('NeulisAlt-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-ExtraBoldItalic.woff2') format('woff2'),
+        url('NeulisAlt-ExtraBoldItalic.woff') format('woff'),
+        url('NeulisAlt-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-BlackItalic.eot');
+    src: local('Neulis Alt Black Italic'), local('NeulisAlt-BlackItalic'),
+        url('NeulisAlt-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-BlackItalic.woff2') format('woff2'),
+        url('NeulisAlt-BlackItalic.woff') format('woff'),
+        url('NeulisAlt-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-Italic.eot');
+    src: local('Neulis Alt Italic'), local('NeulisAlt-Italic'),
+        url('NeulisAlt-Italic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-Italic.woff2') format('woff2'),
+        url('NeulisAlt-Italic.woff') format('woff'),
+        url('NeulisAlt-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-LightItalic.eot');
+    src: local('Neulis Alt Light Italic'), local('NeulisAlt-LightItalic'),
+        url('NeulisAlt-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-LightItalic.woff2') format('woff2'),
+        url('NeulisAlt-LightItalic.woff') format('woff'),
+        url('NeulisAlt-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+@font-face {
+    font-family: 'Neulis Alt Semi';
+    src: url('NeulisAlt-SemiBoldItalic.eot');
+    src: local('Neulis Alt Semi Bold Italic'), local('NeulisAlt-SemiBoldItalic'),
+        url('NeulisAlt-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-SemiBoldItalic.woff2') format('woff2'),
+        url('NeulisAlt-SemiBoldItalic.woff') format('woff'),
+        url('NeulisAlt-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-ThinItalic.eot');
+    src: local('Neulis Alt Thin Italic'), local('NeulisAlt-ThinItalic'),
+        url('NeulisAlt-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-ThinItalic.woff2') format('woff2'),
+        url('NeulisAlt-ThinItalic.woff') format('woff'),
+        url('NeulisAlt-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt';
+    src: url('NeulisAlt-MediumItalic.eot');
+    src: local('Neulis Alt Medium Italic'), local('NeulisAlt-MediumItalic'),
+        url('NeulisAlt-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-MediumItalic.woff2') format('woff2'),
+        url('NeulisAlt-MediumItalic.woff') format('woff'),
+        url('NeulisAlt-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neulis Alt Extra';
+    src: url('NeulisAlt-ExtraLightItalic.eot');
+    src: local('Neulis Alt Extra Light Italic'), local('NeulisAlt-ExtraLightItalic'),
+        url('NeulisAlt-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('NeulisAlt-ExtraLightItalic.woff2') format('woff2'),
+        url('NeulisAlt-ExtraLightItalic.woff') format('woff'),
+        url('NeulisAlt-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+
+
+

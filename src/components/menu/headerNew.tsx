@@ -610,7 +610,10 @@ const Header = function (props) {
                   {user?.username ? (
                     <span className="ml-2">{user?.username}</span>
                   ) : (
-                    <span className="name" onClick={() => navigate('/profile')}>
+                    <span
+                      className="name ml-2"
+                      onClick={() => navigate('/profile')}
+                    >
                       Set display name
                     </span>
                   )}

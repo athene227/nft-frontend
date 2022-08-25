@@ -76,14 +76,6 @@ const ExploreFilter = () => {
                 </div>
               </div>
 
-              {/* <div className="dropdownSelect two">
-              <Select
-                isMulti
-                styles={customStyles}
-                options={[defaultValue, ...status]}
-                onChange={handleStatus}
-              />
-            </div> */}
               <div className=" dropdownSelect one">
                 <div className={`de_form price_filer_holder`}>
                   <PricePopover

@@ -10,6 +10,7 @@ interface SortByPopoverProps {
   currentOrder: SortOrder;
   onUpdate: (value: string) => void;
 }
+
 const SortByPopover = ({ currentOrder, onUpdate }: SortByPopoverProps) => {
   const [sortPopShow, setSortPopShow] = useState(false);
   const updateSortOrder = (value: string) => {
