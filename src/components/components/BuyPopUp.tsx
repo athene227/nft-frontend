@@ -225,7 +225,7 @@ const BuyPopUp = (props: IProps) => {
                   </div>
                 </div>
                 <div className="detail_button">
-                  {buyTransactionHash && (
+                  {buyTransactionHash && !placeBidState.loader && (
                     <TransactionHash hash={buyTransactionHash} />
                   )}
                   {placeBidState.loader ? (

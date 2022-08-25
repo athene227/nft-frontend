@@ -36,9 +36,18 @@ const SellPopUp = (props: IProps) => {
   const { web3, accounts } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
   const listingTransactionHash = nftEvents.find(
-    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
-      eventName === MARKET_CONTRACT_EVENTS.SimpleMarketItemCreated &&
-      tokenId === nft.tokenId
+    ({
+      eventName,
+      tokenId,
+      ownerAddress
+    }: {
+      eventName: string;
+      tokenId: string;
+      ownerAddress: string;
+    }) =>
+      eventName === MARKET_CONTRACT_EVENTS.SimpleItemCreated &&
+      tokenId === nft.tokenId &&
+      ownerAddress === nft.ownerAddress
   )?.transactionHash;
 
   const getMyBalance = async () => {
@@ -158,7 +167,7 @@ const SellPopUp = (props: IProps) => {
           )}
         </div>
 
-        {listingTransactionHash && (
+        {listingTransactionHash && !sellState.loader && (
           <TransactionHash hash={listingTransactionHash} />
         )}
         {sellState.loader ? (

@@ -162,7 +162,10 @@ const BuyPopUp = (props: IProps) => {
       <Form>
         <div className="modal-header">
           <h5 className="modal-title">Place a Bid</h5>
-          <button className="btn-close" onClick={onClose}>
+          <button
+            className="btn-close"
+            onClick={() => onClose(lastBid !== null)}
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -318,10 +321,7 @@ const BuyPopUp = (props: IProps) => {
 
   return (
     <div className="maincheckout modal-style-1">
-      <button
-        className="btn-close"
-        onClick={() => onClose(lastBid !== undefined)}
-      >
+      <button className="btn-close" onClick={() => onClose(lastBid !== null)}>
         x
       </button>
       {renderView()}

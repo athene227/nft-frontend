@@ -243,7 +243,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with contract
-      const itemSold = await buySimple({
+      await buySimple({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(chosenCollectibleToBuyFrom.listingId),
@@ -322,7 +322,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       await nft1155Contract.methods
         .setApprovalForAll(nftMarketSimpleContract._address, true)
         .send({ from: userAddress });
-
+      console.log('##################Approved');
       const res = await createSimpleMarketItem({
         nftMarketSimpleContract,
         userAddress,
@@ -332,13 +332,14 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         quantity: Number(data.numberOfCopies),
         deadline: 1680000000
       });
+      console.log('##################CreateSimpleMarketItem');
 
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
-      const totalAmount = nft1155Contract.methods.balanceOf(
-        userAddress,
-        chosenCollectibleToSell.tokenId
-      );
+      const totalAmount = await nft1155Contract.methods
+        .balanceOf(userAddress, chosenCollectibleToSell.tokenId)
+        .call();
+      console.log('##################BalanceOf');
 
       //* get the market item so we can save in the db how much listed nft the user have
       const simpleMarketItem = await getSimpleMarketItem({
@@ -419,6 +420,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         price: chosenCollectibleToCancel.price,
         attributes: chosenCollectibleToCancel.attributes,
         listingId: chosenCollectibleToCancel.listingId,
+        category: chosenCollectibleToCancel.category,
         marketType: MARKET_TYPE.SIMPLE,
         isListedOnce: true,
         multiple: true,
