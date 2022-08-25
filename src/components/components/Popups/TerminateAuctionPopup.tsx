@@ -29,19 +29,14 @@ const TerminateAuctionPopUp = (props: IProps) => {
   const { web3, accounts } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
   const terminateTransactionHash = nftEvents.find(
-    ({
-      eventName,
-      tokenId,
-      listingId
-    }: {
-      eventName: string;
-      tokenId: string;
-      listingId: string;
-    }) =>
-      eventName === MARKET_CONTRACT_EVENTS.TerminateAuctionEvent &&
-      tokenId === nft.tokenId &&
-      listingId === nft.listingId
+    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
+      eventName === MARKET_CONTRACT_EVENTS.AuctionTerminated &&
+      tokenId === nft.tokenId
   )?.transactionHash;
+  console.log(
+    '🚀 ~ file: TerminateAuctionPopup.tsx ~ line 36 ~ TerminateAuctionPopUp ~ terminateTransactionHash',
+    terminateTransactionHash
+  );
 
   const getMyBalance = async () => {
     try {
@@ -71,7 +66,10 @@ const TerminateAuctionPopUp = (props: IProps) => {
       <Form>
         <div className="modal-header">
           <h5 className="modal-title">Terminate Auction</h5>
-          <button className="btn-close" onClick={onClose}>
+          <button
+            className="btn-close"
+            onClick={() => onClose(terminateTransactionHash !== undefined)}
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -110,7 +108,7 @@ const TerminateAuctionPopUp = (props: IProps) => {
                   )
                 )}
               </div>
-              {terminateTransactionHash && (
+              {terminateTransactionHash && !terminateAuctionState.loader && (
                 <TransactionHash hash={terminateTransactionHash} />
               )}
 

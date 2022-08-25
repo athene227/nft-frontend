@@ -325,9 +325,6 @@ const CreateSingle = () => {
 
         const listingId = res.returnValues.listingId;
         const transactionHash = res.transactionHash;
-        const SellerNFTBalance = await nft1155Contract.methods
-          .balanceOf(userAddress, 1)
-          .call();
 
         await ApiService.createdNft({
           transactionHash,
@@ -337,8 +334,8 @@ const CreateSingle = () => {
             // price: priceInWei,
             tokenURI: metaDataUrl() as string,
             status: STATUS.ON_SELL,
-            totalAmount: SellerNFTBalance + Number(data.numberOfCopies),
-            leftAmount: SellerNFTBalance,
+            totalAmount: Number(data.numberOfCopies),
+            leftAmount: 0,
             listedAmount: Number(data.numberOfCopies)
           }
         });

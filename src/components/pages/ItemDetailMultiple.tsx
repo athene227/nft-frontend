@@ -171,10 +171,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         listingId: Number(chosenCollectibleToBuyFrom.listingId)
       });
 
-      const userCurrentCollectible = nftGroups.find(
-        (group) => group.ownerAddress === userAddress
-      ); // MOVE TO BACKEND
-
       //* price
       const price = Number(chosenCollectibleToBuyFrom.price);
 
@@ -247,38 +243,13 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with contract
-      const itemSold = await buySimple({
+      await buySimple({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(chosenCollectibleToBuyFrom.listingId),
         quantity: Number(data.amount),
         value: totalPaying
       });
-
-      //* get the market item so we can save in the db ow much listed nft the user have
-      const simpleMarketItemAfterBuying = await getSimpleMarketItem({
-        nftMarketSimpleContract,
-        listingId: Number(chosenCollectibleToBuyFrom.listingId)
-      });
-
-      //* get the SELLER nft balance of this token
-      const sellerNftBalance = await getUserNftQuantityFromNftContract({
-        nftContract,
-        userAddress: chosenCollectibleToBuyFrom.ownerAddress,
-        tokenId: Number(chosenCollectibleToBuyFrom.tokenId)
-      });
-      //* get the BUYER nft balance of this token
-      const buyerNftBalance = await getUserNftQuantityFromNftContract({
-        nftContract,
-        userAddress,
-        tokenId: Number(chosenCollectibleToBuyFrom.tokenId)
-      });
-
-      const _sellerNftBalance = Number(sellerNftBalance);
-      const _buyerNftBalance = Number(buyerNftBalance);
-      const _remainingQuantity = Number(
-        simpleMarketItemAfterBuying.remainingQuantity
-      );
 
       // //* turn off loader
       setBuyState({ loader: false, error: null });
@@ -295,6 +266,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
   const __sell = async (data: { price: string; numberOfCopies: string }) => {
     try {
       if (!chosenCollectibleToSell) return;
+      console.log(
+        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 270 ~ const__sell= ~ chosenCollectibleToSell',
+        chosenCollectibleToSell
+      );
       if (!web3) {
         notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
         return;
@@ -343,17 +318,12 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
-      const frontData = {
-        name: chosenCollectibleToSell.name,
-        description: chosenCollectibleToSell.description,
-        imageUrl: chosenCollectibleToSell.imageUrl,
-        attributes: chosenCollectibleToSell.attributes,
-        multiple: true,
-        collectionId: chosenCollectibleToSell.collectionId,
-        category: chosenCollectibleToSell.category
-      };
 
-      const listingId = await createSimpleMarketItem({
+      await nft1155Contract.methods
+        .setApprovalForAll(nftMarketSimpleContract._address, true)
+        .send({ from: userAddress });
+      console.log('##################Approved');
+      const res = await createSimpleMarketItem({
         nftMarketSimpleContract,
         userAddress,
         nftAddress: chosenCollectibleToSell.nftAddress,
@@ -362,21 +332,32 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         quantity: Number(data.numberOfCopies),
         deadline: 1680000000
       });
+      console.log('##################CreateSimpleMarketItem');
 
-      //* get the market item so we can save in the db ow much listed nft the user have
+      const listingId = res.returnValues.listingId;
+      const transactionHash = res.transactionHash;
+      const totalAmount = await nft1155Contract.methods
+        .balanceOf(userAddress, chosenCollectibleToSell.tokenId)
+        .call();
+      console.log('##################BalanceOf');
+
+      //* get the market item so we can save in the db how much listed nft the user have
       const simpleMarketItem = await getSimpleMarketItem({
         nftMarketSimpleContract,
         listingId: Number(listingId)
       });
-      //* get the user nft balance of this token
-      const userNftBalance = await getUserNftQuantityFromNftContract({
-        nftContract,
-        userAddress,
-        tokenId: Number(chosenCollectibleToSell.tokenId)
-      });
 
-      const _userNftBalance = Number(userNftBalance);
-      const _remainingQuantity = Number(simpleMarketItem.remainingQuantity);
+      await ApiService.createdNft({
+        transactionHash,
+        data: {
+          ...itemToMongo,
+          status: STATUS.ON_SELL,
+          totalAmount,
+          leftAmount:
+            Number(totalAmount) - Number(simpleMarketItem.remainingQuantity),
+          listedAmount: simpleMarketItem.remainingQuantity
+        }
+      });
 
       setSellState({ loader: false, error: null });
     } catch (error) {
@@ -439,6 +420,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         price: chosenCollectibleToCancel.price,
         attributes: chosenCollectibleToCancel.attributes,
         listingId: chosenCollectibleToCancel.listingId,
+        category: chosenCollectibleToCancel.category,
         marketType: MARKET_TYPE.SIMPLE,
         isListedOnce: true,
         multiple: true,
@@ -747,10 +729,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
               )}
 
             {/* <button className='btn-main lead mb-5'
-                        onClick={() => getUserCollectionBalance(nftGroups[0].tokenId)}
-                    >
-                        get balance
-                    </button> */}
+                onClick={() => getUserCollectionBalance(nftGroups[0].tokenId)}
+            >
+                get balance
+            </button> */}
           </div>
         </div>
         {

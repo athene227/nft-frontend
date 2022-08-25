@@ -35,7 +35,7 @@ import Alert from './Alert';
 // `;
 interface IProps {
   nft: INft;
-  onClose: () => void;
+  onClose: (value: boolean) => void;
   submit: (values: any, resetForm: () => void) => void;
   bids: IBid[];
   lastBid: IBid | null;
@@ -162,7 +162,10 @@ const BuyPopUp = (props: IProps) => {
       <Form>
         <div className="modal-header">
           <h5 className="modal-title">Place a Bid</h5>
-          <button className="btn-close" onClick={onClose}>
+          <button
+            className="btn-close"
+            onClick={() => onClose(lastBid !== null)}
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -209,7 +212,8 @@ const BuyPopUp = (props: IProps) => {
                 <div className="heading mt-3">
                   <p>Your balance</p>
                   <div className="subtotal">
-                    {Number(balance).toFixed(8)} {COIN}
+                    {Number(balance).toFixed(8)}{' '}
+                    {nft?.priceToken[0]?.name || COIN}
                   </div>
                 </div>
 
@@ -317,7 +321,7 @@ const BuyPopUp = (props: IProps) => {
 
   return (
     <div className="maincheckout modal-style-1">
-      <button className="btn-close" onClick={onClose}>
+      <button className="btn-close" onClick={() => onClose(lastBid !== null)}>
         x
       </button>
       {renderView()}

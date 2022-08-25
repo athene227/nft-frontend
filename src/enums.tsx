@@ -141,13 +141,13 @@ export enum SortOrder {
 
 export enum MARKET_CONTRACT_EVENTS {
   Mint = 'Mint',
-  SimpleMarketItemCreated = 'SimpleMarketItemCreated',
+  SimpleItemCreated = 'SimpleItemCreated',
   AuctionMarketItemCreated = 'AuctionMarketItemCreated',
-  BuySimpleEvent = 'BuySimpleEvent',
-  BidCreated = 'BidCreated',
-  CancelSimpleEvent = 'CancelSimpleEvent',
-  CancelAuctionEvent = 'CancelAuctionEvent',
-  TerminateAuctionEvent = 'TerminateAuctionEvent'
+  SimpleItemSoldEvent = 'SimpleItemSold',
+  AuctionBidCreated = 'AuctionBidCreated',
+  SimpleItemCancelled = 'SimpleItemCancelled',
+  AuctionCancelled = 'AuctionCancelled',
+  AuctionTerminated = 'AuctionTerminated'
 }
 
 export enum ATTRIBUTE_TYPE {

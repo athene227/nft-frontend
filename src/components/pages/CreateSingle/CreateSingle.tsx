@@ -292,10 +292,7 @@ const CreateSingle = () => {
     }
   };
 
-  const createAuction = async (
-    NFT_NETWORK_DATA: any,
-    data: any
-  ) => {
+  const createAuction = async (NFT_NETWORK_DATA: any, data: any) => {
     console.log(
       '🚀 ~ file: CreateSingle.tsx ~ line 298 ~ CreateSingle ~ data',
       data

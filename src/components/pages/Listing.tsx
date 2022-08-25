@@ -41,7 +41,6 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
     error: null | string;
     loading: boolean;
   }>({ error: null, loading: false });
-
   const [priceTokenType, setTokenType] = useState('MRT');
   const [expirationDateInput, setExpirationDateInput] = useState<string>('');
   const [priceInput, setPriceInput] = useState<string>('');
@@ -102,9 +101,12 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
 
       const _nftBalance = await getUserNftQuantityFromNftContract({
         nftContract: nft721Contract,
-        userAddress,
-        tokenId: Number(nft.tokenId)
+        userAddress
       });
+      console.log(
+        '🚀 ~ file: Listing.tsx ~ line 107 ~ const_submit= ~ _nftBalance',
+        _nftBalance
+      );
       if (Number(_nftBalance) < 1) {
         notification.error(ERRORS.CANT_LIST_NFT_YOU_DONT_HAVE);
         throw new Error(ERRORS.CANT_LIST_NFT_YOU_DONT_HAVE);
@@ -144,7 +146,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           itemToCreate.minimumBid = data.minimumBid;
         }
         if (data.pricetokentype) {
-          itemToCreate.priceTokenType = data.pricetokentype;
+          itemToCreate.priceTokenType = priceTokenType;
         }
         if (data.expirationDate) {
           itemToCreate.expirationDate = _date;
@@ -174,6 +176,10 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
           processStatus: PROCESS_TRAKING_STATUS.BEFORE
         });
+
+        await nft721Contract.methods
+          .setApprovalForAll(nftMarketSimpleContract._address, true)
+          .send({ from: userAddress });
 
         //* create on contract
         marketitem = await createSimpleMarketItem({
@@ -205,6 +211,10 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
           processStatus: PROCESS_TRAKING_STATUS.BEFORE
         });
+
+        await nft721Contract.methods
+          .setApprovalForAll(nftMarketAuctionContract._address, true)
+          .send({ from: userAddress });
 
         //* create on contract
         marketitem = await createAuctionMarketItem({

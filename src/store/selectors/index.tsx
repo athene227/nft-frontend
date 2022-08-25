@@ -39,7 +39,7 @@ export const hotAuctionState = (state: any) =>
 export const authorsState = (state: any) => state.authors.authorList;
 export const authorRankingsState = (state: any) => state.authors.authorRanking;
 
-// timor additons
+// timor additions
 export const counterState = (state: any) => state.counter;
 export const web3State = (state: any) => state.web3 as IWeb3State;
 export const userState = (state: any) => state.users as IUserState;

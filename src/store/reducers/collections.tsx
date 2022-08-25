@@ -110,12 +110,12 @@ const states = (state = defaultState, action: any) => {
         myCollections: entityLoadingFailed(state.myCollections, error)
       };
 
-    case getType(actions.getColletions.request):
+    case getType(actions.getCollections.request):
       return {
         ...state,
         collections: entityLoadingStarted(state.collections, action.payload)
       };
-    case getType(actions.getColletions.success):
+    case getType(actions.getCollections.success):
       return {
         ...state,
         collections: entityLoadingSucceeded(
@@ -126,7 +126,7 @@ const states = (state = defaultState, action: any) => {
           }))
         )
       };
-    case getType(actions.getColletions.failure):
+    case getType(actions.getCollections.failure):
       error = getErrorMessage(action.payload);
       return {
         ...state,

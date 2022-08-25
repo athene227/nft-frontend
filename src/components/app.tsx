@@ -100,7 +100,7 @@ const App = () => {
         console.log('🚀 ~ file: app.tsx ~ line 94 ~ useEffect ~ res', res);
 
         switch (res.eventName) {
-          case MARKET_CONTRACT_EVENTS.BidCreated:
+          case MARKET_CONTRACT_EVENTS.AuctionBidCreated:
             dispatch(addBid(res));
             break;
           case MARKET_CONTRACT_EVENTS.Mint:
@@ -111,13 +111,13 @@ const App = () => {
               console.log('this is NOT the user who created the nft');
             }
             break;
-          case MARKET_CONTRACT_EVENTS.SimpleMarketItemCreated:
-            if (res.ownerAddress === userAddress) {
-              console.log('this is the user who listed the nft');
-              dispatch(addSimpleMarketItemEvent(res));
-            } else {
-              console.log('this is NOT the user who listed the nft');
-            }
+          case MARKET_CONTRACT_EVENTS.SimpleItemCreated:
+            // if (res.ownerAddress === userAddress) {
+            // console.log('this is the user who listed the nft');
+            dispatch(addSimpleMarketItemEvent(res));
+            // } else {
+            //   console.log('this is NOT the user who listed the nft');
+            // }
             break;
           case MARKET_CONTRACT_EVENTS.AuctionMarketItemCreated:
             if (res.ownerAddress === userAddress) {
@@ -127,7 +127,7 @@ const App = () => {
               console.log('this is NOT the user who listed the nft');
             }
             break;
-          case MARKET_CONTRACT_EVENTS.BuySimpleEvent:
+          case MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent:
             if (res.ownerAddress === userAddress) {
               console.log('this is the user who listed the nft');
               dispatch(addBuySimpleEvent(res));
@@ -135,15 +135,15 @@ const App = () => {
               console.log('this is NOT the user who listed the nft');
             }
             break;
-          case MARKET_CONTRACT_EVENTS.CancelSimpleEvent:
-            if (res.ownerAddress === userAddress) {
-              console.log('this is the user who listed the nft');
-              dispatch(addCancelSimpleEvent(res));
-            } else {
-              console.log('this is NOT the user who listed the nft');
-            }
+          case MARKET_CONTRACT_EVENTS.SimpleItemCancelled:
+            // if (res.ownerAddress === userAddress) {
+            // console.log('this is the user who listed the nft');
+            dispatch(addCancelSimpleEvent(res));
+            // } else {
+            //   console.log('this is NOT the user who listed the nft');
+            // }
             break;
-          case MARKET_CONTRACT_EVENTS.CancelAuctionEvent:
+          case MARKET_CONTRACT_EVENTS.AuctionCancelled:
             if (res.ownerAddress === userAddress) {
               console.log('this is the user who listed the nft');
               dispatch(addCancelAuctionEvent(res));
@@ -151,13 +151,13 @@ const App = () => {
               console.log('this is NOT the user who listed the nft');
             }
             break;
-          case MARKET_CONTRACT_EVENTS.TerminateAuctionEvent:
-            if (res.terminatorAddress === userAddress) {
-              console.log('this is the user who terminate the nft');
-              dispatch(addTerminateAuctionEvent(res));
-            } else {
-              console.log('this is NOT the user who terminate the nft');
-            }
+          case MARKET_CONTRACT_EVENTS.AuctionTerminated:
+            // if (res.terminatorAddress === userAddress) {
+            // console.log('this is the user who terminate the nft');
+            dispatch(addTerminateAuctionEvent(res));
+            // } else {
+            //   console.log('this is NOT the user who terminate the nft');
+            // }
             break;
           default:
             break;
@@ -176,7 +176,6 @@ const App = () => {
   const HandleThemeChange = (theme) => {
     setSelectedTheme(theme);
     localStorage.setItem('current-theme', JSON.stringify(theme));
-    //console.log('themetghis', theme);
     themeValue = theme.name === dark ? light : dark;
   };
   // react hook to get the theme selected by the user that is saved in local storage

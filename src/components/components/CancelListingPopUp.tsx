@@ -32,16 +32,16 @@ const CancelListingPopUp = (props: IProps) => {
     ({
       eventName,
       tokenId,
-      listingId
+      ownerAddress
     }: {
       eventName: string;
       tokenId: string;
-      listingId: string;
+      ownerAddress: string;
     }) =>
-      (eventName === MARKET_CONTRACT_EVENTS.CancelSimpleEvent ||
-        eventName === MARKET_CONTRACT_EVENTS.CancelAuctionEvent) &&
+      (eventName === MARKET_CONTRACT_EVENTS.SimpleItemCancelled ||
+        eventName === MARKET_CONTRACT_EVENTS.AuctionCancelled) &&
       tokenId === nft.tokenId &&
-      listingId === nft.listingId
+      ownerAddress === nft.ownerAddress
   )?.transactionHash;
 
   const getMyBalance = async () => {
@@ -116,7 +116,7 @@ const CancelListingPopUp = (props: IProps) => {
             </div>
           )}
         </div>
-        {cancelTransactionHash && (
+        {cancelTransactionHash && !cancelListingState.loader && (
           <TransactionHash hash={cancelTransactionHash} />
         )}
         {cancelListingState.loader ? (
