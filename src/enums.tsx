@@ -30,6 +30,7 @@ export enum PROCESS_TRAKING_ACTION {
   BUY_SIMPLE_SINGLE = 'BUY_SIMPLE_SINGLE',
   BUY_SIMPLE_MULTIPLE = 'BUY_SIMPLE_MULTIPLE',
   BID = 'BID',
+  OFFER = 'OFFER',
   TERMINATE_AUCTION_NOT_SOLD = 'TERMINATE_AUCTION_NOT_SOLD',
   TERMINATE_AUCTION_SOLD = 'TERMINATE_AUCTION_SOLD'
 }
@@ -86,6 +87,7 @@ export enum ERRORS {
 
 export enum INPUT_ERROS {
   tooShort = 'The input is too short.',
+  higherThanZero = 'The number should be higher than zero.',
   tooLong = 'The input is too long.',
   requiredField = 'Required Field',
   numberIsHigher = 'The number is higher than it should be.',
