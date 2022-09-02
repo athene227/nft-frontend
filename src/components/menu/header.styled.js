@@ -48,12 +48,12 @@ const HeaderWrapper = styled.div`
       font-weight: 600;
       padding: 0 5px 0 0;
       text-decoration: none !important;
-      color: ${({ theme }) => theme.colors.white};
+      color: ${({ theme }) => theme.colors['text-light']};
       outline: none;
       transition: all 0.3s ease;
 
       &:hover {
-        color: ${({ theme }) => theme.colors.white};
+        color: ${({ theme }) => theme.colors['text-light']};
         transition: all 0.3s ease;
       }
 

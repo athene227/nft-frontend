@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
 import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import Loader from 'src/components/components/Loader';
 import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
+import { IPriceToken } from 'src/types/priceTokens.types';
 import * as Yup from 'yup';
 
-import { IPriceToken } from 'src/types/priceTokens.types';
 import { ApiService } from '../../core/axios';
-
 import Alert from './Alert';
 interface IProps {
   nft: INft;

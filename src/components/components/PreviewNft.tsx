@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MARKET_TYPE } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 
@@ -48,11 +48,11 @@ export default function PreviewNft(props: IProps) {
 
   return (
     <div className="nft__item m-0">
-      {timer && marketType === MARKET_TYPE.AUCTION && (
-        <div className="de_countdown">
-          <Clock deadline={expirationDateInput || 'December, 30, 2021'} />
-        </div>
-      )}
+      {/* {timer && marketType === MARKET_TYPE.AUCTION && ( */}
+      <div className="de_countdown">
+        <Clock deadline={expirationDateInput || 'December, 30, 2021'} />
+      </div>
+      {/* )} */}
       <div className="author_list_pp">
         <span>
           <img className="lazy" src={getImage(userImage)} alt="" />

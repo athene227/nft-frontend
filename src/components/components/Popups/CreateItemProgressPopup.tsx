@@ -1,5 +1,7 @@
 import { navigate } from '@reach/router';
 import React, { memo, useState } from 'react';
+import NFT721 from 'src/abis/new/NFT721.json';
+import NFT1155 from 'src/abis/new/NFT1155.json';
 import {
   ITEM_CREATE_STATUS,
   ITEM_CREATE_STATUS_LABEL,
@@ -10,8 +12,6 @@ import { MarketItemCreateProgress } from 'src/types/nfts.types';
 
 import TransactionHash from '../TransactionHash';
 import ProcessStep from './ProcessStep';
-import NFT721 from 'src/abis/new/NFT721.json';
-import NFT1155 from 'src/abis/new/NFT1155.json';
 interface IProps {
   progress: MarketItemCreateProgress;
   events: any[];

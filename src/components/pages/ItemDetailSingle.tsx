@@ -1,29 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SEO, { SEOProps } from '@americanexpress/react-seo';
+import { navigate } from '@reach/router';
 import moment from 'moment';
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Footer from '../components/footer';
-import * as selectors from '../../store/selectors';
-import { fetchNftDetail } from '../../store/actions/thunks/nfts';
-
-import {
-  dateHasPassed,
-  formatDate,
-  getErrorMessage,
-  getProfileImage,
-  getMyBalance,
-  getPriceAfterPercent,
-  getAuctionBids,
-  cancelSimpleListing,
-  cancelAuctionListing,
-  approveContract,
-  placeBid,
-  terminateAuction,
-  buySimple,
-  getNetworkId,
-  getAuctionMarketItem
-} from 'src/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
@@ -39,18 +20,37 @@ import { getImage } from 'src/services/ipfs';
 import notification from 'src/services/notification';
 import { clearEvents } from 'src/store/actions';
 import { fetchBids } from 'src/store/actions/thunks/bids';
-import Loader from 'src/components/components/Loader';
-import { navigate } from '@reach/router';
-import {
-  IAuctionMarketItem,
-  ISimpleMarketItem,
-  IAuctionBidItem
-} from 'src/types/nfts.types';
 import { IBid } from 'src/types/bids.types';
+import {
+  IAuctionBidItem,
+  IAuctionMarketItem,
+  ISimpleMarketItem
+} from 'src/types/nfts.types';
+import {
+  approveContract,
+  buySimple,
+  cancelAuctionListing,
+  cancelSimpleListing,
+  dateHasPassed,
+  formatDate,
+  getAuctionBids,
+  getAuctionMarketItem,
+  getErrorMessage,
+  getMyBalance,
+  getNetworkId,
+  getPriceAfterPercent,
+  getProfileImage,
+  placeBid,
+  terminateAuction
+} from 'src/utils';
+
+import { fetchNftDetail } from '../../store/actions/thunks/nfts';
+import * as selectors from '../../store/selectors';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
 import Clock from '../components/Clock/Clock';
+import Footer from '../components/footer';
 import { renderAttributes } from '../components/NftAttributes';
 import PlaceBidPopUp from '../components/PlaceBidPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';

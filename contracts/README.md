@@ -7,13 +7,13 @@ This page provides general information about the used contracts and required fil
 The following are the main contracts:
 - `IPartialNFT.sol`: An interface used to present some common functionality between ERC-1155 and ERC-721
 - `MarketTools.sol`: An abstract contract which is inherited by all the marketplace contracts. Contains logic common to all marketplace type contracts
-- `NFT721.sol`: A basic ERC-721 contract with some extra minting logic for royalties
-- `NFT1155.sol`: A basic ERC-1155 contract with some extra minting logic for royalties
+- `NFT721.sol`: A basic ERC-721 contract with some extra minting logic
+- `NFT1155.sol`: A basic ERC-1155 contract with some extra minting logic
 - `NFTMarketAuction.sol`: A contract to create and manage NFT auctions
 - `NFTMarketOffers.sol`: A contract to create and manage direct offers for (unlisted) NFTs
 - `NFTMarketSimple.sol`: A contract to create and manage simple NFT sales
 
-## Contracts details
+## Marketplace contracts details
 
 This section describes the marketplace contracts and their main functionalities.
 
@@ -121,13 +121,15 @@ Cancels an auction. Only the creator of the auction can cancel their own auction
 
 #### `offerOnNFT`
 
-Creates an arbitrary offer on an arbitrary NFT. The target NFT does not need to be listed in the marketplace.
+Creates an arbitrary offer on an arbitrary NFT. The target NFT does not need to be listed in the marketplace, but it has to be a valid NFT contract.
 
 The offerer chooses the used whitelisted ERC-20 token for the offer. Each offer has a deadline.
 
+For ERC-721 the offer has to be for one NFT. For ERC-1155 the offer can be for any amount of NFTs.
+
 #### `acceptOffer`
 
-The owner of an NFT can choose to accept a previously created offer.
+The owner of an NFT can choose to accept a previously created offer. This exchange the assets between the owner and the offerer.
 
 ### Other functionality
 
@@ -167,6 +169,29 @@ The commission is calculated before the sale price. For example, if user wants
 to buy a direct sale item which has a sale price of 100 weis and commission is
 1%, the users needs to pay 101 weis.
 
+
+
+
+#### Lazy minting
+
+The `NFT721` contract supports lazy minting - the 1155 version will get it once the 721 version is agreed upon to be ready.
+
+Lazy minting starts by a *creator* creating a voucher to mint an NFT. Anyone with a valid voucher can *redeem* the NFT.
+
+Creating a voucher has four parameters, of which the two last ones are optional:
+1. The NFT's metadata URL
+1. Unique tokenId for the NFT
+1. Minimum price for the NFT. If this is above zero, a redeemer has to send this much value (as native asset) along the redeeming transaction. Default is zero
+1. Royalty. If this is above zero, royalty is paid for the redeeming and for each subsequent sale (see the *Royalty* section for more details). Default is zero
+
+Once the voucher is created, it can be given to anyone or even published in the marketplace website. A transaction is required for the redeeming, but is not required for creating the voucher. There are no restrictions on who can create a voucher: it's open for anyone.
+
+##### TokenId allocation
+
+An NFT can't reuse an existing tokenId. If the given tokenId is already in use (minted), the redeeming fails. A (website) service could be used which provides an available tokenId for anyone who wants to create a voucher.
+
+Since regular minting is also supported, the client has to be careful not to accidentally have their tokenIds overlap. A possible solution would be to leave IDs from `0` to `X` for regular minting and start lazy minting IDs from `X + 1`.
+
 #### Helper functionality
 
 The contract has most of its variables marked as `public`, and therefore their
@@ -179,16 +204,12 @@ paths should be sufficiently covered.
 
 You can run unit tests with Hardhat: `npx hardhat test`.
 
-## Information for the client
-
-### Vulnerabilities and considerations
+## Vulnerabilities and considerations
 
 There exist some considerations and vulnerabilities currently in the contracts:
 
-- Anyone can mint. There are no access restrictions in the NFT contract. Please
-  decide how you want to restrict it and implement it
-- Analyzing the NFT contract code isn't included in this project, except for the royalties part.
-- Roayalty implementation is not finished
+- Analyzing the NFT contract code isn't included in this project, except for the minting and royalties part.
+- Lazy minting for ERC-1155 is not yet implemented. Waiting for client feedback on the ERC-721 lazy minting functionality first.
 
 ## Development
 

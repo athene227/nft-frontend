@@ -6,13 +6,17 @@ const HotCollectionWrapper = styled.div`
       .nft__item_price {
         color: #00b2fe;
       }
+      .nft__item_price_sec {
+          margin-right: 10px;
+        }
 
       .nft_coll__holder {
-        background: #131437;
-        border: 1px solid #282a53;
-        box-shadow: 17.9588px 26.9383px 26.9383px rgba(4, 15, 37, 0.15);
+        background: ${({ theme }) => theme.colors['hot-collection-bg']};
+        border-color: ${({ theme }) => theme.colors['item__border_color']};
+        box-shadow: ${({ theme }) => theme.colors['hot-collection-bx']};
         backdrop-filter: blur(173.455px);
         border-radius: 8.97942px;
+        padding-bottom: 0;
 
         .nft_wrap__holder {
           img {
@@ -24,7 +28,7 @@ const HotCollectionWrapper = styled.div`
       }
 
       .nft_col_content_holder {
-        background: rgba(0, 0, 0, 0.1);
+        background: ${({ theme }) => theme.colors['hot-collection-contentbg']};
         backdrop-filter: blur(62.8559px);
         border-radius: 8.97942px;
         min-height: 180px;
@@ -72,20 +76,6 @@ const HotCollectionWrapper = styled.div`
     .image_position {
       width: 30px !important;
       height: 30px !important;
-    }
-    .themeLight & {
-      .hot-collection-col {
-        background: ${({ theme }) => theme.colors['white']};
-        box-shadow: 10px 10px 20px #dbe6fd;
-        border-color: ${({ theme }) => theme.colors['white']};
-      }
-      .hot-collection-content {
-        background: rgba(${({ theme }) => theme.colors['white']}, 0.5);
-        backdrop-filter: blur(20px);
-        .nft__item_price_sec {
-          margin-right: 10px;
-        }
-      }
     }
   }
 `;

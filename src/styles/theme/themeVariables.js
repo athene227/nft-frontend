@@ -62,6 +62,7 @@ const newItemBg =
 const boxShadow = 'rgba(4, 15, 37, 0.2)';
 const itemPriceColor = '#0084FE';
 const itemBorderColor = '#282a53';
+const hotCollectionBg = '#131437';
 
 const light = {
   name: 'light',
@@ -140,7 +141,10 @@ const light = {
     'top-collection-image': 'none!important',
     footerBg: '#f7f8ff',
     // Create Option Page
-    'create-single-bg': backgroundLight
+    'create-single-bg': backgroundLight,
+    'hot-collection-bg': white,
+    'hot-collection-bx': '10px 10px 20px #dbe6fd',
+    'hot-collection-contentbg': 'rgba(0, 0, 0, 0.1)',
   }
 };
 const dark = {
@@ -218,7 +222,10 @@ const dark = {
     'top-collection-image': 'none',
     footerBg: 'rgba(255, 255, 255, 0.025)',
     // Create Option Page
-    'create-single-bg': gradient2
+    'create-single-bg': gradient2,
+    'hot-collection-bg': hotCollectionBg,
+    'hot-collection-bx': 'rgb(4 15 37 / 15%) 17.9588px 26.9383px 26.9383px',
+    'hot-collection-contentbg': 'rgba(255, 255, 255, 0.5)',
   }
 };
 export { dark, light };
