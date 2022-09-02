@@ -105,6 +105,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     error: null | string;
   }>({ loader: false, error: null });
   const [nftHistory, setNftHistory] = React.useState<any[]>([]);
+  const [offersList, setOffersList] = React.useState<any[]>([]);
 
   const SINGLE = 1;
 
@@ -256,6 +257,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       })
     );
   };
+
   const fetchNftHistory = async () => {
     if (!nft) return;
     try {
@@ -269,6 +271,22 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       setFetchHistoryState({ loader: false, error: null });
     } catch (error) {
       setFetchHistoryState({ loader: false, error: getErrorMessage(error) });
+    }
+  };
+
+  const fetchOffers = async () => {
+    if (!nft) return;
+    try {
+      setFetchOffersState({ loader: true, error: null });
+      const res = await ApiService.getOffers({
+        listingId: nft.listingId,
+        nftAddress: nft.nftAddress
+      });
+      setOffersList(res.data);
+
+      setFetchOffersState({ loader: false, error: null });
+    } catch (error) {
+      setFetchOffersState({ loader: false, error: getErrorMessage(error) });
     }
   };
 
@@ -979,7 +997,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
     return (
       <div className="tab-1 onStep fadeIn">
-        {bidsState.data[nft.listingId] &&
+        {offersList.length > 0 &&
           bidsState.data[nft.listingId].map((bid, index) => (
             <div className="p_list" key={index}>
               <div
