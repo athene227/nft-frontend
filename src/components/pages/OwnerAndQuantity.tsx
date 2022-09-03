@@ -4,6 +4,7 @@ import {
   getSimpleMarketItem,
   getUserNftQuantityFromNftContract
 } from 'src/utils';
+
 import * as selectors from '../../store/selectors';
 
 const OwnerAndQuantity = (props: {

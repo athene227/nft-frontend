@@ -423,6 +423,10 @@ p.lead {
   font-weight: 400;
 }
 
+.span-red {
+  color: red;
+}
+
 .btn-main {
   display: block;
   width: max-content;
@@ -461,6 +465,15 @@ p.lead {
   background: rgb(246, 246, 246);
   color: rgb(51, 51, 51) !important;
 }
+
+.li-disable {
+  pointer-events: none;
+}
+
+.strong-opacity {
+  opacity: 0.2; 
+}
+
 .btn__gradient {
   background: linear-gradient(95.16deg, ${({ theme }) =>
     theme.colors.color_primary} 2.64%, ${({ theme }) =>

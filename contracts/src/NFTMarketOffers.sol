@@ -21,6 +21,7 @@ contract NFTMarketOffers is MarketTools {
     address offerer;
     address nftContract;
     uint256 tokenId;
+    uint256 quantity;
     address erc20Address;
     uint256 amount;
     uint256 deadline;
@@ -42,15 +43,17 @@ contract NFTMarketOffers is MarketTools {
    * @dev Makes an offer on an arbitrary NFT
    * @param nftContract Address of the NFT contract
    * @param tokenId Token ID of the NFT
+   * @param quantity Number of NFTs to make an offer on (always 1 for ERC-721)
    * @param offerERC20Address Address of the ERC20 used for pricing
-   * @param offerAmount Amount of the price ERC20 token offered
+   * @param totalOfferAmount Offered total price for buying `quantity` amount of NFTs
    * @param offerDeadline Timestamp when the offer is no longer valid
    */
   function offerOnNft(
     address nftContract,
     uint256 tokenId,
+    uint256 quantity,
     address offerERC20Address,
-    uint256 offerAmount,
+    uint256 totalOfferAmount,
     uint256 offerDeadline
   ) external whenNotPaused {
     require(whitelistedERC20[offerERC20Address], 'Invalid price token');
@@ -58,9 +61,14 @@ contract NFTMarketOffers is MarketTools {
       msg.sender,
       address(this)
     );
-    require(givenAllowance >= offerAmount, 'Not enough allowance');
-    require(offerAmount > 0, 'Must offer something');
+    require(givenAllowance >= totalOfferAmount, 'Not enough allowance');
+    require(totalOfferAmount > 0, 'Must offer something');
     require(offerDeadline > block.timestamp, 'Deadline must be in the future');
+    require(quantity > 0, 'Must offer on some amount of NFTs');
+    require(
+      !is721Type(nftContract) || quantity == 1,
+      'ERC-721 can have only quantity of 1'
+    );
 
     _offerIds.increment();
     uint256 offerId = _offerIds.current();
@@ -69,8 +77,9 @@ contract NFTMarketOffers is MarketTools {
       msg.sender,
       nftContract,
       tokenId,
+      quantity,
       offerERC20Address,
-      offerAmount,
+      totalOfferAmount,
       offerDeadline,
       false
     );
@@ -95,7 +104,7 @@ contract NFTMarketOffers is MarketTools {
     require(block.timestamp < offer.deadline, 'The offer has expired');
     require(!offer.isClosed, 'The offer is used already');
 
-    // Check that the seller has the NFT
+    // Check that the seller has enough of the NFT
     if (is721Type(offer.nftContract)) {
       address nftOwner = IERC721(offer.nftContract).ownerOf(offer.tokenId);
       require(nftOwner == msg.sender, 'Only owner can accept offer');
@@ -104,14 +113,14 @@ contract NFTMarketOffers is MarketTools {
         msg.sender,
         offer.tokenId
       );
-      require(senderBalance > 0, 'Not enough balance');
+      require(senderBalance >= offer.quantity, 'Not enough balance');
     }
 
     offer.isClosed = true;
 
     uint256 commission = getPriceAfterPercent(
       offer.amount,
-      1,
+      1, // Don't take quantity into account since the price is total price
       commissionPercent
     );
 
@@ -135,7 +144,13 @@ contract NFTMarketOffers is MarketTools {
     IERC20(offer.erc20Address).transferFrom(offer.offerer, owner(), commission);
 
     // transfer the nft from owner to offerer
-    transferNFT(offer.nftContract, msg.sender, offer.offerer, offer.tokenId, 1);
+    transferNFT(
+      offer.nftContract,
+      msg.sender,
+      offer.offerer,
+      offer.tokenId,
+      offer.quantity
+    );
 
     emit OfferAccepted(offerId);
   }

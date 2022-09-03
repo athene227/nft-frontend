@@ -13,12 +13,22 @@ import Breakpoint, {
   BreakpointProvider,
   setDefaultBreakpoints
 } from 'react-socks';
+import MockERC20 from 'src/abis/new/MockERC20.json';
+import NFT721 from 'src/abis/new/NFT721.json';
+import NFT1155 from 'src/abis/new/NFT1155.json';
+import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
+import NFTMarketOffers from 'src/abis/new/NFTMarketOffers.json';
+import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
+// contracts
+import NFT from 'src/abis/NFT.json';
+import NFTMarket from 'src/abis/NFTMarket.json';
 import ToggleTheme from 'src/components/menu/toggleTheme';
 import { ApiService } from 'src/core/axios';
 import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
+import notification from 'src/services/notification';
 import TokenService from 'src/services/token';
-
+import { setUserProfile } from 'src/store/actions/thunks/users';
 import { setupWeb3 } from 'src/store/actions/thunks/web3';
 import * as selectors from 'src/store/selectors';
 import { IToken, JwtDecoded } from 'src/types/auth.types';
@@ -29,23 +39,12 @@ import {
   getNetworkId,
   shortAddress
 } from 'src/utils';
-// contracts
-import NFT from 'src/abis/NFT.json';
-import NFTMarket from 'src/abis/NFTMarket.json';
-import MockERC20 from 'src/abis/new/MockERC20.json';
-import NFT721 from 'src/abis/new/NFT721.json';
-import NFT1155 from 'src/abis/new/NFT1155.json';
-import NFTMarketSimple from 'src/abis/new/NFTMarketSimple.json';
-import NFTMarketAuction from 'src/abis/new/NFTMarketAuction.json';
-import NFTMarketOffers from 'src/abis/new/NFTMarketOffers.json';
+import Web3 from 'web3';
 
 import { dark, light } from '../../styles/theme/themeVariables';
-import { setUserProfile } from 'src/store/actions/thunks/users';
-import notification from 'src/services/notification';
 import GlobalSearchBar from '../components/GlobalSearchBar';
 import UserAvatar from '../components/UserAvatar';
 import HeaderWrapper from './header.styled';
-import Web3 from 'web3';
 
 setDefaultBreakpoints([{ xs: 0 }, { l: 1199 }, { xl: 1200 }]);
 
@@ -698,6 +697,12 @@ const Header = function (props) {
     );
   };
 
+  let logoImageURL = '';
+  if (currentThemevalue.name === 'dark') {
+    logoImageURL = './img/NFT-BETA-LOGO.png';
+  } else {
+    logoImageURL = './img/NFT-BETA-LOGO-DARK.png';
+  }
   return (
     <HeaderWrapper>
       <header id="myHeader" className="navbar white">
@@ -707,7 +712,7 @@ const Header = function (props) {
               <div className="navbar-title navbar-item">
                 <NavLink to="/">
                   <img
-                    src="./img/NFT-BETA-LOGO.png"
+                    src={logoImageURL}
                     className="img-fluid d-3"
                     alt="#"
                     width={80}
@@ -750,7 +755,7 @@ const Header = function (props) {
                       </span>
                       <span
                         className="col-6 btn-main btn-grad-outline mx-3"
-                        onClick={() => navigate('/CreateOption')}
+                        onClick={() => navigate('/createItem')}
                       >
                         Create
                       </span>
@@ -779,7 +784,7 @@ const Header = function (props) {
                     </span>
                     <span
                       className="col-6 btn-main btn-grad-outline mx-3"
-                      onClick={() => navigate('/CreateOption')}
+                      onClick={() => navigate('/createItem')}
                     >
                       Create
                     </span>

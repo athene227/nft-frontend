@@ -39,7 +39,8 @@ module.exports = {
   networks: {
     hardhat: {
       gasPrice: 0,
-      initialBaseFeePerGas: 0
+      initialBaseFeePerGas: 0,
+      chainId: 31337
     },
     rinkeby: {
       url: `wss://rinkeby.infura.io/ws/v3/${infuraId}`,

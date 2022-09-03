@@ -1,3 +1,4 @@
+import { navigate, useParams } from '@reach/router';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -28,10 +29,22 @@ const ExploreFilter = () => {
     .data;
   const nftCount = useSelector(selectors.nftCount);
 
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.category !== undefined) {
+      dispatch(
+        filterCategories({ value: params.category, singleSelect: true })
+      );
+    }
+  }, []);
+
   const handleCategory = useCallback(
     (event) => {
       const { value } = event;
-      dispatch(filterCategories({ value: value, singleSelect: false }));
+      const path = '/explore/' + value;
+      navigate(path);
+      // dispatch(filterCategories({ value: value, singleSelect: false }));
     },
     [dispatch]
   );

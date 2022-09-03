@@ -36,9 +36,10 @@ import Auction from './pages/Auction';
 import Author from './pages/Author';
 import Collection from './pages/Collection';
 import Contact from './pages/contact';
-import CreateMultiple from './pages/CreateMultiple';
-import CreateOption from './pages/CreateOption/CreateOption';
-import CreateSingle from './pages/CreateSingle/CreateSingle';
+// import CreateMultiple from './pages/CreateMultiple';
+// import CreateOption from './pages/CreateOption/CreateOption';
+// import CreateSingle from './pages/CreateSingle/CreateSingle';
+import CreateItem from './pages/CreateItem/CreateItem';
 import ElegantIcons from './pages/elegantIcons';
 import EtlineIcons from './pages/etlineIcons';
 import Explore from './pages/Explore/explore';
@@ -210,9 +211,10 @@ const App = () => {
             <ItemDetailSingle path="/ItemDetail/:tokenId/:nftAddress" />
             <ItemDetailMultiple path="/ItemDetailMultiple/:tokenId/:nftAddress" />
             <Author path="/author/:publicAddress" />
-            <CreateOption path="/CreateOption" />
-            <CreateSingle path="/createSingle" />
-            <CreateMultiple path="/createMultiple" />
+            {/* <CreateOption path="/CreateOption" /> */}
+            {/* <CreateSingle path="/createSingle" /> */}
+            {/* <CreateMultiple path="/createMultiple" /> */}
+            <CreateItem path="/createItem" />
             <Listing path="/listing/:tokenId/:nftAddress" />
             <Profile path="/profile" />
             <MyProfile path="/myProfile" />
@@ -222,6 +224,7 @@ const App = () => {
             {/* <Home1 path="/home1" />
             <Home2 path="/home2" /> */}
             <Explore path="/explore" />
+            <Explore path="/explore/:category" />
             <Helpcenter path="/helpcenter" />
             <RankingRedux path="/Ranking" />
             <Wallet path="/wallet" />

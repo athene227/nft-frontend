@@ -13,14 +13,14 @@ import {
 import { getImage } from 'src/services/ipfs';
 import { IBid } from 'src/types/bids.types';
 import {
+  IAuctionBidItem,
   IAuctionMarketItem,
-  INft,
-  IAuctionBidItem
+  INft
 } from 'src/types/nfts.types';
 import {
+  getAuctionBids,
   getAuctionMarketItem,
-  getErrorMessage,
-  getAuctionBids
+  getErrorMessage
   // placeBid
 } from 'src/utils';
 import * as Yup from 'yup';

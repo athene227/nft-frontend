@@ -128,17 +128,17 @@ const LiveAuctionWrapper = styled.div`
 
   .swiper-slide {
     // backdrop-filter: blur(10px);
-    filter: blur(2px);
+    /* filter: blur(2px); */
   }
 
   .swiper-slide-next {
     // backdrop-filter: blur(5px);
-    filter: blur(1px);
+    /* filter: blur(1px); */
   }
 
   .swiper-slide-prev {
     // backdrop-filter: blur(5px);
-    filter: blur(2px);
+    /* filter: blur(2px); */
   }
 
   .swiper-slide-active {

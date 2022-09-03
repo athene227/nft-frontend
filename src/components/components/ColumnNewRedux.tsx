@@ -39,27 +39,27 @@ const ColumnNewRedux = (props: {
   console.log('🚀 ~ file: ColumnNewRedux.tsx ~ line 37 ~ data', data);
   return (
     <NftItems>
-    <div className="nft-general-style ">
-      <div className="nft_items__holder">
-        <div className="nft row">
-          {data &&
-            data.map((nft, index) => (
-              <NftCard
-                nft={nft}
-                key={index}
-                onImgLoad={onImgLoad}
-                height={height}
-              />
-            ))}
-          {/* {showLoadMore && data.length <= 20 &&
+      <div className="nft-general-style ">
+        <div className="nft_items__holder">
+          <div className="nft row">
+            {data &&
+              data.map((nft, index) => (
+                <NftCard
+                  nft={nft}
+                  key={index}
+                  onImgLoad={onImgLoad}
+                  height={height}
+                />
+              ))}
+            {/* {showLoadMore && data.length <= 20 &&
                 <div className='col-lg-12'>
                     <div className="spacer-single"></div>
                     <span onClick={loadMore} className="btn-main lead m-auto">Load More</span>
                 </div>
             } */}
+          </div>
         </div>
       </div>
-    </div>
     </NftItems>
   );
 };

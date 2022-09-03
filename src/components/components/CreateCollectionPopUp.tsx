@@ -85,7 +85,7 @@ const CreateCollectionPopUp = (props: IProps) => {
                     type="button"
                     id="get_file"
                     className="btn-main btn_gradient"
-                    value="Choose File"
+                    value={imgFile ? 'Change File' : 'Choose File'}
                   />
                   <input
                     id="upload_file"
