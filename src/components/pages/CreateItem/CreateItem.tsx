@@ -133,6 +133,7 @@ const CreateItem = () => {
     imageUrl: string,
     previewImageUrl: string
   ) => {
+    console.log('------------------------------+++++++++++', data);
     // nft mongo item
     const nftToCreate: any = {
       name: data.name,
@@ -156,7 +157,7 @@ const CreateItem = () => {
       multiple: data.supply == 1 ? false : true,
       networkId,
       category: data.category,
-      deadline: '',
+      // deadline: String(new Date(data.expirationDate)),
       externalLink: data.externalLink,
       explicit: data.explicit,
       supply: data.supply,

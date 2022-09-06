@@ -74,6 +74,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
   const nftDetailState = useSelector(selectors.nftCollectibleDetailState);
   const nftGroups = nftDetailState.data;
+  console.log(
+    '🚀 ~ file: ItemDetailMultiple.tsx ~ line 77 ~ ItemDetailMultiple ~ nftGroups',
+    nftGroups
+  );
   const nftLoader = nftDetailState.loading; // nft details loader
   const nftError = nftDetailState.error; // nft details loader
 

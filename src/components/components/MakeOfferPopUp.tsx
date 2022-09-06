@@ -10,7 +10,8 @@ import {
   COIN,
   COMISSION_PERCENTAGE,
   ERRORS,
-  INPUT_ERROS
+  INPUT_ERROS,
+  MARKET_CONTRACT_EVENTS
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 import { INft } from 'src/types/nfts.types';
@@ -21,6 +22,7 @@ import * as selectors from '../../store/selectors';
 import Alert from './Alert';
 import { ApiService } from '../../core/axios';
 import { IPriceToken } from 'src/types/priceTokens.types';
+import TransactionHash from './TransactionHash';
 
 // const GlobalStyles = createGlobalStyle`
 // .heading h3, .description h3{
@@ -37,6 +39,7 @@ interface IProps {
 const MakeOfferPopUp = (props: IProps) => {
   const { nft, onClose, submit, makeOfferState } = props;
   const [balance, setBalance] = useState(0);
+  const [currentPriceTokenType, setCurrentPriceTokenType] = useState('');
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
   const [dataState, setDataState] = useState<{
     loader: boolean;
@@ -45,6 +48,31 @@ const MakeOfferPopUp = (props: IProps) => {
 
   const web3State = useSelector(selectors.web3State);
   const { web3, accounts } = web3State.web3.data;
+  const nftEvents = useSelector(selectors.nftEvents);
+
+  const userAddress = accounts[0];
+  console.log(
+    '🚀 ~ file: MakeOfferPopUp.tsx ~ line 54 ~ MakeOfferPopUp ~ userAddress',
+    userAddress
+  );
+
+  const offerTransactionHash = nftEvents.find(
+    ({
+      eventName,
+      tokenId,
+      nftAddress,
+      offererAddress
+    }: {
+      eventName: string;
+      tokenId: string;
+      nftAddress: string;
+      offererAddress: string;
+    }) =>
+      eventName === MARKET_CONTRACT_EVENTS.OfferCreated &&
+      tokenId === nft.tokenId &&
+      nftAddress === nft.nftAddress &&
+      offererAddress === userAddress
+  )?.transactionHash;
 
   const _getMyBalance = async () => {
     const wei_balance = await web3.eth.getBalance(accounts[0]);
@@ -76,6 +104,7 @@ const MakeOfferPopUp = (props: IProps) => {
       const res = await ApiService.getPriceTokens();
       const pricetokens = res.data as Array<IPriceToken>;
       setPriceTokens(pricetokens);
+      setCurrentPriceTokenType(pricetokens[0]?.name);
     };
     getPriceTokens();
   }, []);
@@ -102,7 +131,7 @@ const MakeOfferPopUp = (props: IProps) => {
       quantity: 1,
       price: 0,
       expirationDates: '1',
-      pricetokentype: priceTokens[0]?.name
+      pricetokentype: priceTokens[0]?.name || 'MRT'
     };
     return result;
   };
@@ -112,6 +141,7 @@ const MakeOfferPopUp = (props: IProps) => {
     setFieldValue
   }: FormikProps<{
     price: number;
+    quantity: number;
     expirationDates: string;
     expirationDay: Date;
     pricetokentype: string;
@@ -119,6 +149,7 @@ const MakeOfferPopUp = (props: IProps) => {
     const [isDateTimeInputDisabled, setDateTimeInputDisable] = useState(true);
     const onChangePriceTokenType = (e: any) => {
       setFieldValue('pricetokentype', e.target.value);
+      setCurrentPriceTokenType(e.target.value);
       console.log(e.target.value);
     };
     const onChangeOfferDateList = (e: any) => {
@@ -181,7 +212,10 @@ const MakeOfferPopUp = (props: IProps) => {
       <Form>
         <div className="modal-header">
           <h5 className="modal-title">Make an Offer</h5>
-          <button className="btn-close" onClick={() => onClose(false)}>
+          <button
+            className="btn-close"
+            onClick={() => onClose(offerTransactionHash !== undefined)}
+          >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -217,7 +251,7 @@ const MakeOfferPopUp = (props: IProps) => {
                         </>
                       )}
 
-                      <h6>Your offer ({nft?.priceToken[0]?.name || COIN})</h6>
+                      <h6>Your offer ({currentPriceTokenType || COIN})</h6>
                       <div className="row">
                         <div className="col-4">
                           <Field
@@ -272,15 +306,14 @@ const MakeOfferPopUp = (props: IProps) => {
                 <div className="heading mt-3">
                   <p>Your balance</p>
                   <div className="subtotal">
-                    {Number(balance).toFixed(8)}{' '}
-                    {nft?.priceToken[0]?.name || COIN}
+                    {Number(balance).toFixed(8)} {currentPriceTokenType || COIN}
                   </div>
                 </div>
 
                 <div className="heading">
                   <p>Service fee 1%</p>
                   <div className="subtotal">
-                    {getComission()} {nft?.priceToken[0]?.name || COIN}
+                    {getComission()} {currentPriceTokenType || COIN}
                   </div>
                 </div>
               </div>
@@ -288,20 +321,25 @@ const MakeOfferPopUp = (props: IProps) => {
                 <div className="heading">
                   <p>You will pay</p>
                   <div className="subtotal">
-                    {getTotal()} {nft?.priceToken[0]?.name || COIN}
+                    {getTotal()} {currentPriceTokenType || COIN}
                   </div>
                 </div>
               </div>
               <div className="detail_button">
+                {offerTransactionHash && !makeOfferState.loader && (
+                  <TransactionHash hash={offerTransactionHash} />
+                )}
                 {makeOfferState.loader ? (
                   <Loader />
                 ) : (
-                  <input
-                    type="submit"
-                    id="submit"
-                    className="btn-main"
-                    value="Make Offer"
-                  />
+                  offerTransactionHash === undefined && (
+                    <input
+                      type="submit"
+                      id="submit"
+                      className="btn-main"
+                      value="Make Offer"
+                    />
+                  )
                 )}
               </div>
               {makeOfferState.error && (
@@ -373,7 +411,10 @@ const MakeOfferPopUp = (props: IProps) => {
 
   return (
     <div className="maincheckout modal-style-1">
-      <button className="btn-close" onClick={() => onClose(false)}>
+      <button
+        className="btn-close"
+        onClick={() => onClose(offerTransactionHash !== undefined)}
+      >
         x
       </button>
       {renderView()}
