@@ -224,7 +224,7 @@ const App = () => {
             {/* <Home1 path="/home1" />
             <Home2 path="/home2" /> */}
             <Explore path="/explore" />
-            <Explore path="/explore/:category" />
+            {/* <Explore path="/explore/:category" /> */}
             <Helpcenter path="/helpcenter" />
             <RankingRedux path="/Ranking" />
             <Wallet path="/wallet" />

@@ -291,6 +291,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
+      //* check if user not buyng from himself
+      if (nft.ownerAddress === userAddress) {
+        throw new Error(ERRORS.CANT_BUY_FROM_YOURSELF);
+      }
 
       const price = Number(nft.price);
       const weiPrice = web3.utils.toWei(price.toString(), 'ether');
