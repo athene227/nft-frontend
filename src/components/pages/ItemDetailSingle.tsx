@@ -729,6 +729,20 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         .acceptOffer(Number(offer.offerId))
         .send({ from: userAddress });
 
+      //! Cancel Market Items
+      if (nft.marketType === MARKET_TYPE.AUCTION) {
+        await cancelAuctionListing({
+          nftMarketAuctionContract,
+          userAddress,
+          listingId: Number(nft.listingId)
+        });
+      } else {
+        await cancelSimpleListing({
+          nftMarketSimpleContract,
+          userAddress,
+          listingId: Number(nft.listingId)
+        });
+      }
       //* create tracking before accept offer
       await ApiService.createProcessTracking({
         ...offerTrackingItem,
