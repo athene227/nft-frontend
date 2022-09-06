@@ -48,7 +48,7 @@ const BuyPopUp = (props: IProps) => {
   const web3State = useSelector(selectors.web3State);
   const { web3, accounts, nftMarketSimpleContract } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
-
+  const userAddress = accounts[0];
   const buyTransactionHash = nftEvents.find(
     ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
       eventName === MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent &&
@@ -56,7 +56,7 @@ const BuyPopUp = (props: IProps) => {
   )?.transactionHash;
 
   const _getMyBalance = async () => {
-    const wei_balance = await web3.eth.getBalance(accounts[0]);
+    const wei_balance = await web3.eth.getBalance(userAddress);
     const eth_balance = web3.utils.fromWei(wei_balance, 'ether');
     return eth_balance;
   };
@@ -231,7 +231,8 @@ const BuyPopUp = (props: IProps) => {
                   {placeBidState.loader ? (
                     <Loader />
                   ) : (
-                    buyTransactionHash === undefined && (
+                    buyTransactionHash === undefined &&
+                    nft.ownerAddress !== userAddress && (
                       <input
                         type="submit"
                         id="submit"

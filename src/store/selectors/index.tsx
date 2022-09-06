@@ -1,4 +1,5 @@
 import { createSelector, createStructuredSelector } from 'reselect';
+import { MARKET_TYPE } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
 
 import { IBids } from '../reducers/bids';
@@ -61,7 +62,9 @@ export const auctionedNfts = createSelector(listedNftsState, (nfts) => {
   if (!nfts.data) {
     return [];
   }
-  const auctioned = nfts.data.filter((nft) => !!nft.deadline);
+  const auctioned = nfts.data.filter(
+    (nft) => nft.marketType == MARKET_TYPE.AUCTION
+  );
   return auctioned;
 });
 

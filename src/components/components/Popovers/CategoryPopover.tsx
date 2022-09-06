@@ -15,11 +15,13 @@ import classes from './CustomPopover.module.scss';
 
 interface CategoryPopoverProps {
   collectionList: ICollection[];
+  nftCount: Object;
   onUpdate: (v: any) => void;
 }
 
 const CategoryPopover = ({
   collectionList,
+  nftCount,
   onUpdate
 }: CategoryPopoverProps) => {
   const [collectionPopShow, setCollectionPopShow] = useState(false);
@@ -101,7 +103,16 @@ const CategoryPopover = ({
                       style={{ paddingLeft: 0, paddingRight: 0 }}
                       onClick={() => handleSelectCollection(item.value)}
                     >
-                      <ListItemText id={labelId} primary={item.name} />
+                      <ListItemText
+                        id={labelId}
+                        primary={
+                          item.name +
+                          ' ' +
+                          (nftCount[item.name] == undefined
+                            ? 0
+                            : nftCount[item.name])
+                        }
+                      />
                     </ListItemButton>
                   </ListItem>
                 );

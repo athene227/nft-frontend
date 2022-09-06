@@ -157,7 +157,6 @@ const CreateItem = () => {
       multiple: data.supply == 1 ? false : true,
       networkId,
       category: data.category,
-      // deadline: String(new Date(data.expirationDate)),
       externalLink: data.externalLink,
       explicit: data.explicit,
       supply: data.supply,

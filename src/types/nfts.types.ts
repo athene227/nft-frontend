@@ -38,7 +38,6 @@ export interface INft {
   status: STATUS;
   item_type: string;
   collections: string;
-  deadline: string;
   authorLink: string;
   nftLink: string;
   bidLink: string;

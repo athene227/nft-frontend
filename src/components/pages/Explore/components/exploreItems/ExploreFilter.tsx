@@ -1,4 +1,4 @@
-import { navigate, useParams } from '@reach/router';
+import { navigate, useLocation } from '@reach/router';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -21,6 +21,12 @@ import { fetchCountForCategories } from 'src/store/actions/thunks';
 import { getCollections } from 'src/store/actions/thunks/collections';
 import * as selectors from 'src/store/selectors';
 
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
+
 const ExploreFilter = () => {
   const dispatch = useDispatch();
   const filters = useSelector(selectors.nftFilter);
@@ -29,25 +35,40 @@ const ExploreFilter = () => {
     .data;
   const nftCount = useSelector(selectors.nftCount);
 
-  const params = useParams();
+  const query = useQuery();
+  const category = query.get('category');
+  const sortby = query.get('sortby');
 
   useEffect(() => {
-    if (params.category !== undefined) {
-      dispatch(
-        filterCategories({ value: params.category, singleSelect: true })
-      );
+    if (category != null) {
+      dispatch(filterCategories({ value: category, singleSelect: true }));
+    }
+    if (sortby != null) {
+      dispatch(setSortOrder(sortby));
     }
   }, []);
 
   const handleCategory = useCallback(
     (event) => {
       const { value } = event;
-      const path = '/explore/' + value;
+      let path = '/explore?category=' + value;
+      if (sortby != null) {
+        path += '&sortby=' + sortby;
+      }
       navigate(path);
       // dispatch(filterCategories({ value: value, singleSelect: false }));
     },
     [dispatch]
   );
+
+  const handleSortby = (value) => {
+    let path = '/explore?';
+    if (category != null) {
+      path += 'category=' + category + '&';
+    }
+    path += 'sortby=' + value;
+    navigate(path);
+  };
 
   const handleStatus = useCallback(
     (event) => {
@@ -75,6 +96,7 @@ const ExploreFilter = () => {
                 <div className={`de_form price_filer_holder`}>
                   <CategoryPopover
                     collectionList={categories}
+                    nftCount={nftCount}
                     onUpdate={(value) => handleCategory({ value })}
                   />
                 </div>
@@ -115,7 +137,7 @@ const ExploreFilter = () => {
               <div className={`de_form price_filer_holder`}>
                 <SortPopover
                   currentOrder={sortOrder}
-                  onUpdate={(value) => dispatch(setSortOrder(value))}
+                  onUpdate={(value) => handleSortby(value)}
                 />
               </div>
             </div>

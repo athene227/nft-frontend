@@ -83,7 +83,8 @@ export enum ERRORS {
   AUCTION_HASNT_ENDED = 'The auction has not ended!',
   NO_NFTS_TO_BUY = 'There are no NFTs on sale.',
   ALREADY_LISTED = 'You already listed this NFT. Cancel it or wait for users to buy it.',
-  CANT_LIST_NFT_YOU_DONT_HAVE = "You can't list Nft you don't have."
+  CANT_LIST_NFT_YOU_DONT_HAVE = "You can't list Nft you don't have.",
+  CANT_BUY_FROM_YOURSELF = "You can't buy Nft from yourself."
 }
 
 export enum INPUT_ERROS {
