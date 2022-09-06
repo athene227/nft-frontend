@@ -134,12 +134,17 @@
       "inputs": [
         { "internalType": "address", "name": "nftContract", "type": "address" },
         { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+        { "internalType": "uint256", "name": "quantity", "type": "uint256" },
         {
           "internalType": "address",
           "name": "offerERC20Address",
           "type": "address"
         },
-        { "internalType": "uint256", "name": "offerAmount", "type": "uint256" },
+        {
+          "internalType": "uint256",
+          "name": "totalOfferAmount",
+          "type": "uint256"
+        },
         {
           "internalType": "uint256",
           "name": "offerDeadline",
@@ -158,6 +163,7 @@
         { "internalType": "address", "name": "offerer", "type": "address" },
         { "internalType": "address", "name": "nftContract", "type": "address" },
         { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+        { "internalType": "uint256", "name": "quantity", "type": "uint256" },
         {
           "internalType": "address",
           "name": "erc20Address",
@@ -254,7 +260,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0xd8402fa4F719feE8d6Cb41A2D205D394B07f7dE6"
+      "address": "0x89d1248225dfAA78afcBc4590764F9862543A576"
     }
   }
 }
