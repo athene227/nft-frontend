@@ -50,7 +50,7 @@ const CreateSingle = () => {
   const [numberOfCopies, setNumberOfCopiesInput] = useState(0);
   const [royalties, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
-  const [marketType, _] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
+  const [marketType] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
 
   const web3State = useSelector(selectors.web3State);
   const {

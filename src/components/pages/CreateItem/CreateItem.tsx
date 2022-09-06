@@ -133,6 +133,7 @@ const CreateItem = () => {
     imageUrl: string,
     previewImageUrl: string
   ) => {
+    console.log('------------------------------+++++++++++', data);
     // nft mongo item
     const nftToCreate: any = {
       name: data.name,

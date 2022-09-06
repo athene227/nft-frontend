@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType } from 'typesafe-actions';
 
 import * as actions from '../actions';
@@ -21,6 +22,7 @@ export interface IWeb3State {
   nft1155Contract: any;
   nftMarketSimpleContract: any;
   nftMarketAuctionContract: any;
+  nftMarketOffersContract: any;
 }
 
 const initialValue: IWeb3State = {
@@ -35,7 +37,8 @@ const initialValue: IWeb3State = {
   nft721Contract: null,
   nft1155Contract: null,
   nftMarketSimpleContract: null,
-  nftMarketAuctionContract: null
+  nftMarketAuctionContract: null,
+  nftMarketOffersContract: null
 };
 
 export const defaultState = {

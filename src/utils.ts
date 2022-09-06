@@ -35,7 +35,7 @@ function currentYPosition() {
   return 0;
 }
 
-function elmYPosition(elm) {
+function elmYPosition(elm: any) {
   let y = elm.offsetTop;
   let node = elm;
   while (node.offsetParent && node.offsetParent !== document.body) {
@@ -45,12 +45,12 @@ function elmYPosition(elm) {
   return y;
 }
 
-export function scrollTo(scrollableElement, elmID) {
+export function scrollTo(scrollableElement: any, elmID: any) {
   const elm = document.getElementById(elmID);
   if (!elmID || !elm) {
     return;
   }
-  const startY = currentYPosition();
+  const startY: any = currentYPosition();
   const stopY = elmYPosition(elm);
   const distance = stopY > startY ? stopY - startY : startY - stopY;
   if (distance < 100) {
@@ -78,7 +78,7 @@ export function scrollTo(scrollableElement, elmID) {
     }
     return;
   }
-  for (let i = startY; i > stopY; i -= step) {
+  for (let i: any = startY; i > stopY; i -= step) {
     setTimeout(
       (function (leapY) {
         return () => {
@@ -94,7 +94,7 @@ export function scrollTo(scrollableElement, elmID) {
   return false;
 }
 
-export function getTimeDifference(date) {
+export function getTimeDifference(date: any) {
   const difference =
     moment(new Date(), 'DD/MM/YYYY HH:mm:ss').diff(
       moment(date, 'DD/MM/YYYY HH:mm:ss')
@@ -451,7 +451,7 @@ export const getNftAttributeType = (attr: INftAttribute) => {
 };
 
 ///////////////// Number Formatting Functions //////////////////////
-export function numFormatter(num) {
+export function numFormatter(num: any) {
   if (num >= 1000000000000) {
     return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
   }
@@ -466,7 +466,7 @@ export function numFormatter(num) {
   }
   return num.toFixed(2);
 }
-export function numFormatterFull(num) {
+export function numFormatterFull(num: any) {
   if (num >= 1000000000) {
     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Billion ';
   }
@@ -479,7 +479,7 @@ export function numFormatterFull(num) {
   return num.toFixed(2);
 }
 
-export function numberWithCommas(x) {
+export function numberWithCommas(x: any) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
