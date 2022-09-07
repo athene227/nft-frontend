@@ -49,6 +49,7 @@ import { fetchNftDetail } from '../../store/actions/thunks/nfts';
 import * as selectors from '../../store/selectors';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
+import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
 import Clock from '../components/Clock/Clock';
 import Footer from '../components/footer';
@@ -152,35 +153,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const [openBuy, setOpenBuy] = React.useState(false);
   const [openPlaceBid, setOpenPlaceBid] = React.useState(false);
   const [openMakeOffer, setOpenMakeOffer] = React.useState(false);
+  const [openAcceptOffer, setOpenAcceptOffer] = React.useState(false);
   const [openCancelListing, setOpenCancelListing] = React.useState(false);
   const [openTerminateAuction, setOpenTerminateAuction] = React.useState(false);
 
   const nftEvents = useSelector(selectors.nftEvents);
-  const acceptofferTransactionHash = nftEvents.find(
-    ({
-      eventName,
-      tokenId,
-      nftAddress
-    }: {
-      eventName: string;
-      tokenId: string;
-      nftAddress: string;
-    }) =>
-      eventName === MARKET_CONTRACT_EVENTS.OfferAccepted &&
-      tokenId === nft?.tokenId &&
-      nftAddress === nft?.nftAddress
-  )?.transactionHash;
-  console.log(
-    '🚀 ~ file: ItemDetailSingle.tsx ~ line 173 ~ ItemDetailSingle ~ acceptofferTransactionHash',
-    acceptofferTransactionHash
-  );
-
-  useEffect(() => {
-    if (acceptofferTransactionHash) {
-      dispatch(clearEvents());
-      navigate(`/ItemDetail/${nft?.tokenId}/${nft?.nftAddress}`);
-    }
-  }, [acceptofferTransactionHash]);
 
   useEffect(() => {
     dispatch(
@@ -242,6 +219,24 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const closeMakeOfferPopUp = (shouldRefresh = false) => {
     setMakeOfferState({ loader: false, error: null });
     setOpenMakeOffer(false);
+    if (shouldRefresh && nft) {
+      const { tokenId, nftAddress } = nft;
+      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
+    }
+  };
+
+  const openAcceptOfferPopUp = () => {
+    if (!web3) {
+      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
+      return;
+    }
+    dispatch(clearEvents());
+    setOpenAcceptOffer(true);
+  };
+
+  const closeAcceptOfferPopUp = (shouldRefresh = false) => {
+    setAcceptOfferState({ loader: false, error: null, selectedOffer: null });
+    setOpenAcceptOffer(false);
     if (shouldRefresh && nft) {
       const { tokenId, nftAddress } = nft;
       navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
@@ -317,7 +312,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         nftAddress: nft.nftAddress
       });
       console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 286 ~ fetchNftOffers ~ res.data',
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 286 ~ fetchNftOffers ~ offers',
         res.data
       );
       setOffersList(res.data);
@@ -350,8 +345,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   }, [nft?._id, tabType]);
 
   useEffect(() => {
-    if (nft?.marketType === MARKET_TYPE.SIMPLE) {
+    if (
+      nft?.marketType === MARKET_TYPE.SIMPLE ||
+      nft?.status === STATUS.NOT_LISTED
+    ) {
       setTab(TAB_TYPE.HISTORY);
+    } else if (nft?.marketType === MARKET_TYPE.AUCTION) {
+      setTab(TAB_TYPE.BIDS);
     }
   }, [nft?._id]);
 
@@ -680,7 +680,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       setMakeOfferState({ loader: false, error: getErrorMessage(error) });
     }
   };
-  const _acceptOffer = async (offer: any) => {
+
+  const _acceptOffer = async (offer: any, resetForm: () => void) => {
     try {
       if (!nft) return;
       if (!web3) {
@@ -719,6 +720,23 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
+      //! Cancel Market Items
+      if (nft.status !== STATUS.NOT_LISTED) {
+        if (nft.marketType === MARKET_TYPE.AUCTION) {
+          await cancelAuctionListing({
+            nftMarketAuctionContract,
+            userAddress,
+            listingId: Number(nft.listingId)
+          });
+        } else {
+          await cancelSimpleListing({
+            nftMarketSimpleContract,
+            userAddress,
+            listingId: Number(nft.listingId)
+          });
+        }
+      }
+
       //* approve
       await nft721Contract.methods
         .approve(nftMarketOffersContract._address, Number(nft.tokenId))
@@ -729,20 +747,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         .acceptOffer(Number(offer.offerId))
         .send({ from: userAddress });
 
-      //! Cancel Market Items
-      if (nft.marketType === MARKET_TYPE.AUCTION) {
-        await cancelAuctionListing({
-          nftMarketAuctionContract,
-          userAddress,
-          listingId: Number(nft.listingId)
-        });
-      } else {
-        await cancelSimpleListing({
-          nftMarketSimpleContract,
-          userAddress,
-          listingId: Number(nft.listingId)
-        });
-      }
       //* create tracking before accept offer
       await ApiService.createProcessTracking({
         ...offerTrackingItem,
@@ -855,15 +859,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           throw new Error(ERRORS.ONLY_OWNER_CAN_CANCEL);
         }
         // if deadline is bigger than now you can cancel
-        // if now is bigger than auction deadline===>error
-        console.log(
-          '🚀 ~ file: ItemDetailSingle.tsx ~ line 543 ~ cancelListing ~ Number(auctionMarketItem.deadline)',
-          Number(auctionMarketItem.deadline)
-        );
-        console.log(
-          '🚀 ~ file: ItemDetailSingle.tsx ~ line 544 ~ cancelListing ~ now',
-          now
-        );
+        // if now is bigger than auction deadline===>err
 
         if (Number(auctionMarketItem.deadline) < now) {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
@@ -1187,10 +1183,21 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                   acceptOfferState.selectedOffer.offerId === offer.offerId ? (
                     <Loader size={50} />
                   ) : (
-                    offer.offererAddress !== userAddress && (
+                    offer.offererAddress !== userAddress &&
+                    !(
+                      acceptOfferState.selectedOffer && acceptOfferState.loader
+                    ) && (
                       <button
                         className="btn-main lead"
-                        onClick={() => _acceptOffer(offer)}
+                        onClick={() => {
+                          // _acceptOffer(offer);
+                          setAcceptOfferState({
+                            error: null,
+                            loader: false,
+                            selectedOffer: offer
+                          });
+                          openAcceptOfferPopUp();
+                        }}
                       >
                         Accept Offer
                       </button>
@@ -1207,14 +1214,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                   </button>
                 )}
               </div>
-              {acceptOfferState.error &&
-                acceptOfferState.selectedOffer &&
-                acceptOfferState.selectedOffer.offerId === offer.offerId && (
-                  <Alert
-                    text={acceptOfferState.error}
-                    type={ALERT_TYPE.DANGER}
-                  />
-                )}
             </>
           ))}
       </div>
@@ -1577,6 +1576,17 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             makeOfferState={makeOfferState}
             submit={_makeOffer}
             onClose={closeMakeOfferPopUp}
+          />
+        </div>
+      )}
+      {openAcceptOffer && acceptOfferState.selectedOffer && nft && (
+        <div className="checkout nft_detail_popup">
+          <AcceptOfferPopUp
+            nft={nft}
+            onClose={closeAcceptOfferPopUp}
+            submit={_acceptOffer}
+            acceptOfferState={acceptOfferState}
+            multiple={false}
           />
         </div>
       )}
