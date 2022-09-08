@@ -472,10 +472,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log(
-        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 483 ~ cancelListing ~ error',
-        error
-      );
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -975,6 +971,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
             makeOfferState={makeOfferState}
             submit={_makeOffer}
             onClose={closeMakeOfferPopUp}
+            getCollectionTotalQuantity={getCollectionTotalQuantity}
           />
         </div>
       )}
