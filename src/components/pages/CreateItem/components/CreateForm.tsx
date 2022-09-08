@@ -301,7 +301,7 @@ export default function CreateForm(props: IProps) {
       supply: 1,
       royalties: 0,
       minimumBid: 0,
-      pricetokentype: priceTokens[0]?.name || 'MRT',
+      pricetokentype: priceTokens[0]?.name || 'MTK',
       expirationDate: '',
       attributes: []
     };

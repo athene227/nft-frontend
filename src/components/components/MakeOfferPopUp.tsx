@@ -131,7 +131,7 @@ const MakeOfferPopUp = (props: IProps) => {
       quantity: 1,
       price: 0,
       expirationDates: '1',
-      pricetokentype: priceTokens[0]?.name || 'MRT'
+      pricetokentype: priceTokens[0]?.name || 'MTK'
     };
     return result;
   };
