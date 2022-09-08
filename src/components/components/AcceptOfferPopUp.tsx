@@ -90,7 +90,7 @@ const AcceptOfferPopUp = (props: IProps) => {
         amount: Yup.number()
           .typeError('you must specify a number')
           .moreThan(0, INPUT_ERROS.tooShort)
-          .lessThan(Number(acceptOfferState.selectedOffer.quantity) + 1)
+          .lessThan(Number(acceptOfferState.selectedOffer?.quantity) + 1)
           .required(INPUT_ERROS.requiredField)
       };
     } else {
@@ -107,7 +107,7 @@ const AcceptOfferPopUp = (props: IProps) => {
 
   const getInitialValue = () => {
     const result: any = {
-      amount: Number(acceptOfferState.selectedOffer.quantity)
+      amount: Number(acceptOfferState.selectedOffer?.quantity)
     };
     return result;
   };
@@ -125,10 +125,10 @@ const AcceptOfferPopUp = (props: IProps) => {
   }: FormikProps<{ amount: number }>) => {
     const getComission = (): number => {
       if (!nft || !acceptOfferState.selectedOffer) return 0;
-      if (isNaN(acceptOfferState.selectedOffer.amount)) return 0;
+      if (isNaN(acceptOfferState.selectedOffer?.amount)) return 0;
       return (
         (Number(values.amount) *
-          Number(acceptOfferState.selectedOffer.amount) *
+          Number(acceptOfferState.selectedOffer?.amount) *
           COMISSION_PERCENTAGE) /
         100
       );
@@ -138,7 +138,7 @@ const AcceptOfferPopUp = (props: IProps) => {
       if (!nft || !acceptOfferState.selectedOffer) return 0;
       if (isNaN(values.amount)) return 0;
       return (
-        Number(values.amount) * Number(acceptOfferState.selectedOffer.amount) +
+        Number(values.amount) * Number(acceptOfferState.selectedOffer?.amount) +
         getComission()
       );
     };
@@ -199,15 +199,17 @@ const AcceptOfferPopUp = (props: IProps) => {
                   <div className="heading">
                     <p>Offer price</p>
                     <div className="subtotal">
-                      {acceptOfferState.selectedOffer.amount}{' '}
-                      {acceptOfferState.selectedOffer.pricetoken[0].name}
+                      {acceptOfferState.selectedOffer?.amount}{' '}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                   <div className="heading">
                     <p>Service fee 1%</p>
                     <div className="subtotal">
                       {getComission()}{' '}
-                      {acceptOfferState.selectedOffer.pricetoken[0].name}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                 </div>
@@ -216,7 +218,8 @@ const AcceptOfferPopUp = (props: IProps) => {
                     <p>Total Earnings</p>
                     <div className="subtotal">
                       {getTotal()}{' '}
-                      {acceptOfferState.selectedOffer.pricetoken[0].name}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                 </div>
@@ -228,7 +231,7 @@ const AcceptOfferPopUp = (props: IProps) => {
                     <Loader />
                   ) : (
                     acceptofferTransactionHash === undefined &&
-                    nft.ownerAddress === userAddress && (
+                    nft?.ownerAddress === userAddress && (
                       <input
                         type="submit"
                         id="submit"
@@ -260,14 +263,15 @@ const AcceptOfferPopUp = (props: IProps) => {
                   <h2>{nft?.name}</h2>
                   <p>{nft?.description}</p>
                   <div className="buy-popup-price">
-                    {nft.price > 0 && (
+                    {nft?.price > 0 && (
                       <p className="item_detail_price">
                         <i>
                           <img src="./../../img/icon/price-pulse.png" />
                         </i>{' '}
                         <strong>
                           {nft?.price}{' '}
-                          {acceptOfferState.selectedOffer.pricetoken[0].name}
+                          {acceptOfferState.selectedOffer?.pricetoken[0]
+                            ?.name || COIN}
                         </strong>
                       </p>
                     )}

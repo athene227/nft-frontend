@@ -1165,7 +1165,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <div className="p_list_info">
                   Offer{' '}
                   <b>
-                    {offer.amount} {offer.pricetoken[0].name || COIN}
+                    {offer?.amount} {offer?.pricetoken[0]?.name || COIN}
                   </b>
                   <span>
                     by{' '}
@@ -1183,7 +1183,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                   acceptOfferState.selectedOffer.offerId === offer.offerId ? (
                     <Loader size={50} />
                   ) : (
-                    offer.offererAddress !== userAddress &&
+                    offer?.offererAddress !== userAddress &&
                     !(
                       acceptOfferState.selectedOffer && acceptOfferState.loader
                     ) && (
