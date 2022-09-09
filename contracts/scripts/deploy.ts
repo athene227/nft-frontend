@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { BigNumber, Contract } from 'ethers';
 import hre from 'hardhat';
 import {
-  MockERC20,
+  // MockERC20,
   NFT1155,
   NFT721,
   NFTMarketAuction,
@@ -34,18 +34,20 @@ async function main() {
 
   const NFT721Fact = await ethers.getContractFactory('NFT721');
   const NFT1155Fact = await ethers.getContractFactory('NFT1155');
-  const MockErc20Fact = await ethers.getContractFactory('MockERC20');
+  // const MockErc20Fact = await ethers.getContractFactory('MockERC20');
   const MarketSimpleFact = await ethers.getContractFactory('NFTMarketSimple');
   const MarketAuctionFact = await ethers.getContractFactory('NFTMarketAuction');
   const MarketOffersFact = await ethers.getContractFactory('NFTMarketOffers');
 
-  const mockErc20 = (await MockErc20Fact.connect(
-    deployer
-  ).deploy()) as MockERC20;
-  await mockErc20.deployed();
+  // const mockErc20 = (await MockErc20Fact.connect(
+  //   deployer
+  // ).deploy()) as MockERC20;
+  // await mockErc20.deployed();
+  const mockErc20Address = '0x094C8F4eB129220e2c64e4928697Ed9762AB3f65';
 
   const marketOffers = (await MarketOffersFact.connect(deployer).deploy([
-    mockErc20.address
+    // mockErc20.address
+    mockErc20Address
   ])) as NFTMarketOffers;
   await marketOffers.deployed();
 
@@ -55,7 +57,8 @@ async function main() {
   await marketSimple.deployed();
 
   const marketAuction = (await MarketAuctionFact.connect(deployer).deploy([
-    mockErc20.address
+    // mockErc20.address
+    mockErc20Address
   ])) as NFTMarketAuction;
   await marketAuction.deployed();
 
@@ -80,7 +83,7 @@ async function main() {
     addressFile,
     'This file contains the latest test deployment addresses in the Goerli network<br/>'
   );
-  writeAddr(mockErc20.address, 'ERC-20');
+  // writeAddr(mockErc20.address, 'ERC-20');
   writeAddr(marketOffers.address, 'Offers');
   writeAddr(marketSimple.address, 'Simple');
   writeAddr(marketAuction.address, 'Auction');
@@ -91,10 +94,10 @@ async function main() {
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
 
-  await verify(mockErc20.address, []);
-  await verify(marketOffers.address, [[mockErc20.address]]);
+  // await verify(mockErc20.address, []);
+  await verify(marketOffers.address, [[mockErc20Address]]);
   await verify(marketSimple.address, []);
-  await verify(marketAuction.address, [[mockErc20.address]]);
+  await verify(marketAuction.address, [[mockErc20Address]]);
   await verify(nft721.address, []);
   await verify(nft1155.address, []);
 

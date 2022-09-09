@@ -34,10 +34,12 @@ interface IProps {
   onClose: (value: boolean) => void;
   submit: (values: any, resetForm: () => void) => void;
   makeOfferState: { error: null | string; loader: boolean };
+  getCollectionTotalQuantity: () => number;
 }
 
 const MakeOfferPopUp = (props: IProps) => {
-  const { nft, onClose, submit, makeOfferState } = props;
+  const { nft, onClose, submit, makeOfferState, getCollectionTotalQuantity } =
+    props;
   const [balance, setBalance] = useState(0);
   const [currentPriceTokenType, setCurrentPriceTokenType] = useState('');
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
@@ -51,10 +53,6 @@ const MakeOfferPopUp = (props: IProps) => {
   const nftEvents = useSelector(selectors.nftEvents);
 
   const userAddress = accounts[0];
-  console.log(
-    '🚀 ~ file: MakeOfferPopUp.tsx ~ line 54 ~ MakeOfferPopUp ~ userAddress',
-    userAddress
-  );
 
   const offerTransactionHash = nftEvents.find(
     ({
@@ -112,7 +110,12 @@ const MakeOfferPopUp = (props: IProps) => {
   const offerSchema = Yup.object().shape({
     quantity: Yup.number()
       .typeError('you must specify a number')
-      .moreThan(0, INPUT_ERROS.higherThanZero),
+      .moreThan(0, INPUT_ERROS.higherThanZero)
+      .lessThan(
+        nft?.multiple ? Number(getCollectionTotalQuantity()) + 1 : 2,
+        INPUT_ERROS.numberIsHigher
+      )
+      .required(INPUT_ERROS.requiredField),
     price: Yup.number()
       .typeError('you must specify a number')
       .moreThan(0, INPUT_ERROS.higherThanZero)
@@ -150,22 +153,20 @@ const MakeOfferPopUp = (props: IProps) => {
     const onChangePriceTokenType = (e: any) => {
       setFieldValue('pricetokentype', e.target.value);
       setCurrentPriceTokenType(e.target.value);
-      console.log(e.target.value);
     };
     const onChangeOfferDateList = (e: any) => {
       setFieldValue('expirationDates', e.target.value);
       e.target.value === '0'
         ? setDateTimeInputDisable(false)
         : setDateTimeInputDisable(true);
-      console.log(e.target.value);
     };
     const onChangeExpirationDateInput = (e: any) => {
       setFieldValue('expirationDay', e.target.value);
-      console.log(
-        '🚀 ~ file: MakeOfferPopUp.tsx ~ line 118 ~ onChangeExpirationDateInput ~ e.target.value',
-        e.target.value
-      );
     };
+    const onChangeQuantity = (e: any) => {
+      setFieldValue('quantity', e.target.value);
+    };
+
     const getComission = (): number => {
       if (!values.price) return 0;
       return (Number(values.price) * COMISSION_PERCENTAGE) / 100;
@@ -244,6 +245,7 @@ const MakeOfferPopUp = (props: IProps) => {
                             name="quantity"
                             className="form-control"
                             placeholder={'Enter quantity'}
+                            onChange={onChangeQuantity}
                           />
                           <ErrorMessage name="quantity">
                             {(msg) => <div className="error-form">{msg}</div>}

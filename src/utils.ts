@@ -243,7 +243,7 @@ export const createSimpleMarketItem = async (data: {
     .send({ from: userAddress });
 
   console.log(
-    '🚀 ~ file: utils.ts ~ line 278 ~ res.events.SimpleItemCreated',
+    '🚀 ~ file: utils.ts ~ line 246 ~ res.events.SimpleItemCreated',
     res.events.SimpleItemCreated
   );
   return res.events.SimpleItemCreated;
