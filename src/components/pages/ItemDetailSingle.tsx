@@ -14,8 +14,7 @@ import {
   PROCESS_TRAKING_ACTION,
   PROCESS_TRAKING_STATUS,
   SELECTED_NETWORK,
-  STATUS,
-  MARKET_CONTRACT_EVENTS
+  STATUS
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 import notification from 'src/services/notification';
@@ -49,13 +48,11 @@ import { fetchNftDetail } from '../../store/actions/thunks/nfts';
 import * as selectors from '../../store/selectors';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
-import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
 import Clock from '../components/Clock/Clock';
 import Footer from '../components/footer';
 import { renderAttributes } from '../components/NftAttributes';
 import PlaceBidPopUp from '../components/PlaceBidPopUp';
-import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';
 import UserAvatar from '../components/UserAvatar';
 import BanrLayer from './../pages/Home/components/landing/bannerLayer';
@@ -63,7 +60,7 @@ import BanrLayer from './../pages/Home/components/landing/bannerLayer';
 enum TAB_TYPE {
   BIDS = 'BIDS',
   HISTORY = 'HISTORY',
-  OFFERS = 'OFFERS'
+  DETAILS = 'DETAILS'
 }
 
 function usePrevious<T>(value: T): T {
@@ -85,15 +82,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
-  const [makeOfferState, setMakeOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-  }>({ loader: false, error: null });
-  const [acceptOfferState, setAcceptOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-    selectedOffer: any | null;
-  }>({ loader: false, error: null, selectedOffer: null });
   const [cancelListingState, setCancelListingState] = React.useState<{
     loader: boolean;
     error: null | string;
@@ -107,12 +95,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
-  const [fetchOffersState, setFetchOffersState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-  }>({ loader: false, error: null });
   const [nftHistory, setNftHistory] = React.useState<any[]>([]);
-  const [offersList, setOffersList] = React.useState<any[]>([]);
 
   const SINGLE = 1;
 
@@ -134,10 +117,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     web3,
     accounts,
     mockERC20Contract,
-    nft721Contract,
     nftMarketSimpleContract,
-    nftMarketAuctionContract,
-    nftMarketOffersContract
+    nftMarketAuctionContract
   } = web3State.web3.data;
   const userAddress = accounts[0];
 
@@ -152,12 +133,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const [openBuy, setOpenBuy] = React.useState(false);
   const [openPlaceBid, setOpenPlaceBid] = React.useState(false);
-  const [openMakeOffer, setOpenMakeOffer] = React.useState(false);
-  const [openAcceptOffer, setOpenAcceptOffer] = React.useState(false);
   const [openCancelListing, setOpenCancelListing] = React.useState(false);
   const [openTerminateAuction, setOpenTerminateAuction] = React.useState(false);
-
-  const nftEvents = useSelector(selectors.nftEvents);
 
   useEffect(() => {
     dispatch(
@@ -198,45 +175,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     setOpenPlaceBid(true);
   };
 
-  const closePlaceBidPopUp = (shouldRefresh = false) => {
+  const closePlaceBidPopup = (shouldRefresh = false) => {
     setPlaceBidState({ loader: false, error: null });
     setOpenPlaceBid(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openMakeOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenMakeOffer(true);
-  };
-
-  const closeMakeOfferPopUp = (shouldRefresh = false) => {
-    setMakeOfferState({ loader: false, error: null });
-    setOpenMakeOffer(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openAcceptOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenAcceptOffer(true);
-  };
-
-  const closeAcceptOfferPopUp = (shouldRefresh = false) => {
-    setAcceptOfferState({ loader: false, error: null, selectedOffer: null });
-    setOpenAcceptOffer(false);
     if (shouldRefresh && nft) {
       const { tokenId, nftAddress } = nft;
       navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
@@ -286,7 +227,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       })
     );
   };
-
   const fetchNftHistory = async () => {
     if (!nft) return;
     try {
@@ -300,26 +240,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       setFetchHistoryState({ loader: false, error: null });
     } catch (error) {
       setFetchHistoryState({ loader: false, error: getErrorMessage(error) });
-    }
-  };
-
-  const fetchNftOffers = async () => {
-    if (!nft) return;
-    try {
-      setFetchOffersState({ loader: true, error: null });
-      const res: any = await ApiService.fetchNftOffers({
-        tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress
-      });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 286 ~ fetchNftOffers ~ offers',
-        res.data
-      );
-      setOffersList(res.data);
-
-      setFetchOffersState({ loader: false, error: null });
-    } catch (error) {
-      setFetchOffersState({ loader: false, error: getErrorMessage(error) });
     }
   };
 
@@ -337,21 +257,16 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         console.log('*********fetchNftHistory************');
         fetchNftHistory();
       }
-      if (tabType === TAB_TYPE.OFFERS) {
-        console.log('*********fetchNftOffers************');
-        fetchNftOffers();
+      if (tabType === TAB_TYPE.DETAILS) {
+        console.log('*********fetchNftDetails************');
+        // fetchNftHistory();
       }
     }
   }, [nft?._id, tabType]);
 
   useEffect(() => {
-    if (
-      nft?.marketType === MARKET_TYPE.SIMPLE ||
-      nft?.status === STATUS.NOT_LISTED
-    ) {
+    if (nft?.marketType === MARKET_TYPE.SIMPLE) {
       setTab(TAB_TYPE.HISTORY);
-    } else if (nft?.marketType === MARKET_TYPE.AUCTION) {
-      setTab(TAB_TYPE.BIDS);
     }
   }, [nft?._id]);
 
@@ -572,201 +487,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
-  const _makeOffer = async (
-    data: {
-      price: string;
-      quantity: number;
-      expirationDates: string;
-      expirationDay: string;
-      pricetokentype: string;
-      pricetokenaddress: string;
-    },
-    resetForm: () => void
-  ) => {
-    try {
-      if (!nft) return;
-      if (!web3) {
-        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-        return;
-      }
-
-      console.log(
-        '-----------------------------------------------------',
-        data
-      );
-      //* set loader
-      setMakeOfferState({ loader: true, error: null });
-      //* getting network id *//
-      const networkId = await getNetworkId(web3);
-      if (networkId !== SELECTED_NETWORK) {
-        notification.error(ERRORS.WRONG_NETWORK);
-        throw new Error(ERRORS.WRONG_NETWORK);
-      }
-
-      //* checks
-      const myBalanceinWei = await getMyBalance(userAddress, web3);
-      const offerInWei = web3.utils.toWei(data.price.toString(), 'ether');
-      const offerWithCommissionWeiValue =
-        Number(offerInWei) + getPriceAfterPercent(Number(offerInWei), 1);
-      if (Number(myBalanceinWei) < offerWithCommissionWeiValue) {
-        notification.error(ERRORS.NOT_ENOUGH_BALANCE);
-        throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
-      }
-      const offerTrackingItem = {
-        name: nft.name,
-        description: nft.description,
-        listingId: nft.listingId,
-        tokenId: nft.tokenId,
-        networkId: nft.networkId
-      };
-      const offerDeadline = Number(
-        data.expirationDates === '0'
-          ? moment(data.expirationDay)
-          : moment(new Date()).add(Number(data.expirationDates), 'days')
-      );
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 549 ~ ItemDetailSingle ~ offerDeadline',
-        offerDeadline
-      );
-      //* create tracking before make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-      //* approve contract
-      await approveContract({
-        mockERC20Contract,
-        spender: nftMarketOffersContract._address,
-        owner: userAddress,
-        amount: offerWithCommissionWeiValue * data.quantity
-      });
-      //* make offer on contract
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ ItemDetailSingle ~ offerOnNFTParams',
-        { offerInWei, offerDeadline, pricetokenAddress: data.pricetokenaddress }
-      );
-      console.log(
-        '++++++++++++++++++++++++++++++++++',
-        data.quantity,
-        data.pricetokenaddress,
-        offerInWei,
-        offerDeadline
-      );
-      await nftMarketOffersContract.methods
-        .offerOnNft(
-          nft.nftAddress,
-          Number(nft.tokenId),
-          data.quantity,
-          data.pricetokenaddress,
-          offerInWei,
-          offerDeadline
-        )
-        .send({ from: userAddress });
-
-      //* create tracking after make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-      //* turn off loader
-      setMakeOfferState({ loader: false, error: null });
-    } catch (error) {
-      setMakeOfferState({ loader: false, error: getErrorMessage(error) });
-    }
-  };
-
-  const _acceptOffer = async (offer: any, resetForm: () => void) => {
-    try {
-      if (!nft) return;
-      if (!web3) {
-        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-        return;
-      }
-
-      setAcceptOfferState({ loader: true, error: null, selectedOffer: offer });
-
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 652 ~ _acceptOffer ~ offer',
-        offer
-      );
-
-      //* getting network id *//
-      const networkId = await getNetworkId(web3);
-      if (networkId !== SELECTED_NETWORK) {
-        notification.error(ERRORS.WRONG_NETWORK);
-        throw new Error(ERRORS.WRONG_NETWORK);
-      }
-
-      const offerTrackingItem = {
-        name: nft.name,
-        description: nft.description,
-        listingId: nft.listingId,
-        tokenId: nft.tokenId,
-        networkId: nft.networkId
-      };
-
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-
-      //! Cancel Market Items
-      if (nft.status !== STATUS.NOT_LISTED) {
-        if (nft.marketType === MARKET_TYPE.AUCTION) {
-          await cancelAuctionListing({
-            nftMarketAuctionContract,
-            userAddress,
-            listingId: Number(nft.listingId)
-          });
-        } else {
-          await cancelSimpleListing({
-            nftMarketSimpleContract,
-            userAddress,
-            listingId: Number(nft.listingId)
-          });
-        }
-      }
-
-      //* approve
-      await nft721Contract.methods
-        .approve(nftMarketOffersContract._address, Number(nft.tokenId))
-        .send({ from: userAddress });
-
-      //* accept offer on contract
-      await nftMarketOffersContract.methods
-        .acceptOffer(Number(offer.offerId))
-        .send({ from: userAddress });
-
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
-      // //* turn off loader
-      setAcceptOfferState({ loader: false, error: null, selectedOffer: offer });
-    } catch (error) {
-      setAcceptOfferState({
-        loader: false,
-        error: getErrorMessage(error),
-        selectedOffer: offer
-      });
-    }
-  };
-
   const _cancelListing = async () => {
     try {
       if (!nft) {
@@ -859,7 +579,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           throw new Error(ERRORS.ONLY_OWNER_CAN_CANCEL);
         }
         // if deadline is bigger than now you can cancel
-        // if now is bigger than auction deadline===>err
+        // if now is bigger than auction deadline===>error
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 543 ~ cancelListing ~ Number(auctionMarketItem.deadline)',
+          Number(auctionMarketItem.deadline)
+        );
+        console.log(
+          '🚀 ~ file: ItemDetailSingle.tsx ~ line 544 ~ cancelListing ~ now',
+          now
+        );
 
         if (Number(auctionMarketItem.deadline) < now) {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
@@ -1047,36 +775,35 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
   //
+
   const renderBuyButtons = () => {
     if (!nft) return;
-    return (
-      <div className="d-flex flex-row mt-5">
-        {nft.ownerAddress !== userAddress &&
-          nft.status === STATUS.ON_SELL &&
-          !dateHasPassed(nft.expirationDate) &&
-          nft.marketType === MARKET_TYPE.SIMPLE && (
-            <button className="btn-main lead mb-5 mr-5" onClick={openBuyPopUp}>
+    if (
+      nft.ownerAddress !== userAddress &&
+      nft.status === STATUS.ON_SELL &&
+      !dateHasPassed(nft.expirationDate)
+    ) {
+      return (
+        <div className="d-flex flex-row mt-5 ">
+          {nft.marketType === MARKET_TYPE.SIMPLE && (
+            <button
+              className="btn-main btn-grad lead mb-5 mr15"
+              onClick={openBuyPopUp}
+            >
               Buy Now
             </button>
           )}
-        {nft.ownerAddress !== userAddress &&
-          nft.status === STATUS.ON_SELL &&
-          !dateHasPassed(nft.expirationDate) &&
-          nft.marketType === MARKET_TYPE.AUCTION && (
+          {nft.marketType === MARKET_TYPE.AUCTION && (
             <button
-              className="btn-main lead mb-5 mr-5"
+              className="btn-main btn-grad lead mb-5"
               onClick={openPlaceBidPopUp}
             >
               Place Bid
             </button>
           )}
-        {nft.ownerAddress !== userAddress && (
-          <button className="btn-main lead mb-5" onClick={openMakeOfferPopUp}>
-            Make Offer
-          </button>
-        )}
-      </div>
-    );
+        </div>
+      );
+    }
   };
 
   const renderBids = () => {
@@ -1133,93 +860,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
-  const renderOffers = () => {
-    if (!nft) return;
-    if (fetchOffersState.loader) {
-      return <Loader size={30} />;
-    }
-    if (fetchOffersState.error) {
-      return <Alert text={fetchOffersState.error} type={ALERT_TYPE.DANGER} />;
-    }
-    return (
-      <div className="tab-1 onStep fadeIn">
-        {offersList.length > 0 &&
-          offersList.map((offer, index) => (
-            <>
-              <div className="p_list" key={index}>
-                <div
-                  className="author_list_pp"
-                  onClick={() => navigateToUserPage(offer?.offererAddress)}
-                >
-                  <span>
-                    <UserAvatar
-                      className="lazy"
-                      image={offer?.offerer[0]?.profileImage}
-                      userAddress={offer?.offererAddress}
-                      blockSize={5}
-                      size={50}
-                    />
-                    <i className="fa fa-check"></i>
-                  </span>
-                </div>
-                <div className="p_list_info">
-                  Offer{' '}
-                  <b>
-                    {offer?.amount} {offer?.pricetoken[0]?.name || COIN}
-                  </b>
-                  <span>
-                    by{' '}
-                    <b>
-                      {offer?.offerer[0]?.username
-                        ? `@${offer?.offerer[0]?.username}`
-                        : offer?.offererAddress}
-                    </b>{' '}
-                    at {formatDate(offer?.createdAt)}
-                  </span>
-                </div>
-                {nft.ownerAddress === userAddress &&
-                  (acceptOfferState.loader &&
-                  acceptOfferState.selectedOffer &&
-                  acceptOfferState.selectedOffer.offerId === offer.offerId ? (
-                    <Loader size={50} />
-                  ) : (
-                    offer?.offererAddress !== userAddress &&
-                    !(
-                      acceptOfferState.selectedOffer && acceptOfferState.loader
-                    ) && (
-                      <button
-                        className="btn-main lead"
-                        onClick={() => {
-                          // _acceptOffer(offer);
-                          setAcceptOfferState({
-                            error: null,
-                            loader: false,
-                            selectedOffer: offer
-                          });
-                          openAcceptOfferPopUp();
-                        }}
-                      >
-                        Accept Offer
-                      </button>
-                    )
-                  ))}
-                {offer.offererAddress === userAddress && (
-                  <button
-                    className="btn-main lead"
-                    onClick={() => {
-                      console.log('Cancel Offer Clicked-', offer);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </>
-          ))}
-      </div>
-    );
-  };
-
   const renderNftHistory = () => {
     if (!nft) return;
     if (fetchHistoryState.loader) {
@@ -1270,6 +910,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         </div>
       );
     }
+  };
+
+  const renderNftDetails = () => {
+    return (
+      <div className="tab-1 onStep fadeIn">
+        {renderBuyButtons()}
+        <div className="detail_properties">{renderAttributes(nft)}</div>
+      </div>
+    );
   };
 
   const renderCancelButton = () => {
@@ -1323,6 +972,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             <div className="nft-detail-image">
               <img
                 src={getImage(nft?.imageUrl)}
+                style={{
+                  width: '100%'
+                }}
                 className="img-fluid img-rounded mb-sm-30"
                 alt=""
                 loading="lazy"
@@ -1374,6 +1026,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <p>{nft?.description}</p>
               </div>
               <div className="item_detail_content">
+                {/* {nft?.creator[0]?.username && (
+                  <div style={{}}>
+                    <p>
+                      Created by: <strong>{nft?.creator[0].username}</strong>
+                    </p>
+                  </div>
+                )} */}
                 {nft?.nftCollection?.length > 0 && (
                   <div style={{}}>
                     <p>
@@ -1406,66 +1065,88 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                     </p>
                   )}
 
-                {renderBuyButtons()}
-                <h6>Creator</h6>
-                <div
-                  className="item_author"
-                  onClick={() =>
-                    navigateToUserPage(
-                      nft?.creator[0]?.publicAddress || nft?.creatorAddress
-                    )
-                  }
-                >
-                  <div className="author_list_pp">
-                    <span>
-                      <UserAvatar
-                        className="lazy"
-                        image={nft?.creator[0]?.profileImage}
-                        userAddress={nft?.creator[0]?.publicAddress}
-                        blockSize={5}
-                        size={50}
-                      />
-                      <i className="fa fa-check"></i>
-                    </span>
-                  </div>
-                  {nft?.creator[0]?.username && (
-                    <div className="author_list_info">
-                      <span>{nft?.creator[0].username}</span>
-                    </div>
+                {/*                 
+                {nft.price > 0 && (
+                  <p className="item_detail_price">
+                    <i>
+                      <img src="./../../img/icon/price-pulse.png" />
+                    </i>{' '}
+                    <strong>
+                      {nft.price} {COIN}
+                    </strong>
+                  </p>
+                )} */}
+                {nft.marketType === MARKET_TYPE.AUCTION &&
+                  nft?.status === STATUS.ON_SELL && (
+                    <p>
+                      Minimum bid:{' '}
+                      <strong>
+                        {nft?.minimumBid} {nft?.priceToken[0]?.name || COIN}
+                      </strong>
+                    </p>
                   )}
+
+                <div className="row author-details align-items-center">
+                  <div className="col-lg-6">
+                    <div
+                      className="item_author d-flex align-items-center"
+                      onClick={() =>
+                        navigateToUserPage(
+                          nft?.creator[0]?.publicAddress || nft?.creatorAddress
+                        )
+                      }
+                    >
+                      <div className="author_list_pp">
+                        <span>
+                          <UserAvatar
+                            className="lazy"
+                            image={nft?.creator[0]?.profileImage}
+                            userAddress={nft?.creator[0]?.publicAddress}
+                            blockSize={5}
+                            size={50}
+                          />
+                          <i className="fa fa-check"></i>
+                        </span>
+                      </div>
+                      <div className="author_list_info">
+                        <h6>Creator</h6>
+                        {nft?.creator[0]?.username && (
+                          <span>{nft?.creator[0].username}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div
+                      className="item_author d-flex align-items-center"
+                      onClick={() =>
+                        navigateToUserPage(
+                          nft?.owner[0]?.publicAddress || nft?.ownerAddress
+                        )
+                      }
+                    >
+                      <div className="author_list_pp">
+                        <span>
+                          <UserAvatar
+                            className="lazy"
+                            image={nft?.owner[0]?.profileImage}
+                            userAddress={nft?.owner[0]?.publicAddress}
+                            blockSize={5}
+                            size={50}
+                          />
+                          <i className="fa fa-check"></i>
+                        </span>
+                      </div>
+                      <div className="author_list_info">
+                        <h6>Owner</h6>
+                        {nft?.owner[0]?.username && (
+                          <span>{nft?.owner[0]?.username}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="spacer-20"></div>
-                <div className="spacer-40"></div>
-                <h6>Owner</h6>
-                <div
-                  className="item_author"
-                  onClick={() =>
-                    navigateToUserPage(
-                      nft?.owner[0]?.publicAddress || nft?.ownerAddress
-                    )
-                  }
-                >
-                  <div className="author_list_pp">
-                    <span>
-                      <UserAvatar
-                        className="lazy"
-                        image={nft?.owner[0]?.profileImage}
-                        userAddress={nft?.owner[0]?.publicAddress}
-                        blockSize={5}
-                        size={50}
-                      />
-                      <i className="fa fa-check"></i>
-                    </span>
-                  </div>
-                  {nft?.owner[0]?.username && (
-                    <div className="author_list_info">
-                      <span>{nft?.owner[0]?.username}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="spacer-40"></div>
-                {renderAttributes(nft)}
                 <div className="spacer-40"></div>
                 {nft?.ownerAddress === userAddress &&
                   nft?.status !== STATUS.ON_SELL && (
@@ -1497,20 +1178,24 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                         History
                       </span>
                     </li>
+
                     <li
                       id="Mainbtn1"
-                      className={tabType === TAB_TYPE.OFFERS ? 'active' : ''}
+                      className={tabType === TAB_TYPE.DETAILS ? 'active' : ''}
                     >
-                      <span onClick={() => pressTab(TAB_TYPE.OFFERS)}>
-                        Offers
+                      <span onClick={() => pressTab(TAB_TYPE.DETAILS)}>
+                        Details
                       </span>
                     </li>
                   </ul>
 
                   <div className="de_tab_content">
                     {tabType === TAB_TYPE.BIDS && renderBids()}
+
                     {tabType === TAB_TYPE.HISTORY && renderNftHistory()}
-                    {tabType === TAB_TYPE.OFFERS && renderOffers()}
+
+                    {tabType === TAB_TYPE.DETAILS && renderNftDetails()}
+                    {/* && renderAttributes(nft) */}
                   </div>
                 </div>
                 <div className="ssf"></div>
@@ -1565,28 +1250,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             lastBid={lastBid}
             placeBidState={placeBidState}
             submit={_placeBid}
-            onClose={closePlaceBidPopUp}
-          />
-        </div>
-      )}
-      {openMakeOffer && nft && (
-        <div className="checkout nft_detail_popup">
-          <MakeOfferPopUp
-            nft={nft}
-            makeOfferState={makeOfferState}
-            submit={_makeOffer}
-            onClose={closeMakeOfferPopUp}
-          />
-        </div>
-      )}
-      {openAcceptOffer && acceptOfferState.selectedOffer && nft && (
-        <div className="checkout nft_detail_popup">
-          <AcceptOfferPopUp
-            nft={nft}
-            onClose={closeAcceptOfferPopUp}
-            submit={_acceptOffer}
-            acceptOfferState={acceptOfferState}
-            multiple={false}
+            onClose={closePlaceBidPopup}
           />
         </div>
       )}

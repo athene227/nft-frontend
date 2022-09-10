@@ -40,7 +40,6 @@ import Footer from '../components/footer';
 import { renderAttributes } from '../components/NftAttributes';
 import OwnerAndQuantity from '../components/OwnerAndQuantity';
 import SellPopUp from '../components/SellPopUp';
-import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import UserAvatar from '../components/UserAvatar';
 
 enum TAB_TYPE {
@@ -67,11 +66,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
     React.useState<INft | null>(null);
   const [chosenCollectibleToCancel, setCollectibleToCancel] =
     React.useState<INft | null>(null);
-  const [openMakeOffer, setOpenMakeOffer] = React.useState(false);
-  const [makeOfferState, setMakeOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-  }>({ loader: false, error: null });
 
   const pressTab = (tabType: TAB_TYPE) => {
     setTab(tabType);
@@ -79,10 +73,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
 
   const dispatch = useDispatch();
   const nftDetailState = useSelector(selectors.nftCollectibleDetailState);
-  console.log(
-    '🚀 ~ file: ItemDetailMultiple.tsx ~ line 76 ~ ItemDetailMultiple ~ nftDetailState',
-    nftDetailState
-  );
   const nftGroups = nftDetailState.data;
   const nftLoader = nftDetailState.loading; // nft details loader
   const nftError = nftDetailState.error; // nft details loader
@@ -117,24 +107,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
     const { tokenId, nftAddress } = props;
     if (shouldRefresh && tokenId && nftAddress) {
       navigate(`/ItemDetailMultiple/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openMakeOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenMakeOffer(true);
-  };
-
-  const closeMakeOfferPopUp = (shouldRefresh = false) => {
-    setMakeOfferState({ loader: false, error: null });
-    setOpenMakeOffer(false);
-    if (shouldRefresh && nftGroups[0]) {
-      const { tokenId, nftAddress } = nftGroups[0];
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
     }
   };
 
@@ -472,6 +444,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
+      console.log(
+        '🚀 ~ file: ItemDetailMultiple.tsx ~ line 483 ~ cancelListing ~ error',
+        error
+      );
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -484,28 +460,10 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       return (
         <div className="d-flex flex-row mt-5">
           <button
-            className="btn-main lead mr15"
+            className="btn-main lead mb-5 mr15"
             onClick={() => openBuyPopUp(nftGroups[0])}
           >
             Buy Now
-          </button>
-        </div>
-      );
-    }
-  };
-
-  const renderMakeOfferButtons = () => {
-    if (
-      nftGroups[0].ownerAddress !== userAddress &&
-      nftGroups[0].status === STATUS.ON_SELL
-    ) {
-      return (
-        <div className="d-flex flex-row mt-4">
-          <button
-            className="btn-main lead mb-5 mr15"
-            onClick={openMakeOfferPopUp}
-          >
-            Make Offer
           </button>
         </div>
       );
@@ -622,112 +580,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
     );
   };
 
-  const _makeOffer = async (
-    data: {
-      price: string;
-      quantity: number;
-      expirationDates: string;
-      expirationDay: string;
-      pricetokentype: string;
-      pricetokenaddress: string;
-    },
-    resetForm: () => void
-  ) => {
-    // try {
-    //   if (!nft) return;
-    //   if (!web3) {
-    //     notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-    //     return;
-    //   }
-    //   console.log(
-    //     '-----------------------------------------------------',
-    //     data
-    //   );
-    //   //* set loader
-    //   setMakeOfferState({ loader: true, error: null });
-    //   //* getting network id *//
-    //   const networkId = await getNetworkId(web3);
-    //   if (networkId !== SELECTED_NETWORK) {
-    //     notification.error(ERRORS.WRONG_NETWORK);
-    //     throw new Error(ERRORS.WRONG_NETWORK);
-    //   }
-    //   //* checks
-    //   const myBalanceinWei = await getMyBalance(userAddress, web3);
-    //   const offerInWei = web3.utils.toWei(data.price.toString(), 'ether');
-    //   const offerWithCommissionWeiValue =
-    //     Number(offerInWei) + getPriceAfterPercent(Number(offerInWei), 1);
-    //   if (Number(myBalanceinWei) < offerWithCommissionWeiValue) {
-    //     notification.error(ERRORS.NOT_ENOUGH_BALANCE);
-    //     throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
-    //   }
-    //   const offerTrackingItem = {
-    //     name: nft.name,
-    //     description: nft.description,
-    //     listingId: nft.listingId,
-    //     tokenId: nft.tokenId,
-    //     networkId: nft.networkId
-    //   };
-    //   const offerDeadline = Number(
-    //     data.expirationDates === '0'
-    //       ? moment(data.expirationDay)
-    //       : moment(new Date()).add(Number(data.expirationDates), 'days')
-    //   );
-    //   console.log(
-    //     '🚀 ~ file: ItemDetailSingle.tsx ~ line 549 ~ ItemDetailSingle ~ offerDeadline',
-    //     offerDeadline
-    //   );
-    //   //* create tracking before make offer
-    //   await ApiService.createProcessTracking({
-    //     ...offerTrackingItem,
-    //     userAddress,
-    //     price: data.price,
-    //     action: PROCESS_TRAKING_ACTION.OFFER,
-    //     processStatus: PROCESS_TRAKING_STATUS.BEFORE
-    //   });
-    //   //* approve contract
-    //   await approveContract({
-    //     mockERC20Contract,
-    //     spender: nftMarketOffersContract._address,
-    //     owner: userAddress,
-    //     amount: offerWithCommissionWeiValue * data.quantity
-    //   });
-    //   //* make offer on contract
-    //   console.log(
-    //     '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ ItemDetailSingle ~ offerOnNFTParams',
-    //     { offerInWei, offerDeadline, pricetokenAddress: data.pricetokenaddress }
-    //   );
-    //   console.log(
-    //     '++++++++++++++++++++++++++++++++++',
-    //     data.quantity,
-    //     data.pricetokenaddress,
-    //     offerInWei,
-    //     offerDeadline
-    //   );
-    //   await nftMarketOffersContract.methods
-    //     .offerOnNft(
-    //       nft.nftAddress,
-    //       Number(nft.tokenId),
-    //       data.quantity,
-    //       data.pricetokenaddress,
-    //       offerInWei,
-    //       offerDeadline
-    //     )
-    //     .send({ from: userAddress });
-    //   //* create tracking after make offer
-    //   await ApiService.createProcessTracking({
-    //     ...offerTrackingItem,
-    //     userAddress,
-    //     price: data.price,
-    //     action: PROCESS_TRAKING_ACTION.OFFER,
-    //     processStatus: PROCESS_TRAKING_STATUS.AFTER
-    //   });
-    //   //* turn off loader
-    //   setMakeOfferState({ loader: false, error: null });
-    // } catch (error) {
-    //   setMakeOfferState({ loader: false, error: getErrorMessage(error) });
-    // }
-  };
-
   const renderView = () => {
     if (nftLoader) {
       return (
@@ -816,7 +668,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
                     </button>
                 )} */}
             {renderBuyButtons()}
-            {renderMakeOfferButtons()}
 
             <h6>Creator</h6>
             <div className="item_author">
@@ -960,18 +811,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
             nft={chosenCollectibleToCancel}
             submit={_cancelListing}
             cancelListingState={cancelListingState}
-          />
-        </div>
-      )}
-
-      {openMakeOffer && nftGroups[0] && (
-        <div className="checkout nft_detail_popup">
-          <MakeOfferPopUp
-            nft={nftGroups[0]}
-            makeOfferState={makeOfferState}
-            submit={_makeOffer}
-            onClose={closeMakeOfferPopUp}
-            getCollectionTotalQuantity={getCollectionTotalQuantity}
           />
         </div>
       )}

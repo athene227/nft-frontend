@@ -13,6 +13,7 @@ const NftItems = styled.div`
               margin: 0;
               padding-left: 10px;
               padding-right: 10px;
+              padding-bottom: 35px;
             }
           }
           @media screen and (max-width: 1199px) {
@@ -55,6 +56,10 @@ const NftItems = styled.div`
             &:hover {
               /* border-bottom: 1px solid; */
             }
+          }
+
+          .nft__publisher {
+            font-size:12px;
           }
 
           .img_hover {

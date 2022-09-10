@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { SIDE } from '../../src/enums';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ICollection } from 'src/collections.types';
 import {
   ATTRIBUTE_TYPE,

@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { Link, navigate } from '@reach/router';
 import jwtDecode from 'jwt-decode';
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 // contracts
 import useOnclickOutside from 'react-cool-onclickoutside';
@@ -170,8 +171,7 @@ const Header = function (props) {
           nft721Contract: null,
           nft1155Contract: null,
           nftMarketSimpleContract: null,
-          nftMarketAuctionContract: null,
-          nftMarketOffersContract: null
+          nftMarketAuctionContract: null
         }
       })
     );
@@ -246,8 +246,7 @@ const Header = function (props) {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
-            nftMarketOffersContract: null
+            nftMarketAuctionContract: null
           }
         })
       );
@@ -360,10 +359,6 @@ const Header = function (props) {
         _web3,
         NFTMarketAuction
       );
-      const NFT_MARKET_OFFERS_NETWORK_DATA = await getNetworkData(
-        _web3,
-        NFTMarketOffers
-      );
 
       // set data in redux
       dispatch(
@@ -379,8 +374,7 @@ const Header = function (props) {
             nft721Contract: null,
             nft1155Contract: null,
             nftMarketSimpleContract: null,
-            nftMarketAuctionContract: null,
-            nftMarketOffersContract: null
+            nftMarketAuctionContract: null
           }
         })
       );
@@ -416,10 +410,6 @@ const Header = function (props) {
           NFTMarketAuction.abi,
           NFT_MARKET_AUCTION_NETWORK_DATA.address
         );
-        const _nftMarketOffersContract = new _web3.eth.Contract(
-          NFTMarketOffers.abi,
-          NFT_MARKET_OFFERS_NETWORK_DATA.address
-        );
 
         dispatch(
           setupWeb3({
@@ -436,8 +426,7 @@ const Header = function (props) {
               nft721Contract: _nft721Contract,
               nft1155Contract: _nft1155Contract,
               nftMarketSimpleContract: _nftMarketSimpleContract,
-              nftMarketAuctionContract: _nftMarketAuctionContract,
-              nftMarketOffersContract: _nftMarketOffersContract
+              nftMarketAuctionContract: _nftMarketAuctionContract
             }
           })
         );

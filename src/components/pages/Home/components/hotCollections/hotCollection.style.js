@@ -7,8 +7,8 @@ const HotCollectionWrapper = styled.div`
         color: #00b2fe;
       }
       .nft__item_price_sec {
-          margin-right: 10px;
-        }
+        margin-right: 10px;
+      }
 
       .nft_coll__holder {
         background: ${({ theme }) => theme.colors['hot-collection-bg']};

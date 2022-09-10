@@ -236,14 +236,12 @@ const BuyPopUp = (props: IProps) => {
                 {placeBidState.loader ? (
                   <Loader />
                 ) : (
-                  !lastBid && (
-                    <input
-                      type="submit"
-                      id="submit"
-                      className="btn-main"
-                      value="Place Bid"
-                    />
-                  )
+                  <input
+                    type="submit"
+                    id="submit"
+                    className="btn-main"
+                    value="Place Bid"
+                  />
                 )}
               </div>
               {lastBid && !placeBidState.loader && (

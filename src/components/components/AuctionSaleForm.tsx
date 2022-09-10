@@ -57,7 +57,7 @@ export default function AuctionSaleForm(props: IProps) {
       expirationDate: '',
       price: '',
       royalties: '',
-      pricetokentype: 'MTK'
+      pricetokentype: 'MRT'
     };
     return result;
   };

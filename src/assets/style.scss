@@ -3,24 +3,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 
 @import "variables";
-// common styling
-// @import "scss/common";
-
-// Header styling
-// @import "scss/header";
-
-// Homepage styling
-// @import "scss/home";
 // Profile styling
 @import "scss/profile";
 // Create Options styling
-@import "scss/createOption";
-@import "scss/createSingle";
+//@import "scss/createOption";
 // Detail page
 @import "scss/nftdetail";
-
-// Footer styling
-@import "scss/footer";
 
 // Extra Pages
 @import "scss/contact";
@@ -34,7 +22,7 @@
 @import "scss/switch";
 @import "scss/tabs";
 
-// Popups 
+// Popups
 @import "scss/popups/popup";
 @import "scss/popups/createNft";
 // Responsive

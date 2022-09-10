@@ -18,9 +18,7 @@ import {
   addCancelSimpleEvent,
   addMintEvent,
   addSimpleMarketItemEvent,
-  addTerminateAuctionEvent,
-  addOfferCreatedEvent,
-  addOfferAcceptedEvent
+  addTerminateAuctionEvent
 } from 'src/store/actions';
 import { addBid } from 'src/store/actions/thunks/bids';
 import * as selectors from 'src/store/selectors';
@@ -100,10 +98,7 @@ const App = () => {
 
       if (e.data.includes('eventName')) {
         const res = JSON.parse(e.data);
-        console.log(
-          '🚀 ~ file: app.tsx ~ line 94 ~ useEffect ~ event occurred',
-          res
-        );
+        console.log('🚀 ~ file: app.tsx ~ line 94 ~ useEffect ~ res', res);
 
         switch (res.eventName) {
           case MARKET_CONTRACT_EVENTS.AuctionBidCreated:
@@ -164,12 +159,6 @@ const App = () => {
             // } else {
             //   console.log('this is NOT the user who terminate the nft');
             // }
-            break;
-          case MARKET_CONTRACT_EVENTS.OfferCreated:
-            dispatch(addOfferCreatedEvent(res));
-            break;
-          case MARKET_CONTRACT_EVENTS.OfferAccepted:
-            dispatch(addOfferAcceptedEvent(res));
             break;
           default:
             break;

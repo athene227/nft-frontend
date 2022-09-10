@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

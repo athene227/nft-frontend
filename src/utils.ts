@@ -35,7 +35,7 @@ function currentYPosition() {
   return 0;
 }
 
-function elmYPosition(elm: any) {
+function elmYPosition(elm) {
   let y = elm.offsetTop;
   let node = elm;
   while (node.offsetParent && node.offsetParent !== document.body) {
@@ -45,12 +45,12 @@ function elmYPosition(elm: any) {
   return y;
 }
 
-export function scrollTo(scrollableElement: any, elmID: any) {
+export function scrollTo(scrollableElement, elmID) {
   const elm = document.getElementById(elmID);
   if (!elmID || !elm) {
     return;
   }
-  const startY: any = currentYPosition();
+  const startY = currentYPosition();
   const stopY = elmYPosition(elm);
   const distance = stopY > startY ? stopY - startY : startY - stopY;
   if (distance < 100) {
@@ -78,7 +78,7 @@ export function scrollTo(scrollableElement: any, elmID: any) {
     }
     return;
   }
-  for (let i: any = startY; i > stopY; i -= step) {
+  for (let i = startY; i > stopY; i -= step) {
     setTimeout(
       (function (leapY) {
         return () => {
@@ -94,7 +94,7 @@ export function scrollTo(scrollableElement: any, elmID: any) {
   return false;
 }
 
-export function getTimeDifference(date: any) {
+export function getTimeDifference(date) {
   const difference =
     moment(new Date(), 'DD/MM/YYYY HH:mm:ss').diff(
       moment(date, 'DD/MM/YYYY HH:mm:ss')
@@ -243,7 +243,7 @@ export const createSimpleMarketItem = async (data: {
     .send({ from: userAddress });
 
   console.log(
-    '🚀 ~ file: utils.ts ~ line 246 ~ res.events.SimpleItemCreated',
+    '🚀 ~ file: utils.ts ~ line 278 ~ res.events.SimpleItemCreated',
     res.events.SimpleItemCreated
   );
   return res.events.SimpleItemCreated;
@@ -451,7 +451,7 @@ export const getNftAttributeType = (attr: INftAttribute) => {
 };
 
 ///////////////// Number Formatting Functions //////////////////////
-export function numFormatter(num: any) {
+export function numFormatter(num) {
   if (num >= 1000000000000) {
     return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
   }
@@ -466,7 +466,7 @@ export function numFormatter(num: any) {
   }
   return num.toFixed(2);
 }
-export function numFormatterFull(num: any) {
+export function numFormatterFull(num) {
   if (num >= 1000000000) {
     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Billion ';
   }
@@ -479,7 +479,7 @@ export function numFormatterFull(num: any) {
   return num.toFixed(2);
 }
 
-export function numberWithCommas(x: any) {
+export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
