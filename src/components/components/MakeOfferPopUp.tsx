@@ -184,7 +184,7 @@ const MakeOfferPopUp = (props: IProps) => {
     };
     const getTotal = (): number => {
       if (!values.price) return 0;
-      return Number(values.price) + getComission();
+      return (Number(values.price) + getComission()) * Number(values.quantity);
     };
 
     const pricetokenSelectComponent = (props: any) => {

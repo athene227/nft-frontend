@@ -220,6 +220,7 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenURI: metaDataUrl() as string,
+          priceTokenId: undefined,
           status: STATUS.NOT_LISTED,
           totalAmount: SINGLE,
           leftAmount: SINGLE,
@@ -287,7 +288,9 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
+          listingId,
           price: data.price,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.ON_SELL,
           totalAmount: SINGLE,
@@ -491,6 +494,7 @@ const CreateItem = () => {
         transactionHash,
         data: {
           ...nftToCreate,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.NOT_LISTED,
           totalAmount: Number(data.supply),
@@ -554,7 +558,9 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
+          listingId,
           // price: priceInWei,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.ON_SELL,
           totalAmount: Number(data.supply),

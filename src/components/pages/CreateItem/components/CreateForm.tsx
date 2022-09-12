@@ -99,7 +99,6 @@ export default function CreateForm(props: IProps) {
     image,
     expirationDateInput,
     tokentype,
-    className,
     supply
   } = props;
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
@@ -339,6 +338,10 @@ export default function CreateForm(props: IProps) {
     handleChange,
     getFieldProps
   }: FormikProps<any>) => {
+    console.log(
+      '----------------------------------------------------------',
+      values
+    );
     const onChangeName = (e: any) => {
       setFieldValue('name', e.target.value);
       setNameInput && setNameInput(e.target.value);
@@ -877,7 +880,7 @@ export default function CreateForm(props: IProps) {
                     className="form-control input__holder__single"
                     placeholder="Enter supply"
                     onChange={onChangeSupply}
-                    onWheel={(e) => e.target.blur()}
+                    onWheel={(e: any) => e.target.blur()}
                     min="1"
                     step="1"
                   />
@@ -941,7 +944,7 @@ export default function CreateForm(props: IProps) {
                       className={`form-control input__holder__single`}
                       placeholder={`Enter price for one item (${COIN})`}
                       onChange={onChangePrice}
-                      onWheel={(e) => e.target.blur()}
+                      onWheel={(e: any) => e.target.blur()}
                     />
                     <ErrorMessage name="price">
                       {(msg) => <div className="error-form">{msg}</div>}
@@ -959,7 +962,7 @@ export default function CreateForm(props: IProps) {
                       <BsQuestion className="cursor-pointer help-icon" />
                     </h5>
                     <p className="sublabel">
-                      Bids below this amount bids won’t be allowed.
+                      Bids below this amount won’t be allowed.
                     </p>
                     <div className="row">
                       <div className="col-9">
@@ -996,29 +999,26 @@ export default function CreateForm(props: IProps) {
                   </div>
                 )}
 
-                {marketType === MARKET_TYPE.AUCTION && (
-                  <div className="form-cfield">
-                    <h5 className="form-label label-sub label-icon">
-                      Expiration date
-                      <BsQuestion className="cursor-pointer help-icon" />
-                    </h5>
-                    <p className="sublabel">
-                      Bids below this amount won’t be allowed.
-                    </p>
+                <div className="form-cfield">
+                  <h5 className="form-label label-sub label-icon">
+                    Expiration date
+                    <BsQuestion className="cursor-pointer help-icon" />
+                  </h5>
+                  <p className="sublabel">Market Item expiration date.</p>
 
-                    <Field
-                      type="datetime-local"
-                      name="expirationDate"
-                      id="bid_expiration_date"
-                      className={`form-control input__holder__single`}
-                      onChange={onChangeExpirationDateInput}
-                      min={moment().add(1, 'hours')}
-                    />
-                    <ErrorMessage name="expirationDate">
-                      {(msg) => <div className="error-form">{msg}</div>}
-                    </ErrorMessage>
-                  </div>
-                )}
+                  <Field
+                    type="datetime-local"
+                    name="expirationDate"
+                    id="bid_expiration_date"
+                    className={`form-control input__holder__single`}
+                    onChange={onChangeExpirationDateInput}
+                    min={moment().add(1, 'hours')}
+                  />
+                  <ErrorMessage name="expirationDate">
+                    {(msg) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                </div>
+
                 <div className="form-cfield">
                   <h5 className="form-label label-icon">
                     Royalties
