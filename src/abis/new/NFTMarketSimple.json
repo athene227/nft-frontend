@@ -5,107 +5,48 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
+        { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
       ],
       "name": "OwnershipTransferred",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
       "name": "Paused",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "listingId",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{ "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" }],
       "name": "SimpleItemCancelled",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "listingId",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{ "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" }],
       "name": "SimpleItemCreated",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "listingId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "quantity",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "buyer",
-          "type": "address"
-        }
+        { "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" },
+        { "indexed": false, "internalType": "uint256", "name": "quantity", "type": "uint256" },
+        { "indexed": false, "internalType": "address", "name": "buyer", "type": "address" }
       ],
       "name": "SimpleItemSold",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
       "name": "Unpaused",
       "type": "event"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "erc20TokenAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "internalType": "address", "name": "erc20TokenAddress", "type": "address" }],
       "name": "addToWhitelist",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -122,9 +63,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        { "internalType": "uint256", "name": "listingId", "type": "uint256" }
-      ],
+      "inputs": [{ "internalType": "uint256", "name": "listingId", "type": "uint256" }],
       "name": "cancelSimpleListing",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -175,13 +114,7 @@
       "stateMutability": "view",
       "type": "function"
     },
-    {
-      "inputs": [],
-      "name": "pause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+    { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
       "inputs": [],
       "name": "paused",
@@ -190,25 +123,13 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "erc20TokenAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "internalType": "address", "name": "erc20TokenAddress", "type": "address" }],
       "name": "removeFromWhitelist",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+    { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
       "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
       "name": "simpleListingIdToMarketItem",
@@ -216,42 +137,22 @@
         { "internalType": "address", "name": "nftContract", "type": "address" },
         { "internalType": "uint256", "name": "nftTokenId", "type": "uint256" },
         { "internalType": "uint256", "name": "price", "type": "uint256" },
-        {
-          "internalType": "uint256",
-          "name": "originalQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "remainingQuantity",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "ownerAddress",
-          "type": "address"
-        },
+        { "internalType": "uint256", "name": "originalQuantity", "type": "uint256" },
+        { "internalType": "uint256", "name": "remainingQuantity", "type": "uint256" },
+        { "internalType": "address", "name": "ownerAddress", "type": "address" },
         { "internalType": "uint256", "name": "deadline", "type": "uint256" }
       ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        { "internalType": "address", "name": "newOwner", "type": "address" }
-      ],
+      "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
-    {
-      "inputs": [],
-      "name": "unpause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+    { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
       "inputs": [
         { "internalType": "address", "name": "", "type": "address" },
@@ -279,7 +180,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x946Cf4ee4C62f2d0f786a1f9512f3f318036E96b",
+      "address": "0xD8C951564b3B891d2943B7b1F8aa592d123894bF",
       "transactionHash": "0xf3da489598cbb786ff213946a7a33a267e8033e5b16d95fa6a84020608a3d54e"
     }
   }

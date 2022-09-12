@@ -52,7 +52,7 @@ export interface INft {
   listedAmount: number;
   amount: number;
   minimumBid: string;
-  priceTokenType: string;
+  priceTokenId: string;
   priceToken: IPriceToken[];
   startingDate: Date;
   expirationDate: Date;

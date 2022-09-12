@@ -163,8 +163,7 @@ const CreateItem = () => {
       expirationDate: new Date(data.expirationDate), //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
       // auction fields
       minimumBid: marketType == MARKET_TYPE.AUCTION ? data.minimumBid : '',
-      priceTokenType:
-        marketType == MARKET_TYPE.AUCTION ? data.pricetokentype : ''
+      priceTokenId: marketType == MARKET_TYPE.AUCTION ? data.priceTokenId : ''
     };
 
     const _attributes = data.attributes.map((item: any) => {
@@ -317,7 +316,7 @@ const CreateItem = () => {
 
   const createAuction = async (NFT_NETWORK_DATA: any, data: any) => {
     console.log(
-      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ CreateItem ~ data',
+      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ createAuction ~ data',
       data
     );
 
@@ -588,6 +587,10 @@ const CreateItem = () => {
     resetForm: () => void,
     isRetry = false
   ) => {
+    console.log(
+      '🚀 ~ file: CreateItem.tsx ~ line 591 ~ CreateItem ~ data',
+      data
+    );
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
       return;

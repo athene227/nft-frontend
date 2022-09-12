@@ -294,7 +294,7 @@ const CreateSingle = () => {
 
   const createAuction = async (NFT_NETWORK_DATA: any, data: any) => {
     console.log(
-      '🚀 ~ file: CreateSingle.tsx ~ line 298 ~ CreateSingle ~ data',
+      '🚀 ~ file: CreateSingle.tsx ~ line 298 ~ CreateAuction ~ data',
       data
     );
 
@@ -338,7 +338,7 @@ const CreateSingle = () => {
       category: data.category,
       // auction fields
       minimumBid: data.minimumBid,
-      priceTokenType: data.pricetokentype,
+      priceTokenId: data.priceTokenId,
       expirationDate: _date
     };
 
@@ -455,6 +455,10 @@ const CreateSingle = () => {
     resetForm: () => void,
     isRetry = false
   ) => {
+    console.log(
+      '🚀 ~ file: CreateSingle.tsx ~ line 458 ~ CreateSingle ~ data',
+      data
+    );
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
       return;

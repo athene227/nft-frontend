@@ -43,7 +43,7 @@ async function main() {
   //   deployer
   // ).deploy()) as MockERC20;
   // await mockErc20.deployed();
-  const mockErc20Address = '0x094C8F4eB129220e2c64e4928697Ed9762AB3f65';
+  const mockErc20Address = '0xBBC0720aBF7382B204F1AFdF492f45fcCf5d1e7D';
 
   const marketOffers = (await MarketOffersFact.connect(deployer).deploy([
     // mockErc20.address

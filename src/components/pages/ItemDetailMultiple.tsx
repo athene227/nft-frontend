@@ -45,7 +45,8 @@ import UserAvatar from '../components/UserAvatar';
 
 enum TAB_TYPE {
   BIDS = 'BIDS',
-  HISTORY = 'HISTORY'
+  HISTORY = 'HISTORY',
+  OFFERS = 'OFFERS'
 }
 const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
   const [buyState, setBuyState] = React.useState<{
@@ -895,6 +896,12 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
                   Owners of this collection
                 </span>
               </li>
+              <li
+                id="Mainbtn"
+                className={tabType === TAB_TYPE.OFFERS ? 'active' : ''}
+              >
+                <span onClick={() => pressTab(TAB_TYPE.OFFERS)}>Offers</span>
+              </li>
               {/* <li id='Mainbtn1' className={tabType === TAB_TYPE.HISTORY ? "active" : ""}><span onClick={() => pressTab(TAB_TYPE.HISTORY)}>History</span></li> */}
             </ul>
 
@@ -903,23 +910,23 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
               {tabType === TAB_TYPE.BIDS && renderOtherOwners()}
 
               {/* {tabType === TAB_TYPE.HISTORY && (
-                                    <div className="tab-2 onStep fadeIn">
-                                        {nftGroups[0].history && nftGroups[0].history.map((bid, index) => (
-                                            <div className="p_list" key={index}>
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src={bid.avatar} alt="" />
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>
-                                                <div className="p_list_info">
-                                                    Bid {bid.is_author && 'accepted'} <b>{bid.price} {COIN}</b>
-                                                    <span>by <b>{bid.username}</b> at {bid.timestamp}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )} */}
+                      <div className="tab-2 onStep fadeIn">
+                          {nftGroups[0].history && nftGroups[0].history.map((bid, index) => (
+                              <div className="p_list" key={index}>
+                                  <div className="p_list_pp">
+                                      <span>
+                                          <img className="lazy" src={bid.avatar} alt="" />
+                                          <i className="fa fa-check"></i>
+                                      </span>
+                                  </div>
+                                  <div className="p_list_info">
+                                      Bid {bid.is_author && 'accepted'} <b>{bid.price} {COIN}</b>
+                                      <span>by <b>{bid.username}</b> at {bid.timestamp}</span>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  )} */}
             </div>
           </div>
         }
@@ -931,7 +938,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
     <div>
       {/* <GlobalStyles /> */}
       <section className="container">{renderView()}</section>
-      <Footer />
       {!!chosenCollectibleToBuyFrom?._id && (
         <div className="checkout">
           <BuyPopUp
@@ -971,7 +977,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
             makeOfferState={makeOfferState}
             submit={_makeOffer}
             onClose={closeMakeOfferPopUp}
-            getCollectionTotalQuantity={getCollectionTotalQuantity}
+            totalQuantity={getCollectionTotalQuantity()}
           />
         </div>
       )}

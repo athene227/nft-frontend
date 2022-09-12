@@ -999,7 +999,10 @@ export default function CreateForm(props: IProps) {
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          submit(values, actions.resetForm);
+          const obj = priceTokens?.find(
+            (item) => item.name === values.pricetokentype
+          );
+          submit({ ...values, priceTokenId: obj?._id }, actions.resetForm);
         }}
         render={displayCreateSingleForm}
         validationSchema={SignupSchema}

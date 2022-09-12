@@ -5,74 +5,27 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "approved",
-          "type": "bool"
-        }
+        { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "operator", "type": "address" },
+        { "indexed": false, "internalType": "bool", "name": "approved", "type": "bool" }
       ],
       "name": "ApprovalForAll",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "newItemId",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{ "indexed": false, "internalType": "uint256", "name": "newItemId", "type": "uint256" }],
       "name": "Mint",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "ids",
-          "type": "uint256[]"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "values",
-          "type": "uint256[]"
-        }
+        { "indexed": true, "internalType": "address", "name": "operator", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+        { "indexed": false, "internalType": "uint256[]", "name": "ids", "type": "uint256[]" },
+        { "indexed": false, "internalType": "uint256[]", "name": "values", "type": "uint256[]" }
       ],
       "name": "TransferBatch",
       "type": "event"
@@ -80,36 +33,11 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "operator",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
+        { "indexed": true, "internalType": "address", "name": "operator", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "from", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+        { "indexed": false, "internalType": "uint256", "name": "id", "type": "uint256" },
+        { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }
       ],
       "name": "TransferSingle",
       "type": "event"
@@ -117,18 +45,8 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "value",
-          "type": "string"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        }
+        { "indexed": false, "internalType": "string", "name": "value", "type": "string" },
+        { "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" }
       ],
       "name": "URI",
       "type": "event"
@@ -136,9 +54,7 @@
     {
       "inputs": [],
       "name": "_tokensIds",
-      "outputs": [
-        { "internalType": "uint256", "name": "_value", "type": "uint256" }
-      ],
+      "outputs": [{ "internalType": "uint256", "name": "_value", "type": "uint256" }],
       "stateMutability": "view",
       "type": "function"
     },
@@ -154,17 +70,11 @@
     },
     {
       "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "accounts",
-          "type": "address[]"
-        },
+        { "internalType": "address[]", "name": "accounts", "type": "address[]" },
         { "internalType": "uint256[]", "name": "ids", "type": "uint256[]" }
       ],
       "name": "balanceOfBatch",
-      "outputs": [
-        { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
-      ],
+      "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
       "stateMutability": "view",
       "type": "function"
     },
@@ -246,9 +156,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
-      ],
+      "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }],
       "name": "supportsInterface",
       "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
       "stateMutability": "view",
@@ -277,7 +185,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x665AB807efA2A2F412420C8Ce1fE2D1659542F5C",
+      "address": "0xa846AaBA6271366531b7998fb503b79907Ac64e5",
       "transactionHash": "0x9ae1be5c1a42f153a32ac24514e6dd8a68b511a8917afc26452ecc97adcbbb01"
     }
   }

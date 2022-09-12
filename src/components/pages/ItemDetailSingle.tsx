@@ -580,6 +580,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       expirationDay: string;
       pricetokentype: string;
       pricetokenaddress: string;
+      priceTokenId: string;
     },
     resetForm: () => void
   ) => {
@@ -804,7 +805,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         multiple: nft.multiple,
         attributes: nft.attributes,
         ownerAddress: userAddress,
-        priceToken: nft.priceToken,
+        priceTokenId: nft.priceTokenId,
         status: STATUS.ON_SELL
       };
 
@@ -1576,6 +1577,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             makeOfferState={makeOfferState}
             submit={_makeOffer}
             onClose={closeMakeOfferPopUp}
+            totalQuantity={1}
           />
         </div>
       )}

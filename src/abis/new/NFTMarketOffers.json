@@ -2,104 +2,52 @@
   "contractName": "NFTMarketOffers",
   "abi": [
     {
-      "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "erc20TokenAddresses",
-          "type": "address[]"
-        }
-      ],
+      "inputs": [{ "internalType": "address[]", "name": "erc20TokenAddresses", "type": "address[]" }],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{ "indexed": true, "internalType": "uint256", "name": "offerId", "type": "uint256" }],
       "name": "OfferAccepted",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{ "indexed": true, "internalType": "uint256", "name": "offerId", "type": "uint256" }],
       "name": "OfferCreated",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
+        { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+        { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
       ],
       "name": "OwnershipTransferred",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
       "name": "Paused",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
       "name": "Unpaused",
       "type": "event"
     },
     {
-      "inputs": [
-        { "internalType": "uint256", "name": "offerId", "type": "uint256" }
-      ],
+      "inputs": [{ "internalType": "uint256", "name": "offerId", "type": "uint256" }],
       "name": "acceptOffer",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "erc20TokenAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "internalType": "address", "name": "erc20TokenAddress", "type": "address" }],
       "name": "addToWhitelist",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -135,21 +83,9 @@
         { "internalType": "address", "name": "nftContract", "type": "address" },
         { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
         { "internalType": "uint256", "name": "quantity", "type": "uint256" },
-        {
-          "internalType": "address",
-          "name": "offerERC20Address",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalOfferAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "offerDeadline",
-          "type": "uint256"
-        }
+        { "internalType": "address", "name": "offerERC20Address", "type": "address" },
+        { "internalType": "uint256", "name": "totalOfferAmount", "type": "uint256" },
+        { "internalType": "uint256", "name": "offerDeadline", "type": "uint256" }
       ],
       "name": "offerOnNft",
       "outputs": [],
@@ -164,11 +100,7 @@
         { "internalType": "address", "name": "nftContract", "type": "address" },
         { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
         { "internalType": "uint256", "name": "quantity", "type": "uint256" },
-        {
-          "internalType": "address",
-          "name": "erc20Address",
-          "type": "address"
-        },
+        { "internalType": "address", "name": "erc20Address", "type": "address" },
         { "internalType": "uint256", "name": "amount", "type": "uint256" },
         { "internalType": "uint256", "name": "deadline", "type": "uint256" },
         { "internalType": "bool", "name": "isClosed", "type": "bool" }
@@ -183,13 +115,7 @@
       "stateMutability": "view",
       "type": "function"
     },
-    {
-      "inputs": [],
-      "name": "pause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+    { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
       "inputs": [],
       "name": "paused",
@@ -198,41 +124,21 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "erc20TokenAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{ "internalType": "address", "name": "erc20TokenAddress", "type": "address" }],
       "name": "removeFromWhitelist",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
+    { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        { "internalType": "address", "name": "newOwner", "type": "address" }
-      ],
+      "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
-    {
-      "inputs": [],
-      "name": "unpause",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+    { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
       "inputs": [
         { "internalType": "address", "name": "", "type": "address" },
@@ -260,7 +166,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x89d1248225dfAA78afcBc4590764F9862543A576"
+      "address": "0x22Ef844FbD79C2f154c129BB62Fb123347877364"
     }
   }
 }

@@ -9,7 +9,7 @@ export interface IOffer {
   offererAddress: string;
   // ownerAddress: string;
   nftAddress: string;
-  erc20Address: string;
+  priceTokenId: string | undefined;
   amount: number;
   quantity: number;
   deadline: Date;

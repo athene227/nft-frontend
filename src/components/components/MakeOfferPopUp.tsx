@@ -34,12 +34,11 @@ interface IProps {
   onClose: (value: boolean) => void;
   submit: (values: any, resetForm: () => void) => void;
   makeOfferState: { error: null | string; loader: boolean };
-  getCollectionTotalQuantity: () => number;
+  totalQuantity: number;
 }
 
 const MakeOfferPopUp = (props: IProps) => {
-  const { nft, onClose, submit, makeOfferState, getCollectionTotalQuantity } =
-    props;
+  const { nft, onClose, submit, makeOfferState, totalQuantity } = props;
   const [balance, setBalance] = useState(0);
   const [currentPriceTokenType, setCurrentPriceTokenType] = useState('');
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
@@ -111,10 +110,7 @@ const MakeOfferPopUp = (props: IProps) => {
     quantity: Yup.number()
       .typeError('you must specify a number')
       .moreThan(0, INPUT_ERROS.higherThanZero)
-      .lessThan(
-        nft?.multiple ? Number(getCollectionTotalQuantity()) + 1 : 2,
-        INPUT_ERROS.numberIsHigher
-      )
+      .lessThan(totalQuantity + 1, INPUT_ERROS.numberIsHigher)
       .required(INPUT_ERROS.requiredField),
     price: Yup.number()
       .typeError('you must specify a number')
@@ -398,12 +394,17 @@ const MakeOfferPopUp = (props: IProps) => {
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          let pricetokenaddress = '';
-          priceTokens.forEach((item) => {
-            if (item.name === values.pricetokentype)
-              pricetokenaddress = item.address;
-          });
-          submit({ ...values, pricetokenaddress }, actions.resetForm);
+          const obj = priceTokens?.find(
+            (item) => item.name === values.pricetokentype
+          );
+          submit(
+            {
+              ...values,
+              pricetokenaddress: obj?.address,
+              priceTokenId: obj?._id
+            },
+            actions.resetForm
+          );
         }}
         render={displayOfferForm}
         validationSchema={offerSchema}
