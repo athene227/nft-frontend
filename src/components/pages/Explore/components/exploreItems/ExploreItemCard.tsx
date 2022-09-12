@@ -85,7 +85,7 @@ const ExploreItemCard = ({
                   <img
                     onClick={() => navigateToItemDetail()}
                     src={getImage(previewImageUrl || imageUrl)}
-                    className="lazy nft__item_preview"
+                    className="lazy nft__item_preview img-fluid"
                     alt=""
                   />
                 </span>

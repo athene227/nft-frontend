@@ -12,9 +12,9 @@ import {
   MARKET_CONTRACT_EVENTS
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
-import { INft, ISimpleMarketItem } from 'src/types/nfts.types';
+import { INft } from 'src/types/nfts.types';
+import { IOffer } from 'src/types/offers.types';
 import { getErrorMessage } from 'src/utils';
-import { getSimpleMarketItem } from 'src/utils';
 import * as Yup from 'yup';
 
 import * as selectors from '../../store/selectors';
@@ -23,37 +23,42 @@ import TransactionHash from './TransactionHash';
 
 interface IProps {
   nft: INft;
-  placeBidState: { error: null | string; loader: boolean };
+  acceptOfferState: {
+    error: null | string;
+    loader: boolean;
+    selectedOffer: any | null;
+  };
   multiple: boolean;
   onClose: (shouldRefresh: boolean) => void;
   submit: (values: any, resetForm: any) => void;
 }
 
-const BuyPopUp = (props: IProps) => {
-  const { nft, onClose, submit, placeBidState, multiple } = props;
+const AcceptOfferPopUp = (props: IProps) => {
+  const { nft, onClose, submit, acceptOfferState, multiple } = props;
   const [userBalance, setUserBalance] = useState(0);
   const [dataState, setDataState] = React.useState<{
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
 
-  const [marketItem, setSimpleMarketItem] = React.useState<ISimpleMarketItem>({
-    nftContract: '',
-    tokenId: '',
-    price: '',
-    originalQuantity: '',
-    remainingQuantity: '',
-    ownerAddress: ''
-  });
-
   const web3State = useSelector(selectors.web3State);
-  const { web3, accounts, nftMarketSimpleContract } = web3State.web3.data;
+  const { web3, accounts } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
   const userAddress = accounts[0];
-  const buyTransactionHash = nftEvents.find(
-    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
-      eventName === MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent &&
-      tokenId === nft.tokenId
+
+  const acceptofferTransactionHash = nftEvents.find(
+    ({
+      eventName,
+      tokenId,
+      nftAddress
+    }: {
+      eventName: string;
+      tokenId: string;
+      nftAddress: string;
+    }) =>
+      eventName === MARKET_CONTRACT_EVENTS.OfferAccepted &&
+      tokenId === nft?.tokenId &&
+      nftAddress === nft?.nftAddress
   )?.transactionHash;
 
   const _getMyBalance = async () => {
@@ -62,22 +67,12 @@ const BuyPopUp = (props: IProps) => {
     return eth_balance;
   };
 
-  const _getSimpleMarketItem = async () => {
-    const marketItem = await getSimpleMarketItem({
-      nftMarketSimpleContract,
-      listingId: Number(nft.listingId)
-    });
-    return marketItem;
-  };
-
   const _getData = async () => {
     try {
       if (!nft) return;
       setDataState({ loader: true, error: null });
       const _eth_balance = await _getMyBalance();
-      const _marketItem = await _getSimpleMarketItem();
       setUserBalance(_eth_balance);
-      setSimpleMarketItem(_marketItem);
       setDataState({ loader: false, error: null });
     } catch (error) {
       console.log('error in getData in buy popup');
@@ -95,7 +90,7 @@ const BuyPopUp = (props: IProps) => {
         amount: Yup.number()
           .typeError('you must specify a number')
           .moreThan(0, INPUT_ERROS.tooShort)
-          .lessThan(Number(marketItem.remainingQuantity) + 1)
+          .lessThan(Number(acceptOfferState.selectedOffer?.quantity) + 1)
           .required(INPUT_ERROS.requiredField)
       };
     } else {
@@ -112,7 +107,7 @@ const BuyPopUp = (props: IProps) => {
 
   const getInitialValue = () => {
     const result: any = {
-      amount: 1
+      amount: Number(acceptOfferState.selectedOffer?.quantity)
     };
     return result;
   };
@@ -129,30 +124,35 @@ const BuyPopUp = (props: IProps) => {
     getFieldProps
   }: FormikProps<{ amount: number }>) => {
     const getComission = (): number => {
-      if (!nft) return 0;
-      if (isNaN(values.amount)) return 0;
+      if (!nft || !acceptOfferState.selectedOffer) return 0;
+      if (isNaN(acceptOfferState.selectedOffer?.amount)) return 0;
       return (
-        (Number(values.amount) * Number(nft.price) * COMISSION_PERCENTAGE) / 100
+        (Number(values.amount) *
+          Number(acceptOfferState.selectedOffer?.amount) *
+          COMISSION_PERCENTAGE) /
+        100
       );
     };
 
     const getTotal = (): number => {
-      if (!nft) return 0;
+      if (!nft || !acceptOfferState.selectedOffer) return 0;
       if (isNaN(values.amount)) return 0;
-      return Number(values.amount) * Number(nft.price) + getComission();
+      return (
+        Number(values.amount) * Number(acceptOfferState.selectedOffer?.amount) +
+        getComission()
+      );
     };
-    console.log('buyTransactionHash in buy pop up', buyTransactionHash);
 
     return (
       <div>
         <div className="modal-header">
           <div className="heading">
             {/* <h5 className='modal-title'>Buy nft</h5> */}
-            <h5 className="modal-title">Buy Now</h5>
+            <h5 className="modal-title">Accept Offer</h5>
           </div>
           <button
             className="btn-close"
-            onClick={() => onClose(buyTransactionHash !== undefined)}
+            onClick={() => onClose(acceptofferTransactionHash !== undefined)}
           >
             x
           </button>
@@ -163,7 +163,7 @@ const BuyPopUp = (props: IProps) => {
               <Form>
                 <div className="form-header">
                   <p>
-                    You are about to purchase a{' '}
+                    You are about to accept an offer to{' '}
                     <span className="bold">{`${nft?.name} `}</span>
                     <span className="bold">
                       from{' '}
@@ -174,7 +174,6 @@ const BuyPopUp = (props: IProps) => {
                   </p>
                 </div>
                 <div className="buy-detail-table">
-                  {multiple && <p>available: {marketItem.remainingQuantity}</p>}
                   {multiple ? (
                     <div className="detailcheckout mt-4">
                       <div className="listcheckout">
@@ -197,54 +196,53 @@ const BuyPopUp = (props: IProps) => {
                     <div></div>
                   )}
 
-                  <div className="heading mt-3">
-                    <p>Your balance</p>
-                    <div className="subtotal">
-                      {Number(userBalance).toFixed(8)} {COIN}
-                    </div>
-                  </div>
-
                   <div className="heading">
-                    <p>Nft price</p>
+                    <p>Offer price</p>
                     <div className="subtotal">
-                      {nft?.price} {COIN}
+                      {acceptOfferState.selectedOffer?.amount}{' '}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                   <div className="heading">
                     <p>Service fee 1%</p>
                     <div className="subtotal">
-                      {getComission()} {COIN}
+                      {getComission()}{' '}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                 </div>
                 <div className="total-pay">
                   <div className="heading">
-                    <p>Total Price</p>
+                    <p>Total Earnings</p>
                     <div className="subtotal">
-                      {getTotal()} {COIN}
+                      {getTotal()}{' '}
+                      {acceptOfferState.selectedOffer?.pricetoken[0]?.name ||
+                        COIN}
                     </div>
                   </div>
                 </div>
                 <div className="detail_button">
-                  {buyTransactionHash && !placeBidState.loader && (
-                    <TransactionHash hash={buyTransactionHash} />
+                  {acceptofferTransactionHash && !acceptOfferState.loader && (
+                    <TransactionHash hash={acceptofferTransactionHash} />
                   )}
-                  {placeBidState.loader ? (
+                  {acceptOfferState.loader ? (
                     <Loader />
                   ) : (
-                    buyTransactionHash === undefined &&
-                    nft.ownerAddress !== userAddress && (
+                    acceptofferTransactionHash === undefined &&
+                    nft?.ownerAddress === userAddress && (
                       <input
                         type="submit"
                         id="submit"
                         className="btn-main"
-                        value="Buy Now"
+                        value="Accept Offer"
                       />
                     )
                   )}
-                  {placeBidState.error && (
+                  {acceptOfferState.error && (
                     <Alert
-                      text={placeBidState.error}
+                      text={acceptOfferState.error}
                       type={ALERT_TYPE.DANGER}
                     />
                   )}
@@ -265,13 +263,15 @@ const BuyPopUp = (props: IProps) => {
                   <h2>{nft?.name}</h2>
                   <p>{nft?.description}</p>
                   <div className="buy-popup-price">
-                    {nft.price > 0 && (
+                    {nft?.price > 0 && (
                       <p className="item_detail_price">
                         <i>
                           <img src="./../../img/icon/price-pulse.png" />
                         </i>{' '}
                         <strong>
-                          {nft?.price} {COIN}
+                          {nft?.price}{' '}
+                          {acceptOfferState.selectedOffer?.pricetoken[0]
+                            ?.name || COIN}
                         </strong>
                       </p>
                     )}
@@ -301,7 +301,7 @@ const BuyPopUp = (props: IProps) => {
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          submit(values, actions.resetForm);
+          submit(acceptOfferState.selectedOffer, actions.resetForm);
         }}
         render={displayBuyForm}
         validationSchema={buySchema}
@@ -312,4 +312,4 @@ const BuyPopUp = (props: IProps) => {
   return <div className="maincheckout modal-style-1">{renderView()}</div>;
 };
 
-export default memo(BuyPopUp);
+export default memo(AcceptOfferPopUp);

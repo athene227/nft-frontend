@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { createTheme } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import {
   ErrorMessage,
   Field,
@@ -47,6 +49,7 @@ import { getErrorMessage, getProfileImage } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 
+import BidIcon from '../../../../assets/images/bid-icon.svg';
 import { ApiService } from '../../../../core/axios';
 
 interface IProps {
@@ -306,7 +309,7 @@ export default function CreateForm(props: IProps) {
       supply: 1,
       royalties: 0,
       minimumBid: 0,
-      pricetokentype: priceTokens[0]?.name || 'MRT',
+      pricetokentype: priceTokens[0]?.name || 'MTK',
       expirationDate: '',
       attributes: []
     };
@@ -510,6 +513,48 @@ export default function CreateForm(props: IProps) {
     const getImageUrl = () => {
       return image || './img/collections/coll-item-3.jpg';
     };
+    //   const MySwitch = withStyles({
+    //     root: {
+
+    //     },
+    //     switchBase: {
+    //         // thumb when unchecked
+    //         color: "orange",
+    //         opacity: 0.8,
+    //         "&$checked": {
+    //             // thumb when checked
+    //             color: "orange",
+    //             opacity: 1,
+    //             // track when checked
+    //             "& + $track": {
+    //                 backgroundColor: "black",
+    //                 opacity: 1,
+    //             },
+    //             // The rules above override the default rules for graying
+    //             // out the thumb and track when the switch is disabled,
+    //             // so we have to add that back in ourselves
+    //             "&$disabled": {
+    //                 // gray out the thumb
+    //                 color: "#bbb",
+    //                 "& + $track": {
+    //                     // gray out the track
+    //                     backgroundColor: "#ddd"
+    //                 }
+    //             }
+    //         },
+    //     },
+    //     thumb: {
+
+    //     },
+    //     checked: {},
+    //     track: {
+    //       borderRadius: 26 / 2,
+    //       border: `1px solid gray`,
+    //       backgroundColor: 'gray',
+    //       opacity: 1,
+    //     },
+    //     disabled: {}
+    // })(Switch);
 
     return (
       <>
@@ -918,13 +963,20 @@ export default function CreateForm(props: IProps) {
                     </p>
                     <div className="row">
                       <div className="col-9">
-                        <Field
-                          type="text"
-                          name="minimumBid"
-                          id="item_price_bid"
-                          className={`form-control input__holder__single`}
-                          placeholder="Enter minimum bid"
-                        />
+                        <div className="input-container input-icon-container">
+                          <Field
+                            type="text"
+                            name="minimumBid"
+                            id="item_price_bid"
+                            className={`form-control input__holder__single`}
+                            placeholder="Enter minimum bid"
+                          />
+                          <img
+                            src={BidIcon}
+                            className="input-icon crypto-icon"
+                            alt="bid icon"
+                          />
+                        </div>
                       </div>
                       <div className="col-3">
                         <Field

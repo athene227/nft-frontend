@@ -224,11 +224,14 @@ h2{
         }
         &.help-icon{
           color: #ffffff;
-    width: 20px;
-    background-color: #142247;
-    height: 20px;
-    border-radius: 50%;
-    padding:3px;
+          width: 20px;
+          background-color: #142247;
+          height: 20px;
+          border-radius: 50%;
+          padding:3px;
+        }
+        &.crypto-icon{
+          top:16px;
         }
         }
         .input-container{
@@ -522,7 +525,7 @@ p.lead {
 .btn__gradient {
   background: linear-gradient(95.16deg, ${({ theme }) =>
     theme.colors.color_primary} 2.64%, ${({ theme }) =>
-      theme.colors.color_secondary} 100%);
+  theme.colors.color_secondary} 100%);
   // border: 3px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   border: none;
@@ -540,8 +543,8 @@ p.lead {
   span {
     gap: 0px;
     background: -webkit-linear-gradient(180deg, ${({ theme }) =>
-    theme.colors.color_primary} 0%, ${({ theme }) =>
-      theme.colors.color_secondary} 100%);
+      theme.colors.color_primary} 0%, ${({ theme }) =>
+  theme.colors.color_secondary} 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -551,7 +554,7 @@ p.lead {
   color: white;
   background-image: linear-gradient(270deg, ${({ theme }) =>
     theme.colors.color_primary} 0%, ${({ theme }) =>
-      theme.colors.color_secondary} 100%);
+  theme.colors.color_secondary} 100%);
   border-radius: ${({ theme }) => theme.colors.btn_border};
   font-size: ${({ theme }) => theme.colors.btn_font};
   position: relative;
@@ -574,8 +577,8 @@ p.lead {
     bottom: 0;
     left: 0;
     background-image: linear-gradient(90deg, ${({ theme }) =>
-    theme.colors.color_primary} 0%, ${({ theme }) =>
-      theme.colors.color_secondary} 100%);
+      theme.colors.color_primary} 0%, ${({ theme }) =>
+  theme.colors.color_secondary} 100%);
     z-index: -1;
     transition: opacity 0.5s linear;
     opacity: 0;
@@ -614,8 +617,8 @@ p.lead {
   border: solid 3px transparent;
   background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)),
     linear-gradient(101deg, ${({ theme }) => theme.colors.color_secondary}, ${({
-        theme
-      }) => theme.colors.color_primary});
+  theme
+}) => theme.colors.color_primary});
   background-origin: border-box;
   background-clip: content-box, border-box;
   box-shadow:2px 1000px 1px inset ${({ theme }) =>
@@ -628,7 +631,7 @@ p.lead {
   transition: all ease-in-out 0.3s;
   border-image-source: linear-gradient(270deg, ${({ theme }) =>
     theme.colors.color_primary} 0%, ${({ theme }) =>
-      theme.colors.color_secondary} 100%);
+  theme.colors.color_secondary} 100%);
 
   &:hover {
     box-shadow: none;
@@ -1327,7 +1330,7 @@ img.img-rounded {
     left: -100%;
     position: absolute;
     background-image: linear-gradient(to left, ${({ theme }) =>
-    theme.colors.pink_col},  ${({ theme }) => theme.colors.color_more});
+      theme.colors.pink_col},  ${({ theme }) => theme.colors.color_more});
     opacity: 0;
     z-index: 1;
     transition: all 0.3s ease;
@@ -1561,7 +1564,7 @@ img.img-rounded {
     top: 0;
     left: 0;
     background: linear-gradient(to bottom, ${({ theme }) =>
-    theme.colors['black']}, rgba(0, 0, 0, 0.1));
+      theme.colors['black']}, rgba(0, 0, 0, 0.1));
     opacity: 0.5;
   }
 
@@ -2199,13 +2202,13 @@ img.img-rounded {
 
   &.nft-item-custom {
     border-color: ${({ theme }) =>
-    theme.colors['transparent_border']}!important;
+      theme.colors['transparent_border']}!important;
     box-shadow: ${({ theme }) => theme.colors['nft_light_bxshadow']}!important;
     background: ${({ theme }) => theme.colors['new__item_bg']};
     border: 0.829279px solid #282A53;
         border-radius: 8.2928px;
     /* background: ${({ theme }) =>
-    theme.colors['nft_custom_bg']} !important; */
+      theme.colors['nft_custom_bg']} !important; */
     .nft-item-customcontent{
        /* &:before{
         content: '';    position: absolute;
@@ -2236,8 +2239,8 @@ img.img-rounded {
       &:after {
         content: "";
         background: linear-gradient(to left, ${({ theme }) =>
-    theme.colors['color_secondary']}, ${({ theme }) =>
-      theme.colors['color_primary']}) !important;
+          theme.colors['color_secondary']}, ${({ theme }) =>
+  theme.colors['color_primary']}) !important;
           width: 102.5%;
           height: 102%;
           position: absolute;
@@ -2438,7 +2441,7 @@ border-radius: 8px;
   border-radius: 1;
   border-image-source: linear-gradient(to left, ${({ theme }) =>
     theme.colors['color_primary']}, ${({ theme }) =>
-      theme.colors['color_secondary']});
+  theme.colors['color_secondary']});
 
   .arrow {
     display: none;
@@ -2505,8 +2508,8 @@ border-radius: 8px;
 
     .check__circle__icon {
       background: linear-gradient(180deg, ${({ theme }) =>
-    theme.colors['color_primary']} 0%, ${({ theme }) =>
-      theme.colors['color_secondary']} 100%);
+        theme.colors['color_primary']} 0%, ${({ theme }) =>
+  theme.colors['color_secondary']} 100%);
       width: 24px;
       border-radius: 50%;
       height: 24px;
@@ -2521,7 +2524,7 @@ border-radius: 8px;
   border-radius: 5;
   border-image-source: linear-gradient(to left, ${({ theme }) =>
     theme.colors['color_primary']}, ${({ theme }) =>
-      theme.colors['color_secondary']});
+  theme.colors['color_secondary']});
 
   .arrow {
     display: none;
@@ -2873,7 +2876,7 @@ input[type=number]::-webkit-outer-spin-button {
       margin-right:3px;
     }
     &:after{
-      content:'Left';
+      // content:'Left';
       display:inline-block;
       margin-right:3px;
       color:#202A5D80;
@@ -2897,7 +2900,7 @@ input[type=number]::-webkit-outer-spin-button {
     &:hover img {
       padding: 3px;
       -webkit-box-shadow: 0px 0px 0px 2px ${({ theme }) =>
-    theme.colors['pink_col']};
+        theme.colors['pink_col']};
       transition: 0.3s;
     }
   }
@@ -3457,8 +3460,8 @@ input:-internal-autofill-selected {
         justify-content: center;
         padding: 25px 0;
         /* background: $gradient2; */
-        background:${({theme})=> theme.colors['nft-attr-bg']};
-        background-color:${({theme})=> theme.colors['nft-attr-bg']};
+        background:${({ theme }) => theme.colors['nft-attr-bg']};
+        background-color:${({ theme }) => theme.colors['nft-attr-bg']};
         border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(80px);
         /* @include theme("themeLight", background, $background_light); */
@@ -3466,16 +3469,16 @@ input:-internal-autofill-selected {
         .modal-title {
           margin-bottom: 0;
           font-size: 32px;
-          color:${({theme})=> theme.colors.textHeading};
+          color:${({ theme }) => theme.colors.textHeading};
         }
         .btn-close {
-          background: transparent;
-          color:${({theme})=> theme.colors['text-light']};
+          background: none;
+          color:${({ theme }) => theme.colors['text-light']};
         }
       }
       .modal-content {
 
-        background-color: ${({theme})=> theme.colors['modal-content-bg']};
+        background-color: ${({ theme }) => theme.colors['modal-content-bg']};
         border: 0px;
         border-radius: 0px;
         padding: 30px;
@@ -3488,8 +3491,9 @@ input:-internal-autofill-selected {
           }
           .form-control {
             background: transparent;
-            border: 1px solid ${({theme})=> theme.colors['input-holder-border']};
-            color: ${({theme})=> theme.colors['text-light']};
+            border: 1px solid ${({ theme }) =>
+              theme.colors['input-holder-border']};
+            color: ${({ theme }) => theme.colors['text-light']};
           }
         }
         .btn-main {
@@ -3590,10 +3594,16 @@ input:-internal-autofill-selected {
       margin: auto;
       width: 65px;
       height: 65px;
-
+      .circle_reactGradientProgress__1_0UG{
+        width:100%;
+        height:100%;
+      }
       .CircularProgressbar .CircularProgressbar-path {
         stroke: rgb(0 178 235);
+        /* stroke : linear-gradient(rgba(254, 0, 199, 1)
+rgba(0, 129, 255, 1)); */
       }
+ 
 
       .CircularProgressbar .CircularProgressbar-trail {
         stroke: none;
@@ -3660,6 +3670,7 @@ input:-internal-autofill-selected {
     .progress {
       border-radius: 1.25rem;
       height: 1.3rem;
+      background-color:transparent;
       background-image: url(${progressBg});
     }
     .progress-bar {

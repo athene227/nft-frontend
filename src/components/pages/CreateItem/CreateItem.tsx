@@ -53,7 +53,7 @@ const CreateItem = () => {
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
-  const [tokentype, setTokenType] = useState('MRT');
+  const [tokentype, setTokenType] = useState('MTK');
   // const [, setNumberOfCopiesInput] = useState(0);
   const [, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
@@ -134,6 +134,7 @@ const CreateItem = () => {
     imageUrl: string,
     previewImageUrl: string
   ) => {
+    console.log('------------------------------+++++++++++', data);
     // nft mongo item
     const nftToCreate: any = {
       name: data.name,

@@ -87,6 +87,8 @@ const END_POINTS = {
   GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
+  // OFFERS
+  OFFERS: `${SERVER_URL}/${API_VERSION}/offers`,
   // COLLECTIONS
   COLLECTIONS: `${SERVER_URL}/${API_VERSION}/collections`,
   SEARCH: `${SERVER_URL}/${API_VERSION}/search`
@@ -402,6 +404,32 @@ export class ApiService {
     return Axios.request({
       url: END_POINTS.GET_PRICETOKENS_LIST,
       method: 'get'
+    });
+  };
+
+  static createOffer = async (data: {
+    price: string;
+    buyerAddress: string;
+    quantity: number;
+    listingId: string;
+    toketId: string;
+    networkId: number;
+  }) => {
+    return Axios.request({
+      url: END_POINTS.OFFERS,
+      method: 'post',
+      data
+    });
+  };
+
+  static fetchNftOffers = async (params: {
+    tokenId: string;
+    nftAddress: string;
+  }) => {
+    return Axios.request({
+      url: END_POINTS.OFFERS,
+      method: 'get',
+      params
     });
   };
 }

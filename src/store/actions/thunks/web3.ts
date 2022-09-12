@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
 
@@ -15,6 +16,7 @@ export const setupWeb3 =
       nft1155Contract: any;
       nftMarketSimpleContract: any;
       nftMarketAuctionContract: any;
+      nftMarketOffersContract: any;
     };
   }) =>
   async (dispatch: any) => {

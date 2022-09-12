@@ -4,6 +4,7 @@ import progressBg from '../../../assets/images/progress-bg.png';
 import tabImgbg from '../../../assets/images/tab-img-bg.png';
 import tabImgbghover from '../../../assets/images/tab-img-bg-hover.png';
 
+
 const CreateSingleWrapper = styled.div`
   /*** create 2 ***/
   font-family: 'DM Sans';
@@ -365,6 +366,32 @@ const CreateSingleWrapper = styled.div`
         i {
           display: none;
         }
+        .MuiSwitch-root{
+          padding:5px;
+          
+          .MuiSwitch-track{
+            border-radius: 500px;
+            opacity: 1;
+            
+          }
+          .MuiSwitch-thumb {
+            
+            color:#7a7f88;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-top: -2.5px;
+            margin-left: -5px;
+          }
+          .Mui-checked{
+            .MuiSwitch-thumb {
+              background: linear-gradient(360deg, #FF00D1 -18.12%, #0880FC 82.18%);
+            color:#ffffff;
+            margin-left: 0px;
+          }
+          }
+        }
+       
       }
     }
     .add-collection-field {

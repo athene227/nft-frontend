@@ -50,6 +50,7 @@ const gradient1 =
   'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)';
 const gradient2 =
   'linear-gradient(90deg, rgba(254, 0, 199, 0.2) 0%, rgba(0, 132, 254, 0.2) 103.82%)';
+const nftattrgrad = 'linear-gradient(180deg, rgba(254, 0, 199, 0.07) 0%, rgba(0, 132, 254, 0.07) 100%)';
 const gradient3 = 'linear-gradient(to left, #d61f8b, #fc202c)';
 const gradient4 = 'linear-gradient(to bottom, #d61f8b, #fc202c)';
 // const gradient-color1 = "#fe00c7;
@@ -266,7 +267,7 @@ const dark = {
     'tab-bg2': '#121435',
     'tab-bx': 'none',
     'tab-color': white,
-    'nft-attr-bg': gradient2,
+    'nft-attr-bg': nftattrgrad,
     'nft-attr-bg2':'none',
     'nft-attr-bx': 'none',
     'modal-content-bg': '#0e193b',

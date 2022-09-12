@@ -27,6 +27,7 @@ interface IProps {
 
 const SellPopUp = (props: IProps) => {
   const { nft, onClose, submit, sellState } = props;
+  console.log('🚀 ~ file: SellPopUp.tsx ~ line 30 ~ SellPopUp ~ nft', nft);
   const [balance, setBalance] = useState(0);
   const [balanceState, setBalanceState] = React.useState<{
     loader: boolean;
@@ -39,16 +40,23 @@ const SellPopUp = (props: IProps) => {
     ({
       eventName,
       tokenId,
+      nftAddress,
       ownerAddress
     }: {
       eventName: string;
       tokenId: string;
+      nftAddress: string;
       ownerAddress: string;
     }) =>
       eventName === MARKET_CONTRACT_EVENTS.SimpleItemCreated &&
       tokenId === nft.tokenId &&
+      nftAddress === nft.nftAddress &&
       ownerAddress === nft.ownerAddress
   )?.transactionHash;
+  console.log(
+    '🚀 ~ file: SellPopUp.tsx ~ line 55 ~ SellPopUp ~ listingTransactionHash',
+    listingTransactionHash
+  );
 
   const getMyBalance = async () => {
     try {
