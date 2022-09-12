@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { createGlobalStyle } from 'styled-components';
 import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
+import moment from 'moment';
 import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
+import ERC20Abi from 'src/abis/new/MockERC20.json';
 import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
@@ -15,13 +16,13 @@ import {
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 import { INft } from 'src/types/nfts.types';
+import { IPriceToken } from 'src/types/priceTokens.types';
 import { getErrorMessage } from 'src/utils';
 import * as Yup from 'yup';
 
+import { ApiService } from '../../core/axios';
 import * as selectors from '../../store/selectors';
 import Alert from './Alert';
-import { ApiService } from '../../core/axios';
-import { IPriceToken } from 'src/types/priceTokens.types';
 import TransactionHash from './TransactionHash';
 
 // const GlobalStyles = createGlobalStyle`
@@ -72,9 +73,19 @@ const MakeOfferPopUp = (props: IProps) => {
   )?.transactionHash;
 
   const _getMyBalance = async () => {
-    const wei_balance = await web3.eth.getBalance(accounts[0]);
-    const eth_balance = web3?.utils.fromWei(wei_balance, 'ether');
-    return eth_balance;
+    const tokenInfo: IPriceToken = priceTokens.find(
+      (token: IPriceToken) => token.name == currentPriceTokenType
+    );
+    if (!tokenInfo) {
+      return 0;
+    }
+
+    const tokenContract = new web3.eth.Contract(
+      ERC20Abi.abi,
+      tokenInfo.address
+    );
+    const balance = await tokenContract.methods.balanceOf(userAddress).call();
+    return web3?.utils.fromWei(balance, 'ether');
   };
 
   const _getData = async (isUpdate = false) => {
@@ -90,6 +101,10 @@ const MakeOfferPopUp = (props: IProps) => {
       setDataState({ loader: false, error: getErrorMessage(error) });
     }
   };
+
+  useEffect(() => {
+    _getData();
+  }, [currentPriceTokenType]);
 
   useEffect(() => {
     const isUpdate = false;

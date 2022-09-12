@@ -17,10 +17,10 @@ import {
   addCancelAuctionEvent,
   addCancelSimpleEvent,
   addMintEvent,
-  addSimpleMarketItemEvent,
-  addTerminateAuctionEvent,
+  addOfferAcceptedEvent,
   addOfferCreatedEvent,
-  addOfferAcceptedEvent
+  addSimpleMarketItemEvent,
+  addTerminateAuctionEvent
 } from 'src/store/actions';
 import { addBid } from 'src/store/actions/thunks/bids';
 import * as selectors from 'src/store/selectors';

@@ -3,6 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
 import { ALERT_TYPE, COIN, ERRORS, MARKET_CONTRACT_EVENTS } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
 import { INft } from 'src/types/nfts.types';
 import { getErrorMessage } from 'src/utils';
 import * as Yup from 'yup';
@@ -96,45 +97,90 @@ const CancelListingPopUp = (props: IProps) => {
     };
     return (
       <Form>
-        <div className="heading">
-          <h3>Cancel Listing</h3>
+        <div className="modal-header">
+          <div className="heading">
+            {/* <h5 className='modal-title'>Buy nft</h5> */}
+            <h5 className="modal-title">Cancel Listing</h5>
+          </div>
+          <button className="btn-close">x</button>
         </div>
-        <p>
-          You are about to get back {getAmountText()} your{' '}
-          <span className="bold">{`${nft?.name} `}</span>
-        </p>
+        <div className="modal-content">
+          <div className="row">
+            <div className="col-md-7">
+              <div className="form-header">
+                <p>
+                  You are about to get back {getAmountText()} your{' '}
+                  <span className="bold">{`${nft?.name} `}</span>
+                </p>
+              </div>
+              <div className="buy-detail-table cancel-listing-table">
+                <div className="heading mt-3">
+                  <p>Your balance</p>
+                  {balanceState.loader ? (
+                    <Loader size={20} />
+                  ) : (
+                    <div className="subtotal">
+                      {Number(balance).toFixed(8)} {COIN}
+                    </div>
+                  )}
+                </div>
 
-        <div className="spacer-20"></div>
+                <div className="detail_button">
+                  {cancelTransactionHash && !cancelListingState.loader && (
+                    <TransactionHash hash={cancelTransactionHash} />
+                  )}
+                  {cancelListingState.loader ? (
+                    <Loader />
+                  ) : (
+                    cancelTransactionHash === undefined && (
+                      <input
+                        type="submit"
+                        id="submit"
+                        className="btn-main btn-grad"
+                        value="Cancel Listing"
+                      />
+                    )
+                  )}
 
-        <div className="heading mt-3">
-          <p>Your balance</p>
-          {balanceState.loader ? (
-            <Loader size={20} />
-          ) : (
-            <div className="subtotal">
-              {Number(balance).toFixed(8)} {COIN}
+                  {cancelListingState.error && (
+                    <Alert
+                      text={cancelListingState.error}
+                      type={ALERT_TYPE.DANGER}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
-          )}
+            <div className="col-md-5">
+              <div className="buy-popup-image">
+                <div className="buy-popup-img">
+                  <img
+                    className="img-fluid"
+                    src={getImage(nft?.imageUrl)}
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                <div className="buy-popup-imgdesc">
+                  <h2>{nft?.name}</h2>
+                  <p>{nft?.description}</p>
+                  <div className="buy-popup-price">
+                    {nft.price > 0 && (
+                      <p className="item_detail_price">
+                        <i>
+                          <img src="./../../img/icon/price-pulse.png" />
+                        </i>{' '}
+                        <strong>
+                          {nft?.price} {COIN}
+                        </strong>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        {cancelTransactionHash && !cancelListingState.loader && (
-          <TransactionHash hash={cancelTransactionHash} />
-        )}
-        {cancelListingState.loader ? (
-          <Loader />
-        ) : (
-          cancelTransactionHash === undefined && (
-            <input
-              type="submit"
-              id="submit"
-              className="btn-main"
-              value="Cancel Listing"
-            />
-          )
-        )}
-
-        {cancelListingState.error && (
-          <Alert text={cancelListingState.error} type={ALERT_TYPE.DANGER} />
-        )}
       </Form>
     );
   };

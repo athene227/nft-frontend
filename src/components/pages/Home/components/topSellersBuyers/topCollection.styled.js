@@ -9,7 +9,6 @@ const TopCollection = styled.div`
       background-repeat: no-repeat;
       background-position: bottom center;
     }
-
     .seller_list {
       max-height: 420px;
       overflow-y: scroll;

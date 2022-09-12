@@ -7,8 +7,8 @@ import { INftAttribute } from 'src/types/nfts.types';
 
 const BoostNumberAttribute = ({ data }: { data: INftAttribute }) => (
   <div className="nft-attr-bsnumber">
-    <div className="boost-progress-wrapper">
-      <CircularProgressbarWithChildren value={100}>
+    <div className="boost-progress-wrapper" style={{ width: '60px' }}>
+      <CircularProgressbarWithChildren value={data.value as number}>
         <BsFillLightningFill className="text-white" />
       </CircularProgressbarWithChildren>
     </div>

@@ -1,6 +1,6 @@
 // import { SIDE } from '../../src/enums';
-import { IUser } from './users.types';
 import { IPriceToken } from './priceTokens.types';
+import { IUser } from './users.types';
 
 export interface IOffer {
   offerId: string;

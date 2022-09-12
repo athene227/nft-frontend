@@ -23,13 +23,12 @@ contract NFTMarketOffers is MarketTools {
     uint256 tokenId;
     uint256 quantity;
     address erc20Address;
-    uint256 amount;
+    uint256 singleOfferPrice;
     uint256 deadline;
-    bool isClosed;
   }
 
   event OfferCreated(uint256 indexed offerId);
-  event OfferAccepted(uint256 indexed offerId);
+  event OfferAccepted(uint256 indexed offerId, uint256 acceptQuantity);
 
   /**
    * @dev Initializes the contract
@@ -45,7 +44,7 @@ contract NFTMarketOffers is MarketTools {
    * @param tokenId Token ID of the NFT
    * @param quantity Number of NFTs to make an offer on (always 1 for ERC-721)
    * @param offerERC20Address Address of the ERC20 used for pricing
-   * @param totalOfferAmount Offered total price for buying `quantity` amount of NFTs
+   * @param singleOfferPrice Offered price for buying a single NFT
    * @param offerDeadline Timestamp when the offer is no longer valid
    */
   function offerOnNft(
@@ -53,7 +52,7 @@ contract NFTMarketOffers is MarketTools {
     uint256 tokenId,
     uint256 quantity,
     address offerERC20Address,
-    uint256 totalOfferAmount,
+    uint256 singleOfferPrice,
     uint256 offerDeadline
   ) external whenNotPaused {
     require(whitelistedERC20[offerERC20Address], 'Invalid price token');
@@ -61,8 +60,11 @@ contract NFTMarketOffers is MarketTools {
       msg.sender,
       address(this)
     );
-    require(givenAllowance >= totalOfferAmount, 'Not enough allowance');
-    require(totalOfferAmount > 0, 'Must offer something');
+    require(
+      givenAllowance >= singleOfferPrice * quantity,
+      'Not enough allowance'
+    );
+    require(singleOfferPrice > 0, 'Must offer something');
     require(offerDeadline > block.timestamp, 'Deadline must be in the future');
     require(quantity > 0, 'Must offer on some amount of NFTs');
     require(
@@ -79,9 +81,8 @@ contract NFTMarketOffers is MarketTools {
       tokenId,
       quantity,
       offerERC20Address,
-      totalOfferAmount,
-      offerDeadline,
-      false
+      singleOfferPrice,
+      offerDeadline
     );
     offers[offerId] = offer;
 
@@ -89,10 +90,14 @@ contract NFTMarketOffers is MarketTools {
   }
 
   /**
-   * @dev Accepts a previously made offer
+   * @dev Accepts a previously made offer fully or partially
    * @param offerId ID of the offer
+   * @param acceptQuantity How many NFTs to sell
    */
-  function acceptOffer(uint256 offerId) external whenNotPaused {
+  function acceptOffer(uint256 offerId, uint256 acceptQuantity)
+    external
+    whenNotPaused
+  {
     Offer storage offer = offers[offerId];
     require(offer.offerer != address(0x0), 'No offer found');
 
@@ -100,9 +105,13 @@ contract NFTMarketOffers is MarketTools {
       offer.offerer,
       address(this)
     );
-    require(givenAllowance >= offer.amount, 'Not enough allowance');
+    require(
+      givenAllowance >= offer.singleOfferPrice * acceptQuantity,
+      'Not enough allowance'
+    );
     require(block.timestamp < offer.deadline, 'The offer has expired');
-    require(!offer.isClosed, 'The offer is used already');
+    require(acceptQuantity > 0, 'Should accept something');
+    require(offer.quantity >= acceptQuantity, 'Offer quantity exhausted');
 
     // Check that the seller has enough of the NFT
     if (is721Type(offer.nftContract)) {
@@ -113,14 +122,14 @@ contract NFTMarketOffers is MarketTools {
         msg.sender,
         offer.tokenId
       );
-      require(senderBalance >= offer.quantity, 'Not enough balance');
+      require(senderBalance >= acceptQuantity, 'Not enough balance');
     }
 
-    offer.isClosed = true;
+    offer.quantity -= acceptQuantity;
 
     uint256 commission = getPriceAfterPercent(
-      offer.amount,
-      1, // Don't take quantity into account since the price is total price
+      offer.singleOfferPrice,
+      acceptQuantity,
       commissionPercent
     );
 
@@ -130,28 +139,28 @@ contract NFTMarketOffers is MarketTools {
       offer.tokenId,
       offer.erc20Address,
       offer.offerer,
-      offer.amount
+      acceptQuantity * offer.singleOfferPrice
     );
 
     // Transfers price
     IERC20(offer.erc20Address).transferFrom(
       offer.offerer,
       msg.sender,
-      offer.amount - commission - royalty
+      acceptQuantity * offer.singleOfferPrice - commission - royalty
     );
 
     // Transfers commission
     IERC20(offer.erc20Address).transferFrom(offer.offerer, owner(), commission);
 
-    // transfer the nft from owner to offerer
+    // transfer the nfts from owner to offerer
     transferNFT(
       offer.nftContract,
       msg.sender,
       offer.offerer,
       offer.tokenId,
-      offer.quantity
+      acceptQuantity
     );
 
-    emit OfferAccepted(offerId);
+    emit OfferAccepted(offerId, acceptQuantity);
   }
 }

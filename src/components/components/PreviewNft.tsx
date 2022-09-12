@@ -70,12 +70,18 @@ export default function PreviewNft(props: IProps) {
         </span>
       </div>
       <div className="nft__item_info">
-        <span>
-          <h4>{nft?.name || 'Pinky Ocean'}</h4>
-        </span>
+        <div className="col-12 d-flex justify-content-between mb-0 pl-0">
+          <span>
+            <h4>{nft?.name || 'Pinky Ocean'}</h4>
+            <p className="nft-collection-name">@digitalartNFT</p>
+          </span>
+          <div className="author_list_pp pulse_bottom">
+            <img className={''} src="./img/eth-lg.png" alt=""></img>
+          </div>
+        </div>
         <div className="nft__item_price">
           {nft?.price || 0} {tokentype}
-          {<span>{getNumberOfCopies()}</span>}
+          {<span className="d-none">{getNumberOfCopies()}</span>}
         </div>
         {!isPreview && (
           <div className="nft__item_action">

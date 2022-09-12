@@ -36,6 +36,7 @@ import {
 } from 'src/utils';
 
 import CreateForm from './components/CreateForm';
+import CreateSingleWrapper from './createSingle.styled';
 
 const CreateItem = () => {
   const dispatch = useDispatch();
@@ -688,84 +689,88 @@ const CreateItem = () => {
   };
 
   return (
-    <div>
-      {/* <GlobalStyles /> */}
-      <div
-        className="jumbotron breadcumb no-bg main-jumbo"
-        style={{
-          backgroundImage: `url(${'./img/snake.svg'})`,
-          height: 'fit-content'
-        }}
-      >
-        <section>
-          <div className="container">
-            <div className="row m-10-hor">
-              <div className="col-12">
-                <h1 className="text-center create-single-head">
-                  Create New Item
-                  <br /> on PulseChain
-                </h1>
+    <CreateSingleWrapper>
+      <div>
+        {/* <GlobalStyles /> */}
+        <div
+          className="jumbotron breadcumb no-bg main-jumbo"
+          style={{
+            backgroundImage: `url(${'./img/snake.svg'})`,
+            height: 'fit-content'
+          }}
+        >
+          <section className="section-single-head">
+            <div className="container">
+              <div className="row m-10-hor">
+                <div className="col-12">
+                  <h1 className="text-center create-single-head">
+                    Create New Item
+                    <br /> on PulseChaind
+                  </h1>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-        <section className="container create-single-section">
-          <div className="row">
-            <div className="col-lg-7 mb-5" style={{ margin: 'auto' }}>
-              <div className="marketplace-tabs-main">
+          </section>
+          <section className="container create-single-section">
+            {/* <div className="row"> */}
+            {/* <div className="col-lg-7 mb-5" style={{ margin: 'auto' }}> */}
+            {/* <div className="marketplace-tabs-main">
                 <p>
                   <span className="span-red" style={{ fontSize: '20px' }}>
                     *
                   </span>{' '}
                   Required fields
                 </p>
-              </div>
+              </div> */}
 
-              <CreateForm
-                multiple={false}
-                submit={submitForm}
-                submitCreateState={nftState}
-                onChangeImage={onChangeImage}
-                setNameInput={setNameInput}
-                setDescriptionInput={setDescriptionInput}
-                setPriceInput={setPriceInput}
-                setTokenType={setTokenType}
-                setRoyaltiesInput={setRoyaltiesInput}
-                setExpirationDateInput={setExpirationDateInput}
-                setExternalLink={setExternalLink}
-                marketType={marketType}
-                name={name}
-                description={description}
-                price={price}
-                image={image}
-                expirationDateInput={expirationDateInput}
-                tokentype={tokentype}
-                onTab={onTab}
-                setSupply={setSupply}
-                supply={supply}
-                setExplicit={setExplicit}
-              />
-            </div>
+            <CreateForm
+              multiple={false}
+              submit={submitForm}
+              submitCreateState={nftState}
+              onChangeImage={onChangeImage}
+              setNameInput={setNameInput}
+              setDescriptionInput={setDescriptionInput}
+              setPriceInput={setPriceInput}
+              setTokenType={setTokenType}
+              setRoyaltiesInput={setRoyaltiesInput}
+              setExpirationDateInput={setExpirationDateInput}
+              setExternalLink={setExternalLink}
+              marketType={marketType}
+              name={name}
+              description={description}
+              price={price}
+              image={image}
+              expirationDateInput={expirationDateInput}
+              tokentype={tokentype}
+              onTab={onTab}
+              setSupply={setSupply}
+              supply={supply}
+              setExplicit={setExplicit}
+            />
+            {/* </div> */}
 
             {/* <div className="col-lg-3 col-sm-6 col-xs-12">
               <h5>Preview item</h5>
 
             </div> */}
-          </div>
-          {openProgressPopup && (
-            <div className="checkout">
-              <CreateItemProgressPopup
-                progress={itemCreateProgress}
-                events={eventList}
-                onRetry={() => submitForm(submitData.current, () => null, true)}
-                onClose={() => setOpenProgressPopup(false)}
-                onReset={resetPage}
-              />
-            </div>
-          )}
-        </section>
+            {/* </div> */}
+            {openProgressPopup && (
+              <div className="checkout">
+                <CreateItemProgressPopup
+                  progress={itemCreateProgress}
+                  events={eventList}
+                  onRetry={() =>
+                    submitForm(submitData.current, () => null, true)
+                  }
+                  onClose={() => setOpenProgressPopup(false)}
+                  onReset={resetPage}
+                />
+              </div>
+            )}
+          </section>
+        </div>
       </div>
-    </div>
+    </CreateSingleWrapper>
   );
 };
 

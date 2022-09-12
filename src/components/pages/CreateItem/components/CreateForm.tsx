@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { createTheme } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import {
   ErrorMessage,
   Field,
@@ -17,6 +19,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
+import { BsQuestion } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import AddAttributePopup from 'src/components/components/AddAttributePopup';
 import Alert from 'src/components/components/Alert';
@@ -46,6 +49,7 @@ import { getErrorMessage, getProfileImage } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 
+import BidIcon from '../../../../assets/images/bid-icon.svg';
 import { ApiService } from '../../../../core/axios';
 
 interface IProps {
@@ -95,6 +99,7 @@ export default function CreateForm(props: IProps) {
     image,
     expirationDateInput,
     tokentype,
+    className,
     supply
   } = props;
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
@@ -227,6 +232,9 @@ export default function CreateForm(props: IProps) {
   //   }
   //   return formData
   // }
+  // switch styling
+
+  // switch styling
 
   const submitCollection = async (
     data: {
@@ -377,7 +385,11 @@ export default function CreateForm(props: IProps) {
     // }
     const collectionsComponent = (props: any) => (
       // <input className="my-custom-input" type="text" {...props} />
-      <select id="pet-select" {...props} className={` upload__file`}>
+      <select
+        id="pet-select"
+        {...props}
+        className={`form-control input__holder__single`}
+      >
         {[
           <option onClick={openCreateCollectionPopup} key={''} value={''}>
             Choose Collection
@@ -501,166 +513,205 @@ export default function CreateForm(props: IProps) {
     const getImageUrl = () => {
       return image || './img/collections/coll-item-3.jpg';
     };
+    //   const MySwitch = withStyles({
+    //     root: {
+
+    //     },
+    //     switchBase: {
+    //         // thumb when unchecked
+    //         color: "orange",
+    //         opacity: 0.8,
+    //         "&$checked": {
+    //             // thumb when checked
+    //             color: "orange",
+    //             opacity: 1,
+    //             // track when checked
+    //             "& + $track": {
+    //                 backgroundColor: "black",
+    //                 opacity: 1,
+    //             },
+    //             // The rules above override the default rules for graying
+    //             // out the thumb and track when the switch is disabled,
+    //             // so we have to add that back in ourselves
+    //             "&$disabled": {
+    //                 // gray out the thumb
+    //                 color: "#bbb",
+    //                 "& + $track": {
+    //                     // gray out the track
+    //                     backgroundColor: "#ddd"
+    //                 }
+    //             }
+    //         },
+    //     },
+    //     thumb: {
+
+    //     },
+    //     checked: {},
+    //     track: {
+    //       borderRadius: 26 / 2,
+    //       border: `1px solid gray`,
+    //       backgroundColor: 'gray',
+    //       opacity: 1,
+    //     },
+    //     disabled: {}
+    // })(Switch);
 
     return (
-      <Form
-        onSubmit={handleSubmit}
-        autoComplete="off"
-        className={'form__holder_single'}
-      >
-        <div className="spacer-30"></div>
-        <div>
-          <div className="upload-file-field">
-            <h5>
-              Image, Video, Audio, or 3D Model{' '}
-              <span className="span-red">*</span>
-            </h5>
-            <p>
-              File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
-              OGG, GLB, GLTF. <br />
-              Max size: 100MB
-            </p>
-            <div className={`d-create-file upload__file`}>
-              <div
-                className="col-lg-6 col-sm-8 col-xs-12"
-                style={{
-                  margin: 'auto',
-                  marginBottom: '5%'
-                }}
-              >
-                <PreviewNft
-                  imageUrl={getImageUrl()}
-                  userImage={getProfileImage(userDetails?.profileImage)}
-                  nft={{
-                    name,
-                    description,
-                    price,
-                    totalAmount: supply,
-                    leftAmount: supply
-                  }}
-                  tokentype={
-                    marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'
-                  }
-                  isPreview={true}
-                  multiple={supply == 1 ? false : true}
-                  timer={marketType === MARKET_TYPE.AUCTION}
-                  marketType={marketType}
-                  expirationDateInput={expirationDateInput}
-                />
-              </div>
-              <div className="browse">
-                <input
-                  type="button"
-                  id="get_file"
-                  className={`btn-main btn_gradient`}
-                  value={image.length == 0 ? 'Choose File' : 'Change File'}
-                />
-                <input
-                  id="upload_file"
-                  type="file"
-                  multiple
-                  onChange={onChangeImage}
-                />
-                {/* <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p> */}
-              </div>
-            </div>
-          </div>
-          <div className="spacer-50"></div>
+      <>
+        <div className="row">
+          <div className="col-lg-7 create-single-left  mb-5">
+            <Form
+              onSubmit={handleSubmit}
+              autoComplete="off"
+              className={'form__holder_single'}
+            >
+              <div>
+                <div className="upload-file-field">
+                  <h5>
+                    Upload File {/* <span className="span-red">*</span> */}
+                  </h5>
+                  {/* <p>
+                    File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
+                    OGG, GLB, GLTF. <br />
+                    Max size: 100MB
+                  </p> */}
+                  <div className={`d-create-file upload__file`}>
+                    <div
+                      className="col-lg-6 col-sm-8 col-xs-12"
+                      style={{
+                        margin: 'auto',
+                        marginBottom: '5%'
+                      }}
+                    ></div>
+                    <div className="browse">
+                      <input
+                        type="button"
+                        id="get_file"
+                        className={`btn-main btn_gradient`}
+                        value={
+                          image.length == 0 ? 'Choose File' : 'Change File'
+                        }
+                      />
+                      <input
+                        id="upload_file"
+                        type="file"
+                        multiple
+                        onChange={onChangeImage}
+                      />
+                      <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
+                    </div>
+                  </div>
+                </div>
 
-          <div className="form-cfield">
-            <h5>
-              Name <span className="span-red">*</span>
-            </h5>
-            <Field
-              type="text"
-              name="name"
-              id="item_name"
-              className={`form-control input__holder__single`}
-              placeholder={'Enter Name'}
-              onChange={onChangeName}
-            />
-            <ErrorMessage name="name">
-              {(msg) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-
-            {/* <div className="spacer-50"></div> */}
-          </div>
-          <div className="form-cfield">
-            <h5>
-              Description <span className="span-red">*</span>
-            </h5>
-            <p>
-              The description will be included on the item's detail page
-              underneath its image.
-            </p>
-            <Field
-              type="text"
-              name="description"
-              id="item_Description"
-              className={`form-control input__holder__single`}
-              placeholder={'Enter Description'}
-              onChange={onChangeDescription}
-            />
-            <ErrorMessage name="description">
-              {(msg: string) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-          </div>
-
-          <div className="form-cfield">
-            <h5>External link</h5>
-            <p>
-              NFTonPulse will include a link to this URL on this item's detail
-              page, so that users can click to learn more about it. You are
-              welcome to link to your own webpage with more details.
-            </p>
-            <Field
-              type="text"
-              name="externalLink"
-              id="item_externalLink"
-              className={`form-control input__holder__single`}
-              placeholder={'https://yoursite.io/item/123'}
-              onChange={onChangeExternalLink}
-            />
-            <ErrorMessage name="externalLink">
-              {(msg: string) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-          </div>
-
-          <div className="form-cfield">
-            <div style={{ display: 'flex' }}>
-              {collectionsState.myCollections.data.length > 0 && (
-                <div style={{ marginRight: 50 }}>
-                  <h5>Choose collection</h5>
-                  <p className="p-info">
-                    This is the collection where your item will appear.
-                  </p>
-
-                  <Field
-                    name="collectionId"
-                    as={collectionsComponent}
-                    placeholder="Select Collection"
-                    className={`form-control input__holder__single`}
-                  />
-                  <ErrorMessage name="collectionId">
+                <div className="form-cfield">
+                  <h5 className="d-none">
+                    Name <span className="span-red">*</span>
+                  </h5>
+                  <div className="input-container input-icon-container">
+                    <Field
+                      type="text"
+                      name="name"
+                      id="item_name"
+                      className={`form-control input__holder__single`}
+                      placeholder={'e.g. “ Name your NFT”'}
+                      onChange={onChangeName}
+                    />
+                    <BsQuestion className="cursor-pointer input-icon help-icon" />
+                  </div>
+                  <ErrorMessage name="name">
                     {(msg) => <div className="error-form">{msg}</div>}
                   </ErrorMessage>
+
+                  {/* <div className="spacer-50"></div> */}
                 </div>
-              )}
-              <div className="add-collection-field">
-                <h5>Add a new Collection</h5>
-                <button
-                  type="button"
-                  className="create-collection"
-                  onClick={openCreateCollectionPopup}
-                >
-                  <span>
-                    <strong>
-                      <i>+</i>
-                      Create
-                    </strong>
-                  </span>
-                </button>
-                {/* <div>
+                <div className="form-cfield">
+                  <h5 className="form-label d-none">Description</h5>
+                  <p className="sublabel d-none">
+                    The description will be included on the item's detail page
+                    underneath its image.
+                  </p>
+                  <div className="input-container input-icon-container">
+                    <Field
+                      type="text"
+                      name="description"
+                      id="item_Description"
+                      className={`form-control input__holder__single`}
+                      placeholder={'e.g. “ Describe your NFT ”'}
+                      onChange={onChangeDescription}
+                      as="textarea"
+                    />
+                    <BsQuestion className="cursor-pointer input-icon help-icon" />
+                  </div>
+                  <ErrorMessage name="description">
+                    {(msg: string) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                </div>
+                <div className="form-cfield">
+                  <h5 className="form-label label-sub label-icon">
+                    External link
+                    <BsQuestion className="cursor-pointer help-icon" />
+                  </h5>
+                  <p className="sublabel">
+                    NFTonPulse will include a link to this URL on this item's
+                    detail page, so that users can click to learn more about it.
+                    You are welcome to link to your own webpage with more
+                    details.
+                  </p>
+                  <Field
+                    type="text"
+                    name="externalLink"
+                    id="item_externalLink"
+                    className={`form-control input__holder__single`}
+                    placeholder={'https://yoursite.io/item/123'}
+                    onChange={onChangeExternalLink}
+                  />
+                  <ErrorMessage name="externalLink">
+                    {(msg: string) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                </div>
+
+                <div className="form-cfield">
+                  <div>
+                    {collectionsState.myCollections.data.length > 0 && (
+                      <div>
+                        <h5 className="form-label label-icon">
+                          Collection
+                          <BsQuestion className="cursor-pointer help-icon" />
+                        </h5>
+                        <p className="p-info d-none">
+                          This is the collection where your item will appear.
+                        </p>
+
+                        <Field
+                          name="collectionId"
+                          as={collectionsComponent}
+                          placeholder="Select Collection"
+                          className={`form-control input__holder__single`}
+                        />
+                        <ErrorMessage name="collectionId">
+                          {(msg) => <div className="error-form">{msg}</div>}
+                        </ErrorMessage>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="spacer-50"></div> */}
+                </div>
+                <div className="form-cfield">
+                  <div className="add-collection-field">
+                    <h5>Add a new Collection</h5>
+                    <button
+                      type="button"
+                      className="create-collection"
+                      onClick={openCreateCollectionPopup}
+                    >
+                      <span>
+                        <strong>
+                          <i>+</i>
+                          Create
+                        </strong>
+                      </span>
+                    </button>
+                    {/* <div>
                     {collectionsState.myCollections.data.map(item =>
                         <button className={`create-collection`}
                         style={{ backgroundColor: selectedCollectionId === item._id ? 'red' : '' }}
@@ -670,310 +721,365 @@ export default function CreateForm(props: IProps) {
                         </button>
                         )}
                     </div> */}
-              </div>
-            </div>
-            {/* <div className="spacer-50"></div> */}
-          </div>
-
-          <div>
-            <h5>Add Properties</h5>
-            <div className="form-cfield form-ccfield">
-              <div className="row align-items-center">
-                <div className="col-md-8">
-                  <p className="sublabel">
-                    Textual traits that show up as rectangles
-                  </p>
+                  </div>
                 </div>
-                <div className="col-md-4 text-right">
-                  <button
-                    type="button"
-                    className="btn-main btn-add"
-                    onClick={() => setAddAttributeVisible(true)}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
 
-              <div className="property-fields">
-                <FieldArray
-                  name="attributes"
-                  render={(arrayHelpers) => {
-                    attrHelper = arrayHelpers;
-                    return (
-                      <div>
-                        {values.attributes.map(
-                          (attribute: INftAttribute, index: number) => (
-                            <Row key={index} className="mb-2">
-                              <span className="form-label">
-                                {attribute.display_type.toUpperCase()}:{' '}
-                              </span>
-                              <Col md="5" className="pr-2">
-                                <Field
-                                  placeholder="Name"
-                                  value={attribute.trait_type}
-                                  name={`attributes.${index}.trait_type`}
-                                  className={`form-control input__holder__single`}
-                                />
-                                <ErrorMessage
-                                  name={`attributes.${index}.trait_type`}
-                                >
-                                  {(msg) => (
-                                    <div className="error-form">{msg}</div>
-                                  )}
-                                </ErrorMessage>
-                              </Col>
-                              <Col md="5" className="pr-2">
-                                {getNftAttrValueInput(attribute, index)}
-                              </Col>
-                              <Col md="2" lg="1" className="text-center">
-                                <button
-                                  type="button"
-                                  className="btn-main btn-remove"
-                                  onClick={() => arrayHelpers.remove(index)}
-                                >
-                                  <i className="fa fa-trash"></i>
-                                </button>
-                              </Col>
-                              <Col md="12" className="property-info-box">
-                                <NftAttribute {...attribute} />
-                              </Col>
-                              <div className="spacer-20" />
-                            </Row>
-                          )
-                        )}
+                <div>
+                  <h5 className="form-label label-icon">
+                    Add Properties
+                    <BsQuestion className="cursor-pointer help-icon" />
+                  </h5>
+                  <div className="form-cfield form-ccfield">
+                    <div className="row align-items-center">
+                      <div className="col-md-8">
+                        <p className="sublabel">
+                          Textual traits that show up as rectangles
+                        </p>
                       </div>
-                    );
-                  }}
-                />
+                      <div className="col-md-4 text-right">
+                        <button
+                          type="button"
+                          className="btn-main btn-add"
+                          onClick={() => setAddAttributeVisible(true)}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="property-fields">
+                      <FieldArray
+                        name="attributes"
+                        render={(arrayHelpers) => {
+                          attrHelper = arrayHelpers;
+                          return (
+                            <div>
+                              {values.attributes.map(
+                                (attribute: INftAttribute, index: number) => (
+                                  <Row key={index} className="mb-2">
+                                    <span className="form-label">
+                                      {attribute.display_type.toUpperCase()}:{' '}
+                                    </span>
+                                    <Col md="5" className="pr-2">
+                                      <Field
+                                        placeholder="Name"
+                                        value={attribute.trait_type}
+                                        name={`attributes.${index}.trait_type`}
+                                        className={`form-control input__holder__single`}
+                                      />
+                                      <ErrorMessage
+                                        name={`attributes.${index}.trait_type`}
+                                      >
+                                        {(msg) => (
+                                          <div className="error-form">
+                                            {msg}
+                                          </div>
+                                        )}
+                                      </ErrorMessage>
+                                    </Col>
+                                    <Col md="5" className="pr-2">
+                                      {getNftAttrValueInput(attribute, index)}
+                                    </Col>
+                                    <Col md="2" lg="1" className="text-center">
+                                      <button
+                                        type="button"
+                                        className="btn-main btn-remove"
+                                        onClick={() =>
+                                          arrayHelpers.remove(index)
+                                        }
+                                      >
+                                        <i className="fa fa-trash"></i>
+                                      </button>
+                                    </Col>
+                                    <Col md="12" className="property-info-box">
+                                      <NftAttribute {...attribute} />
+                                    </Col>
+                                    <div className="spacer-20" />
+                                  </Row>
+                                )
+                              )}
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-cfield">
+                  <h5 className="form-label label-icon">
+                    Category
+                    <BsQuestion className="cursor-pointer help-icon" />
+                  </h5>
+                  <Field
+                    as="select"
+                    name="category"
+                    className={`form-control input__holder__single`}
+                  >
+                    <option key={''} value={''}>
+                      {' '}
+                      Choose Category
+                    </option>
+                    {categories.map((category, index) => (
+                      <option value={category.value} key={index}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage name="category">
+                    {(msg: string) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                  {/* <div className="spacer-20"></div> */}
+                </div>
+
+                <div className="form-cfield form-ccfield sensative-content">
+                  <div className="row align-items-center">
+                    <div className="col-md-8">
+                      <h5>
+                        <i
+                          className="fa fa-exclamation-triangle"
+                          aria-hidden="true"
+                        ></i>
+                        Explicit & Sensitive Content
+                      </h5>
+                      <p className="sublabel">
+                        Set this item as explicit and sensitive
+                        content&nbsp;&nbsp;
+                        <i className="fa fa-info-circle" aria-hidden="true"></i>
+                      </p>
+                    </div>
+                    <div className="col-md-4 text-right">
+                      <Field
+                        type="checkbox"
+                        name="explicit"
+                        component={Switch}
+                        size="large"
+                        onChange={onChangeExplicit}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="spacer-20"></div>
+                <h2>List on marketplace</h2>
+                <p>Put your new NFT on NFTonPulse marketplace</p>
+                <div className="spacer-20"></div>
+
+                <div className="form-cfield">
+                  <h5>
+                    Supply <span className="span-red d-none">*</span>
+                  </h5>
+                  {/* <p>The number of items that can be minted. No gas cost to you!</p> */}
+                  <Field
+                    type="number"
+                    name="supply"
+                    id="item_supply"
+                    className="form-control input__holder__single"
+                    placeholder="Enter supply"
+                    onChange={onChangeSupply}
+                    onWheel={(e) => e.target.blur()}
+                    min="1"
+                    step="1"
+                  />
+                  <ErrorMessage name="supply">
+                    {(msg) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+
+                  <div className="spacer-20"></div>
+                </div>
+
+                <div className="de_tab tab_methods marketplace-tabs">
+                  <ul className={'de_nav dynamic-tab-buttons'}>
+                    <li
+                      id="btn1"
+                      className={
+                        marketType === MARKET_TYPE.SIMPLE ? 'active' : ''
+                      }
+                      onClick={() => onTab(MARKET_TYPE.SIMPLE)}
+                    >
+                      <span className={`bg__market`}>
+                        <strong>
+                          <i>
+                            <img src="./img/tab-img1.png" />
+                          </i>
+                          Fixed price
+                        </strong>
+                      </span>
+                    </li>
+                    <li
+                      id="btn2"
+                      className={
+                        isSingle
+                          ? marketType === MARKET_TYPE.AUCTION
+                            ? 'active'
+                            : ''
+                          : 'li-disable'
+                      }
+                      onClick={() => onTab(MARKET_TYPE.AUCTION)}
+                    >
+                      <span>
+                        <strong className={isSingle ? '' : 'strong-opacity'}>
+                          <i>
+                            <img src="./img/tab-img2.png" alt="tab-img" />
+                          </i>
+                          Timed auction
+                        </strong>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="spacer-20" />
+
+                {marketType === MARKET_TYPE.SIMPLE && (
+                  <div className="form-cfield">
+                    <h5>Price</h5>
+                    <Field
+                      type="number"
+                      name="price"
+                      id="item_price"
+                      className={`form-control input__holder__single`}
+                      placeholder={`Enter price for one item (${COIN})`}
+                      onChange={onChangePrice}
+                      onWheel={(e) => e.target.blur()}
+                    />
+                    <ErrorMessage name="price">
+                      {(msg) => <div className="error-form">{msg}</div>}
+                    </ErrorMessage>
+                    {/* <div className="spacer-20"></div> */}
+                  </div>
+                )}
+
+                {/* <div className="spacer-20"></div> */}
+
+                {marketType === MARKET_TYPE.AUCTION && (
+                  <div className="form-cfield">
+                    <h5 className="form-label label-sub label-icon">
+                      Minimum bid
+                      <BsQuestion className="cursor-pointer help-icon" />
+                    </h5>
+                    <p className="sublabel">
+                      Bids below this amount bids won’t be allowed.
+                    </p>
+                    <div className="row">
+                      <div className="col-9">
+                        <div className="input-container input-icon-container">
+                          <Field
+                            type="text"
+                            name="minimumBid"
+                            id="item_price_bid"
+                            className={`form-control input__holder__single`}
+                            placeholder="Enter minimum bid"
+                          />
+                          <img
+                            src={BidIcon}
+                            className="input-icon crypto-icon"
+                            alt="bid icon"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-3">
+                        <Field
+                          name="pricetokentype"
+                          as={pricetokenSelectComponent}
+                          placeholder="PriceTokenType"
+                          className={`form-control input__holder__single`}
+                          onChange={onChangePriceTokenType}
+                        />
+                      </div>
+                    </div>
+                    <ErrorMessage name="minimumBid">
+                      {(msg) => <div className="error-form">{msg}</div>}
+                    </ErrorMessage>
+
+                    {/* <div className="spacer-10"></div> */}
+                  </div>
+                )}
+
+                {marketType === MARKET_TYPE.AUCTION && (
+                  <div className="form-cfield">
+                    <h5 className="form-label label-sub label-icon">
+                      Expiration date
+                      <BsQuestion className="cursor-pointer help-icon" />
+                    </h5>
+                    <p className="sublabel">
+                      Bids below this amount won’t be allowed.
+                    </p>
+
+                    <Field
+                      type="datetime-local"
+                      name="expirationDate"
+                      id="bid_expiration_date"
+                      className={`form-control input__holder__single`}
+                      onChange={onChangeExpirationDateInput}
+                      min={moment().add(1, 'hours')}
+                    />
+                    <ErrorMessage name="expirationDate">
+                      {(msg) => <div className="error-form">{msg}</div>}
+                    </ErrorMessage>
+                  </div>
+                )}
+                <div className="form-cfield">
+                  <h5 className="form-label label-icon">
+                    Royalties
+                    <BsQuestion className="cursor-pointer help-icon" />
+                  </h5>
+                  <Field
+                    name="royalties"
+                    as={royaltiesComponent}
+                    placeholder="First Name"
+                    className={`form-control input__holder__single`}
+                  />
+                  <ErrorMessage name="royalties">
+                    {(msg) => <div className="error-form">{msg}</div>}
+                  </ErrorMessage>
+                </div>
+                <div className="spacer-20"></div>
+                {submitCreateState.loading ? (
+                  <Loader />
+                ) : (
+                  <input
+                    type="submit"
+                    id="submit"
+                    className="btn-main btn-main-submit"
+                    value="Create Nft"
+                  />
+                )}
+                <div className="spacer-20"></div>
+                {submitCreateState.error && (
+                  <Alert
+                    text={submitCreateState.error}
+                    type={ALERT_TYPE.DANGER}
+                  />
+                )}
               </div>
-            </div>
+            </Form>
           </div>
-
-          <div className="form-cfield">
-            <h5>Category</h5>
-            <Field
-              as="select"
-              name="category"
-              className={`form-control input__holder__single`}
-            >
-              <option key={''} value={''}>
-                {' '}
-                Choose Category
-              </option>
-              {categories.map((category, index) => (
-                <option value={category.value} key={index}>
-                  {category.name}
-                </option>
-              ))}
-            </Field>
-            <ErrorMessage name="category">
-              {(msg: string) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-            {/* <div className="spacer-20"></div> */}
-          </div>
-
-          <div className="form-cfield form-ccfield">
-            <div className="row align-items-center">
-              <div className="col-md-8">
-                <h5>
-                  <i
-                    className="fa fa-exclamation-triangle"
-                    aria-hidden="true"
-                  ></i>
-                  &nbsp;&nbsp;Explicit & Sensitive Content
-                </h5>
-                <p className="sublabel">
-                  Set this item as explicit and sensitive content&nbsp;&nbsp;
-                  <i className="fa fa-info-circle" aria-hidden="true"></i>
-                </p>
-              </div>
-              <div className="col-md-4 text-right">
-                <Field
-                  type="checkbox"
-                  name="explicit"
-                  component={Switch}
-                  onChange={onChangeExplicit}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="spacer-20"></div>
-          <h2>List on marketplace</h2>
-          <p>Put your new NFT on NFTonPulse marketplace</p>
-          <div className="spacer-20"></div>
-
-          <div className="form-cfield">
-            <h5>
-              Supply <span className="span-red">*</span>
-            </h5>
-            <p>The number of items that can be minted. No gas cost to you!</p>
-            <Field
-              type="number"
-              name="supply"
-              id="item_supply"
-              className="form-control input__holder__single"
-              placeholder="Enter supply"
-              onChange={onChangeSupply}
-              onWheel={(e) => e.target.blur()}
-              min="1"
-              step="1"
-            />
-            <ErrorMessage name="supply">
-              {(msg) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-
-            <div className="spacer-20"></div>
-          </div>
-
-          <div className="de_tab tab_methods marketplace-tabs">
-            <ul className={'de_nav dynamic-tab-buttons'}>
-              <li
-                id="btn1"
-                className={marketType === MARKET_TYPE.SIMPLE ? 'active' : ''}
-                onClick={() => onTab(MARKET_TYPE.SIMPLE)}
-              >
-                <span className={`bg__market`}>
-                  <strong>
-                    <i>
-                      <img src="./img/tab-img1.png" />
-                    </i>
-                    Fixed price
-                  </strong>
-                </span>
-              </li>
-              <li
-                id="btn2"
-                className={
-                  isSingle
-                    ? marketType === MARKET_TYPE.AUCTION
-                      ? 'active'
-                      : ''
-                    : 'li-disable'
+          <div className="col-lg-5 col-sm-6 col-xs-12 preview-nft-col">
+            <div className="createsingle-imagemain">
+              <PreviewNft
+                imageUrl={getImageUrl()}
+                userImage={getProfileImage(userDetails?.profileImage)}
+                nft={{
+                  name,
+                  description,
+                  price,
+                  totalAmount: supply,
+                  leftAmount: supply
+                }}
+                tokentype={
+                  marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'
                 }
-                onClick={() => onTab(MARKET_TYPE.AUCTION)}
-              >
-                <span>
-                  <strong className={isSingle ? '' : 'strong-opacity'}>
-                    <i>
-                      <img src="./img/tab-img2.png" alt="tab-img" />
-                    </i>
-                    Timed auction
-                  </strong>
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="spacer-20" />
-
-          {marketType === MARKET_TYPE.SIMPLE && (
-            <div className="form-cfield">
-              <h5>Price</h5>
-              <Field
-                type="number"
-                name="price"
-                id="item_price"
-                className={`form-control input__holder__single`}
-                placeholder={`Enter price for one item (${COIN})`}
-                onChange={onChangePrice}
-                onWheel={(e) => e.target.blur()}
+                isPreview={true}
+                multiple={supply == 1 ? false : true}
+                timer={marketType === MARKET_TYPE.AUCTION}
+                marketType={marketType}
+                expirationDateInput={expirationDateInput}
               />
-              <ErrorMessage name="price">
-                {(msg) => <div className="error-form">{msg}</div>}
-              </ErrorMessage>
-              {/* <div className="spacer-20"></div> */}
             </div>
-          )}
-
-          <div className="form-cfield">
-            <h5>Royalties</h5>
-            <Field
-              name="royalties"
-              as={royaltiesComponent}
-              placeholder="First Name"
-              className={`form-control input__holder__single`}
-            />
-            <span className="suggession-box">
-              Suggested: 0%, 10%, 20%, 30%. Maximum is 50%
-            </span>
-            <ErrorMessage name="royalties">
-              {(msg) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
           </div>
-
-          {/* <div className="spacer-20"></div> */}
-
-          {marketType === MARKET_TYPE.AUCTION && (
-            <div className="form-cfield">
-              <h5>Minimum bid</h5>
-
-              <div className="row">
-                <div className="col-9">
-                  <Field
-                    type="text"
-                    name="minimumBid"
-                    id="item_price_bid"
-                    className={`form-control input__holder__single`}
-                    placeholder="Enter minimum bid"
-                  />
-                  <span className="suggession-box">
-                    Bids below this amount won’t be allowed.
-                  </span>
-                </div>
-                <div className="col-3">
-                  <Field
-                    name="pricetokentype"
-                    as={pricetokenSelectComponent}
-                    placeholder="PriceTokenType"
-                    className={`form-control input__holder__single`}
-                    onChange={onChangePriceTokenType}
-                  />
-                </div>
-              </div>
-              <ErrorMessage name="minimumBid">
-                {(msg) => <div className="error-form">{msg}</div>}
-              </ErrorMessage>
-
-              {/* <div className="spacer-10"></div> */}
-            </div>
-          )}
-
-          {/* {marketType === MARKET_TYPE.AUCTION && ( */}
-          <div className="form-cfield">
-            <h5>Expiration date</h5>
-
-            <Field
-              type="datetime-local"
-              name="expirationDate"
-              id="bid_expiration_date"
-              className={`form-control input__holder__single`}
-              onChange={onChangeExpirationDateInput}
-              min={moment().add(1, 'hours')}
-            />
-            <ErrorMessage name="expirationDate">
-              {(msg) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-          </div>
-          {/* )} */}
-          <div className="spacer-20"></div>
-          {submitCreateState.loading ? (
-            <Loader />
-          ) : (
-            <input
-              type="submit"
-              id="submit"
-              className="btn-main btn-main-submit"
-              value="Create Nft"
-            />
-          )}
-          <div className="spacer-20"></div>
-          {submitCreateState.error && (
-            <Alert text={submitCreateState.error} type={ALERT_TYPE.DANGER} />
-          )}
         </div>
-      </Form>
+      </>
     );
   };
 

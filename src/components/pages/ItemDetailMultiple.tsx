@@ -37,10 +37,10 @@ import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
 import Footer from '../components/footer';
+import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import { renderAttributes } from '../components/NftAttributes';
 import OwnerAndQuantity from '../components/OwnerAndQuantity';
 import SellPopUp from '../components/SellPopUp';
-import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import UserAvatar from '../components/UserAvatar';
 
 enum TAB_TYPE {

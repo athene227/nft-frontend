@@ -10,12 +10,12 @@ import {
   ALERT_TYPE,
   COIN,
   ERRORS,
+  MARKET_CONTRACT_EVENTS,
   MARKET_TYPE,
   PROCESS_TRAKING_ACTION,
   PROCESS_TRAKING_STATUS,
   SELECTED_NETWORK,
-  STATUS,
-  MARKET_CONTRACT_EVENTS
+  STATUS
 } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 import notification from 'src/services/notification';
@@ -38,6 +38,7 @@ import {
   getAuctionMarketItem,
   getErrorMessage,
   getMyBalance,
+  getMyTokenBalance,
   getNetworkId,
   getPriceAfterPercent,
   getProfileImage,
@@ -47,15 +48,15 @@ import {
 
 import { fetchNftDetail } from '../../store/actions/thunks/nfts';
 import * as selectors from '../../store/selectors';
+import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
-import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
 import Clock from '../components/Clock/Clock';
 import Footer from '../components/footer';
+import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import { renderAttributes } from '../components/NftAttributes';
 import PlaceBidPopUp from '../components/PlaceBidPopUp';
-import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';
 import UserAvatar from '../components/UserAvatar';
 import BanrLayer from './../pages/Home/components/landing/bannerLayer';
@@ -63,6 +64,7 @@ import BanrLayer from './../pages/Home/components/landing/bannerLayer';
 enum TAB_TYPE {
   BIDS = 'BIDS',
   HISTORY = 'HISTORY',
+  DETAILS = 'DETAILS',
   OFFERS = 'OFFERS'
 }
 
@@ -337,6 +339,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         console.log('*********fetchNftHistory************');
         fetchNftHistory();
       }
+      if (tabType === TAB_TYPE.DETAILS) {
+        console.log('*********fetchNftDetails************');
+        // fetchNftHistory();
+      }
       if (tabType === TAB_TYPE.OFFERS) {
         console.log('*********fetchNftOffers************');
         fetchNftOffers();
@@ -605,10 +611,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
 
       //* checks
-      const myBalanceinWei = await getMyBalance(userAddress, web3);
+      const myBalanceinWei = await getMyTokenBalance(
+        userAddress,
+        data.pricetokenaddress,
+        web3
+      );
       const offerInWei = web3.utils.toWei(data.price.toString(), 'ether');
       const offerWithCommissionWeiValue =
         Number(offerInWei) + getPriceAfterPercent(Number(offerInWei), 1);
+      console.log(myBalanceinWei, offerWithCommissionWeiValue);
       if (Number(myBalanceinWei) < offerWithCommissionWeiValue) {
         notification.error(ERRORS.NOT_ENOUGH_BALANCE);
         throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
@@ -1048,6 +1059,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
   //
+
   const renderBuyButtons = () => {
     if (!nft) return;
     return (
@@ -1273,6 +1285,15 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
+  const renderNftDetails = () => {
+    return (
+      <div className="tab-1 onStep fadeIn">
+        {/* {renderBuyButtons()} */}
+        <div className="detail_properties">{renderAttributes(nft)}</div>
+      </div>
+    );
+  };
+
   const renderCancelButton = () => {
     if (!nft) return;
     if (nft.ownerAddress === userAddress && nft.status === STATUS.ON_SELL) {
@@ -1324,6 +1345,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             <div className="nft-detail-image">
               <img
                 src={getImage(nft?.imageUrl)}
+                style={{
+                  width: '100%'
+                }}
                 className="img-fluid img-rounded mb-sm-30"
                 alt=""
                 loading="lazy"
@@ -1375,6 +1399,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <p>{nft?.description}</p>
               </div>
               <div className="item_detail_content">
+                {/* {nft?.creator[0]?.username && (
+                  <div style={{}}>
+                    <p>
+                      Created by: <strong>{nft?.creator[0].username}</strong>
+                    </p>
+                  </div>
+                )} */}
                 {nft?.nftCollection?.length > 0 && (
                   <div style={{}}>
                     <p>
@@ -1407,66 +1438,89 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                     </p>
                   )}
 
-                {renderBuyButtons()}
-                <h6>Creator</h6>
-                <div
-                  className="item_author"
-                  onClick={() =>
-                    navigateToUserPage(
-                      nft?.creator[0]?.publicAddress || nft?.creatorAddress
-                    )
-                  }
-                >
-                  <div className="author_list_pp">
-                    <span>
-                      <UserAvatar
-                        className="lazy"
-                        image={nft?.creator[0]?.profileImage}
-                        userAddress={nft?.creator[0]?.publicAddress}
-                        blockSize={5}
-                        size={50}
-                      />
-                      <i className="fa fa-check"></i>
-                    </span>
-                  </div>
-                  {nft?.creator[0]?.username && (
-                    <div className="author_list_info">
-                      <span>{nft?.creator[0].username}</span>
-                    </div>
+                {/*
+                {nft.price > 0 && (
+                  <p className="item_detail_price">
+                    <i>
+                      <img src="./../../img/icon/price-pulse.png" />
+                    </i>{' '}
+                    <strong>
+                      {nft.price} {COIN}
+                    </strong>
+                  </p>
+                )} */}
+                {nft.marketType === MARKET_TYPE.AUCTION &&
+                  nft?.status === STATUS.ON_SELL && (
+                    <p>
+                      Minimum bid:{' '}
+                      <strong>
+                        {nft?.minimumBid} {nft?.priceToken[0]?.name || COIN}
+                      </strong>
+                    </p>
                   )}
+
+                <div className="row author-details align-items-center">
+                  <div className="col-lg-6">
+                    <div
+                      className="item_author d-flex align-items-center"
+                      onClick={() =>
+                        navigateToUserPage(
+                          nft?.creator[0]?.publicAddress || nft?.creatorAddress
+                        )
+                      }
+                    >
+                      <div className="author_list_pp">
+                        <span>
+                          <UserAvatar
+                            className="lazy"
+                            image={nft?.creator[0]?.profileImage}
+                            userAddress={nft?.creator[0]?.publicAddress}
+                            blockSize={5}
+                            size={50}
+                          />
+                          <i className="fa fa-check"></i>
+                        </span>
+                      </div>
+                      <div className="author_list_info">
+                        <h6>Creator</h6>
+                        {nft?.creator[0]?.username && (
+                          <span>{nft?.creator[0].username}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div
+                      className="item_author d-flex align-items-center"
+                      onClick={() =>
+                        navigateToUserPage(
+                          nft?.owner[0]?.publicAddress || nft?.ownerAddress
+                        )
+                      }
+                    >
+                      <div className="author_list_pp">
+                        <span>
+                          <UserAvatar
+                            className="lazy"
+                            image={nft?.owner[0]?.profileImage}
+                            userAddress={nft?.owner[0]?.publicAddress}
+                            blockSize={5}
+                            size={50}
+                          />
+                          <i className="fa fa-check"></i>
+                        </span>
+                      </div>
+                      <div className="author_list_info">
+                        <h6>Owner</h6>
+                        {nft?.owner[0]?.username && (
+                          <span>{nft?.owner[0]?.username}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {renderTimeClock()}
                 </div>
 
-                <div className="spacer-20"></div>
-                <div className="spacer-40"></div>
-                <h6>Owner</h6>
-                <div
-                  className="item_author"
-                  onClick={() =>
-                    navigateToUserPage(
-                      nft?.owner[0]?.publicAddress || nft?.ownerAddress
-                    )
-                  }
-                >
-                  <div className="author_list_pp">
-                    <span>
-                      <UserAvatar
-                        className="lazy"
-                        image={nft?.owner[0]?.profileImage}
-                        userAddress={nft?.owner[0]?.publicAddress}
-                        blockSize={5}
-                        size={50}
-                      />
-                      <i className="fa fa-check"></i>
-                    </span>
-                  </div>
-                  {nft?.owner[0]?.username && (
-                    <div className="author_list_info">
-                      <span>{nft?.owner[0]?.username}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="spacer-40"></div>
-                {renderAttributes(nft)}
                 <div className="spacer-40"></div>
                 {nft?.ownerAddress === userAddress &&
                   nft?.status !== STATUS.ON_SELL && (
@@ -1506,16 +1560,28 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                         Offers
                       </span>
                     </li>
+
+                    <li
+                      id="Mainbtn1"
+                      className={tabType === TAB_TYPE.DETAILS ? 'active' : ''}
+                    >
+                      <span onClick={() => pressTab(TAB_TYPE.DETAILS)}>
+                        Details
+                      </span>
+                    </li>
                   </ul>
 
                   <div className="de_tab_content">
                     {tabType === TAB_TYPE.BIDS && renderBids()}
                     {tabType === TAB_TYPE.HISTORY && renderNftHistory()}
                     {tabType === TAB_TYPE.OFFERS && renderOffers()}
+
+                    {tabType === TAB_TYPE.DETAILS && renderNftDetails()}
+                    {/* && renderAttributes(nft) */}
                   </div>
                 </div>
                 <div className="ssf"></div>
-                {renderTimeClock()}
+                {/* {renderTimeClock()} */}
                 <div className="detail_button">
                   {renderCancelButton()}
                   {renderBuyButtons()}

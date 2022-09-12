@@ -2,6 +2,10 @@ import liveAuctionbg from './images/liveauction-bg.png';
 import image from './images/snake.svg';
 import imageLight from './images/snake-light.svg';
 
+// create option 
+import bgDark from '../../assets/images/bg-radius.png';
+import bgLight from '../../assets/images/bg-radius-light.png';
+
 const bgPrimaryColor = '#ffffff';
 const white = '#ffffff';
 const black = '#111';
@@ -15,7 +19,7 @@ const blackSoft = '#333';
 const blackCol = '#2e333c';
 const blackLit = '#0e1e45';
 const blackMore = '#0f0f0f';
-const blue = '#0084fe';
+const blue = '#0084fe'
 // const pink_soft = "#fe00c7";
 const pinkCol = '#d61f8b';
 // const color = "#FE00C7";
@@ -46,6 +50,7 @@ const gradient1 =
   'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)';
 const gradient2 =
   'linear-gradient(90deg, rgba(254, 0, 199, 0.2) 0%, rgba(0, 132, 254, 0.2) 103.82%)';
+const nftattrgrad = 'linear-gradient(180deg, rgba(254, 0, 199, 0.07) 0%, rgba(0, 132, 254, 0.07) 100%)';
 const gradient3 = 'linear-gradient(to left, #d61f8b, #fc202c)';
 const gradient4 = 'linear-gradient(to bottom, #d61f8b, #fc202c)';
 // const gradient-color1 = "#fe00c7;
@@ -60,8 +65,10 @@ const btnBoxshadowdark = '#0e1e45';
 const newItemBg =
   'linear-gradient(90deg, rgba(244, 5, 201, 0.07) -1.88%, rgba(57, 147, 255, 0.07) 129.09%)';
 const boxShadow = 'rgba(4, 15, 37, 0.2)';
+const newItemBgsec = '#06132d';
 const itemPriceColor = '#0084FE';
 const itemBorderColor = '#282a53';
+
 const hotCollectionBg = '#131437';
 
 const light = {
@@ -76,6 +83,7 @@ const light = {
     'light-gray': lightGray,
     darkBlack: darkBlack,
     general: textLight,
+    generalWhite: white,
     khaki: khaki,
     black_soft: blackSoft,
     black_col: blackCol,
@@ -100,7 +108,7 @@ const light = {
     'search-bg-light': searchBgLight,
     'text-light': textLight,
     'text-btn-light': textBtnLight,
-    // 'text-heading-light': textHeadingLight,
+    'text-heading-light': textHeadingLight,
     navBg: 'rgba(241, 251, 255, 0.8)',
     navColor: darkBlack,
     navsticky: navstickyLight,
@@ -118,6 +126,7 @@ const light = {
     gradient3toBottom: gradient4,
     // variables from news items
     new__item_bg: white,
+    new__item_bgsec: white,
     box_shadow: boxShadow,
     item__price_color: itemPriceColor,
     item__border_color: itemBorderColor,
@@ -132,6 +141,7 @@ const light = {
     swiper_btn_stroke: white,
     swiper_btn_path: '#0e1e45',
     form_control_bg: white,
+    form_social_bg: backgroundLight,
     'stats-bg': '#12121280',
     'live-bg-shadow': '#040f2526',
     'live-bg-color': '#ffffff',
@@ -141,10 +151,30 @@ const light = {
     'top-collection-image': 'none!important',
     footerBg: '#f7f8ff',
     // Create Option Page
-    'create-single-bg': backgroundLight,
+    // 'create-single-bg': backgroundLight,
     'hot-collection-bg': white,
     'hot-collection-bx': '10px 10px 20px #dbe6fd',
     'hot-collection-contentbg': 'rgba(0, 0, 0, 0.1)',
+
+    // create single page
+    'input-holder-bg': white,
+    'input-holder-border': '#dadada',
+    'input-holder-focus': backgroundLight,
+    'tab-bg': '#b9bad1',
+    'tab-bg2': '#ffffff',
+    'tab-bx': '0px 0px 20px 5px #cacaca inset',
+    'tab-color': '#121435',
+    'nft-attr-bg': backgroundLight,
+    'nft-attr-bg2': white,
+    'nft-attr-bx': '0px 0px 20px rgba(0, 0, 0, 0.2) inset',
+    'modal-content-bg': white,
+    'progressbar-trail': 'rgb(91 106 114)',
+    'progressbar-bg': '#6c6d83',
+    'createOptionBg': bgLight,
+    'profileDetailBg': white,
+    'notification-wrapperbg': 'linear-gradient(90deg, rgba(57, 147, 255, 0.2) 129.09%, rgba(244, 5, 201, 0.2) -1.88%)',
+    'social-wrapperbg': white,
+    
   }
 };
 const dark = {
@@ -159,6 +189,7 @@ const dark = {
     'light-gray': lightGray,
     darkBlack: darkBlack,
     general: general,
+    generalWhite: general,
     khaki: khaki,
     white_black: white,
     black_soft: blackSoft,
@@ -184,7 +215,7 @@ const dark = {
     'search-bg-light': searchBgLight,
     'text-light': white,
     'text-btn-light': white,
-    'text-heading-light': textHeadingLight,
+    'text-heading-light': textHeadingDark,
     navBg: 'rgba(0,0,0,0)',
     navColor: white,
     navsticky: navstickyDark,
@@ -201,6 +232,7 @@ const dark = {
     // Gradient colors
     // variables from news items
     new__item_bg: newItemBg,
+    new__item_bgsec: newItemBgsec,
     box_shadow: boxShadow,
     item__price_color: itemPriceColor,
     item__border_color: itemBorderColor,
@@ -213,6 +245,7 @@ const dark = {
     swiper_btn_stroke: white,
     swiper_btn_path: white,
     form_control_bg: background,
+    form_social_bg: 'transparent',
     'stats-bg': '#12121280',
     'live-bg-shadow': '#040f2526',
     'live-bg-color': '#0e1e45',
@@ -222,10 +255,28 @@ const dark = {
     'top-collection-image': 'none',
     footerBg: 'rgba(255, 255, 255, 0.025)',
     // Create Option Page
-    'create-single-bg': gradient2,
+    // 'create-single-bg': gradient2,
     'hot-collection-bg': hotCollectionBg,
     'hot-collection-bx': 'rgb(4 15 37 / 15%) 17.9588px 26.9383px 26.9383px',
     'hot-collection-contentbg': 'rgba(255, 255, 255, 0.5)',
+    // create single page 
+    'input-holder-bg': colorBgPrimary,
+    'input-holder-border': itemBorderColor,
+    'input-holder-focus': colorBgPrimary,
+    'tab-bg': '#121435',
+    'tab-bg2': '#121435',
+    'tab-bx': 'none',
+    'tab-color': white,
+    'nft-attr-bg': nftattrgrad,
+    'nft-attr-bg2':'none',
+    'nft-attr-bx': 'none',
+    'modal-content-bg': '#0e193b',
+    'progressbar-trail': 'rgb(4 39 58)',
+    'progressbar-bg': '#181a3a',
+    'createOptionBg': bgDark,
+    'profileDetailBg': gradient1,
+    'notification-wrapperbg': 'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)',
+    'social-wrapperbg': '#0A1735',
   }
 };
 export { dark, light };

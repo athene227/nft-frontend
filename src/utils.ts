@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import moment from 'moment';
+import ERC20Abi from 'src/abis/new/MockERC20.json';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 
 import {
   IAuctionMarketItem,
@@ -181,6 +184,19 @@ export const getMyBalance = async (
   const wei_balance = await _web3.eth.getBalance(_address);
   const eth_balance = _web3.utils.fromWei(wei_balance, 'ether');
   return inEth ? eth_balance : wei_balance;
+};
+
+export const getMyTokenBalance = async (
+  address: string,
+  tokenAddress: string,
+  web3: Web3
+) => {
+  const tokenContract = new web3.eth.Contract(
+    ERC20Abi.abi as AbiItem[],
+    tokenAddress
+  );
+  const balance = await tokenContract.methods.balanceOf(address).call();
+  return balance;
 };
 
 export const getPriceAfterPercent = (weiPrice: number, percent: number) => {

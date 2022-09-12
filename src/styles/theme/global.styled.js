@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-
+import progressBg from '../../assets/images/progress-bg.png';
 import * as theme from './themeVariables';
 
 // [Table of contents]
@@ -191,6 +191,54 @@ h2{
     }
   }
 }
+.label-icon{
+  position:relative;
+  display: inline-block;
+.help-icon{
+    color: #ffffff;
+    width: 20px;
+    background-color: #142247;
+    height: 20px;
+    border-radius: 50%;
+    padding:3px;
+    font-size:12px;
+    position:absolute;
+    right: -27px;
+    top: 1px;
+    cursor: pointer;
+  }
+}
+.input-icon{
+        font-size:12px;
+        position:absolute;
+        right: 16px;
+        top: 19px;
+        color:#142247;
+        cursor: pointer;
+        /* color: ${({ theme }) => theme.colors.primaryColor};   */
+        &.credit-card{
+          top:8px;
+          right:auto;
+          left:16px;
+          font-size:15px;
+        }
+        &.help-icon{
+          color: #ffffff;
+          width: 20px;
+          background-color: #142247;
+          height: 20px;
+          border-radius: 50%;
+          padding:3px;
+        }
+        &.crypto-icon{
+          top:16px;
+        }
+        }
+        .input-container{
+          &.input-icon-container{
+            position:relative;
+          }
+        }
 
 h3 {
   font-size: 22px;
@@ -2828,7 +2876,7 @@ input[type=number]::-webkit-outer-spin-button {
       margin-right:3px;
     }
     &:after{
-      content:'Left';
+      // content:'Left';
       display:inline-block;
       margin-right:3px;
       color:#202A5D80;
@@ -3022,6 +3070,12 @@ input[type=number]::-webkit-outer-spin-button {
     border-color: #86b7fe;
     outline: 0;
   }
+}
+select.form-control{
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='9' viewBox='0 0 14 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.43164L6.99991 7.43164L12.9999 1.43164' stroke='white' stroke-width='2'/%3E%3C/svg%3E%0A")!important;
+  background-repeat: no-repeat!important;
+    -webkit-appearance: none;
+    background-position: calc(100% - 13px) 25px!important
 }
 
 input:-internal-autofill-selected {
@@ -3392,6 +3446,250 @@ input:-internal-autofill-selected {
 .mb20 {
   margin-bottom: 20px;
 }
+/* Modal popup */
+.checkout {
+  .maincheckout {
+    &.modal-style-1 {
+      background-color: #0e193b;
+      max-width: 800px;
+      padding: 0;
+      .modal-header {
+        border-bottom: 0px;
+        font-size: 32px;
+        color: #ffffff;
+        justify-content: center;
+        padding: 25px 0;
+        /* background: $gradient2; */
+        background:${({ theme }) => theme.colors['nft-attr-bg']};
+        background-color:${({ theme }) => theme.colors['nft-attr-bg']};
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(80px);
+        /* @include theme("themeLight", background, $background_light); */
+        /* @include theme("themeLight", background-color, $background_light); */
+        .modal-title {
+          margin-bottom: 0;
+          font-size: 32px;
+          color:${({ theme }) => theme.colors.textHeading};
+        }
+        .btn-close {
+          background: none;
+          color:${({ theme }) => theme.colors['text-light']};
+        }
+      }
+      .modal-content {
+
+        background-color: ${({ theme }) => theme.colors['modal-content-bg']};
+        border: 0px;
+        border-radius: 0px;
+        padding: 30px;
+        padding-bottom: 50px;
+        max-height: 600px;
+        overflow-y: scroll;
+        .form-cfield {
+          h6 {
+            color: #ffffff;
+          }
+          .form-control {
+            background: transparent;
+            border: 1px solid ${({ theme }) =>
+              theme.colors['input-holder-border']};
+            color: ${({ theme }) => theme.colors['text-light']};
+          }
+        }
+        .btn-main {
+          margin-top: 0;
+          margin-bottom: 5px;
+          &.btn-create {
+            padding: 13px 40px;
+            font-size: 16px;
+          }
+        }
+        &::-webkit-scrollbar {
+          width: 3px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: rgb(255, 255, 255, 0.1);
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #00b2fe;
+          border-radius: 10px;
+        }
+
+        &:hover::-webkit-scrollbar-thumb {
+          background: #32bbf5;
+        }
+        /* .themeLight & {
+          &::-webkit-scrollbar {
+            width: 3px;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: #aba0a0;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: #19baff;
+            border-radius: 10px;
+          }
+
+          &:hover::-webkit-scrollbar-thumb {
+            background: #32bbf5;
+          }
+        } */
+      }
+      &.modal-width-small{
+        max-width: 550px;
+      }
+    }
+  }
+}
+/* Modal popup */
+/* Nft Attributes */
+.nft-attr-normal {
+    border: ${({ theme }) => theme.colors['input-holder-border']};
+    background: ${({ theme }) => theme.colors['nft-attr-bg']};
+
+    border-radius: 5px;
+    padding: 15px 20px;
+    gap: 15px;
+    width: fit-content;
+    min-width: 75px;
+
+    .nft-attr-name {
+      color: #00b2fe;
+      font-size: 18px;
+      font-weight: 500;
+      .nft-date-icon {
+        margin-right: 6px;
+        margin-top: -4px;
+      }
+    }
+
+    .nft-attr-value {
+      color: ${({ theme }) => theme.colors['text-light']};
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 30px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .nft-attr-bsnumber,
+  .nft-attr-bspercent {
+    width: fit-content;
+    display: flex;
+    border: ${({ theme }) => theme.colors['input-holder-border']};
+    background: ${({ theme }) => theme.colors['nft-attr-bg']};
+
+    border-radius: 5px;
+    padding: 15px 20px;
+    gap: 15px;
+
+    .boost-progress-wrapper {
+      cursor: pointer;
+      margin: auto;
+      width: 65px;
+      height: 65px;
+      .circle_reactGradientProgress__1_0UG{
+        width:100%;
+        height:100%;
+      }
+      .CircularProgressbar .CircularProgressbar-path {
+        stroke: rgb(0 178 235);
+        /* stroke : linear-gradient(rgba(254, 0, 199, 1)
+rgba(0, 129, 255, 1)); */
+      }
+ 
+
+      .CircularProgressbar .CircularProgressbar-trail {
+        stroke: none;
+        fill: ${({ theme }) => theme.colors['progressbar-trail']};
+        fill-opacity: 1;
+      }
+
+      div[data-test-id='CircularProgressbarWithChildren__children'] {
+        font-size: 24px;
+      }
+    }
+
+    .boost-label-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .nft-attr-name {
+        font-size: 18px;
+        margin: 7px 0px 0px;
+        text-transform: none;
+        color: #00b2fe;
+        // width: min-content;
+        font-weight: 600;
+        text-align: left;
+      }
+
+      .nft-attr-value {
+        font-size: 18px;
+        opacity: 0.6;
+        margin: 0px;
+        color: ${({ theme }) => theme.colors['text-light']};
+      }
+    }
+
+    &.danger {
+      .CircularProgressbar .CircularProgressbar-path {
+        stroke: rgb(184, 41, 60);
+      }
+
+      .CircularProgressbar .CircularProgressbar-trail {
+        stroke: none;
+        fill: rgb(97, 7, 22);
+        fill-opacity: 1;
+      }
+
+      .nft-attr-value {
+        color: rgb(255 42 71);
+      }
+    }
+  }
+
+  .nft-attr-ranking {
+    width: 100%;
+    max-width: 655px;
+
+    .nft-attr-name {
+      color: ${({ theme }) => theme.colors['text-light']};
+    }
+
+    .nft-attr-value {
+      color: #8f8aa1;
+    }
+    .progress {
+      border-radius: 1.25rem;
+      height: 1.3rem;
+      background-color:transparent;
+      background-image: url(${progressBg});
+    }
+    .progress-bar {
+      background: linear-gradient(180deg, #0084fe 24.12%, #0047fe 100%);
+    }
+    &.danger .progress-bar {
+      background: #ff0d3e;
+    }
+  }
+
+  .nft-attr-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > * {
+      margin: 5px;
+    }
+  }
+  /* Nft Attributes */
 #scroll-to-top {
   cursor: pointer;
   width: max-content;
@@ -3447,6 +3745,16 @@ input:-internal-autofill-selected {
 .ant-table-thead > tr > th{
   background-color:${({ theme }) => theme.colors.tableHeader};
   color:${({ theme }) => theme.colors.tableHeaderText};
+}
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+        /* color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    display: block;
+    background: url() no-repeat;
+    width: 25px;
+    height: 25px;
+    border-width: thin; */
 }
 `;
 

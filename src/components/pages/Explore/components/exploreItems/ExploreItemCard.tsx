@@ -85,7 +85,7 @@ const ExploreItemCard = ({
                   <img
                     onClick={() => navigateToItemDetail()}
                     src={getImage(previewImageUrl || imageUrl)}
-                    className="lazy nft__item_preview"
+                    className="lazy nft__item_preview img-fluid"
                     alt=""
                   />
                 </span>
@@ -106,9 +106,11 @@ const ExploreItemCard = ({
                 </div>
               </div>
 
-              <div className="col-12 d-flex justify-content-between">
+              <div className="d-flex justify-content-between">
                 <div className={`nft__item_user nft__item__name_hover`}>
-                  {nft?.owner[0]?.username}
+                  <span className="nft__publisher">
+                    {nft?.owner[0]?.username}
+                  </span>
                 </div>
               </div>
 
