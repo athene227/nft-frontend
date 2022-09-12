@@ -258,6 +258,14 @@ describe('Market contract with simple market buy, without royalties', async () =
       ).to.be.revertedWith('Not enough items for sale');
     });
 
+    it("fails if it's your own item", async () => {
+      const listingId = await market.getLatestListItemId();
+
+      await expect(
+        market.connect(userWith721NFT).buySimple(listingId, 1, { value: 101 })
+      ).to.be.revertedWith("Can't buy your own");
+    });
+
     it('fails with wrong value', async () => {
       const listingId = await market.getLatestListItemId();
 

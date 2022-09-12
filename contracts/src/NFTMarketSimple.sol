@@ -119,6 +119,7 @@ contract NFTMarketSimple is ReentrancyGuard, MarketTools {
       ) > 0,
       "Seller doesn't have the NFT"
     );
+    require(msg.sender != marketItem.ownerAddress, "Can't buy your own");
 
     uint256 commission = getPriceAfterPercent(
       marketItem.price,

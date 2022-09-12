@@ -76,9 +76,8 @@ describe('Offer', async () => {
       expect(offer.tokenId).to.equal(1);
       expect(offer.quantity).to.equal(1);
       expect(offer.erc20Address).to.equal(erc20.address);
-      expect(offer.amount).to.equal(5);
+      expect(offer.singleOfferPrice).to.equal(5);
       expect(offer.deadline).to.equal(dummyDeadline);
-      expect(offer.isClosed).to.false;
     });
 
     it('should create a correct offer item for ERC-1155', async () => {
@@ -93,9 +92,8 @@ describe('Offer', async () => {
       expect(offer.tokenId).to.equal(1);
       expect(offer.quantity).to.equal(4);
       expect(offer.erc20Address).to.equal(erc20.address);
-      expect(offer.amount).to.equal(5);
+      expect(offer.singleOfferPrice).to.equal(5);
       expect(offer.deadline).to.equal(dummyDeadline);
-      expect(offer.isClosed).to.false;
     });
 
     it('should emit the correct events', async () => {
@@ -165,7 +163,7 @@ describe('Offer', async () => {
         ).to.be.revertedWith('Must offer on some amount of NFTs');
       });
 
-      it('should fail if quantity above zero for ERC-721', async () => {
+      it('should fail if quantity above one for ERC-721', async () => {
         await expect(
           offers
             .connect(userWithTokens)
@@ -219,7 +217,7 @@ describe('Offer', async () => {
     });
 
     it('should work', async () => {
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
     });
 
     it('should transfer ERC20 asset', async () => {
@@ -228,7 +226,7 @@ describe('Offer', async () => {
         offers.address
       );
 
-      const tx = offers.connect(userWithNFT).acceptOffer(1);
+      const tx = offers.connect(userWithNFT).acceptOffer(1, 1);
 
       await expect(() => tx).to.changeTokenBalances(
         erc20,
@@ -248,7 +246,7 @@ describe('Offer', async () => {
 
     it('should transfer NFT asset', async () => {
       const ownerBefore = await nft721.ownerOf(1);
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
       const ownerAfter = await nft721.ownerOf(1);
 
       expect(ownerBefore).to.equal(userWithNFT.address);
@@ -256,21 +254,21 @@ describe('Offer', async () => {
     });
 
     it('should emit the correct events', async () => {
-      await expect(offers.connect(userWithNFT).acceptOffer(1))
+      await expect(offers.connect(userWithNFT).acceptOffer(1, 1))
         .to.emit(offers, 'OfferAccepted')
-        .withArgs(1);
+        .withArgs(1, 1);
     });
 
     it('should fail if paused', async () => {
       await offers.connect(deployer).pause();
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.be.revertedWith('Pausable: paused');
     });
 
     it('should fail if no such offer', async () => {
       await expect(
-        offers.connect(userWithNFT).acceptOffer(2)
+        offers.connect(userWithNFT).acceptOffer(2, 1)
       ).to.be.revertedWith('No offer found');
     });
 
@@ -278,7 +276,7 @@ describe('Offer', async () => {
       // remove approval
       await erc20.connect(userWithTokens).approve(offers.address, 4);
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.be.revertedWith('Not enough allowance');
     });
 
@@ -288,20 +286,26 @@ describe('Offer', async () => {
         .connect(userWithNFT)
         .setApprovalForAll(offers.address, false);
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.be.revertedWith('ERC721: caller is not token owner nor approved');
     });
 
     it('should fail if deadline has passed', async () => {
       await nextDay();
       await expect(
-        offers.connect(userWithTokens).acceptOffer(1)
+        offers.connect(userWithTokens).acceptOffer(1, 1)
       ).to.be.revertedWith('The offer has expired');
+    });
+
+    it('should fail if accepting zero', async () => {
+      await expect(
+        offers.connect(userWithTokens).acceptOffer(1, 0)
+      ).to.be.revertedWith('Should accept something');
     });
 
     it('should fail if not owner', async () => {
       await expect(
-        offers.connect(userWithTokens).acceptOffer(1)
+        offers.connect(userWithTokens).acceptOffer(1, 1)
       ).to.be.revertedWith('Only owner can accept offer');
     });
   });
@@ -317,19 +321,39 @@ describe('Offer', async () => {
 
       await offers
         .connect(userWithTokens)
-        .offerOnNft(nft1155.address, 1, 1, erc20.address, 505, dummyDeadline);
+        .offerOnNft(nft1155.address, 1, 1, erc20.address, 300, dummyDeadline);
 
       await offers
         .connect(user2WithTokens)
-        .offerOnNft(nft1155.address, 1, 4, erc20.address, 606, dummyDeadline);
+        .offerOnNft(nft1155.address, 1, 4, erc20.address, 100, dummyDeadline);
     });
 
     it('should work for single NFT', async () => {
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
     });
 
-    it('should work for multiple NFTs', async () => {
-      await offers.connect(userWithNFT).acceptOffer(2);
+    it('should work for multiple NFTs with full acceptance', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 4);
+    });
+
+    it('should work for multiple NFTs with partial acceptance', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 1);
+
+      await offers.connect(userWithNFT).acceptOffer(2, 3);
+    });
+
+    it('partial acceptance should leave rest of the offer available', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 1);
+
+      const offer = await offers.offers(2);
+
+      expect(offer.offerer).to.equal(user2WithTokens.address);
+      expect(offer.nftContract).to.equal(nft1155.address);
+      expect(offer.tokenId).to.equal(1);
+      expect(offer.quantity).to.equal(3);
+      expect(offer.erc20Address).to.equal(erc20.address);
+      expect(offer.singleOfferPrice).to.equal(100);
+      expect(offer.deadline).to.equal(dummyDeadline);
     });
 
     it('should transfer ERC20 asset for single NFT', async () => {
@@ -338,12 +362,12 @@ describe('Offer', async () => {
         offers.address
       );
 
-      const tx = offers.connect(userWithNFT).acceptOffer(1);
+      const tx = offers.connect(userWithNFT).acceptOffer(1, 1);
 
       await expect(() => tx).to.changeTokenBalances(
         erc20,
         [userWithTokens, userWithNFT, deployer],
-        [-505, 500, 5]
+        [-300, 297, 3]
       );
 
       const marketERC20AllowanceAfter = await erc20.allowance(
@@ -353,7 +377,7 @@ describe('Offer', async () => {
 
       expect(
         marketERC20AllowanceAfter.sub(marketERC20AllowanceBefore)
-      ).to.equal(-505);
+      ).to.equal(-300);
     });
 
     it('should transfer ERC20 asset for multiple NFTs', async () => {
@@ -362,12 +386,12 @@ describe('Offer', async () => {
         offers.address
       );
 
-      const tx = offers.connect(userWithNFT).acceptOffer(2);
+      const tx = offers.connect(userWithNFT).acceptOffer(2, 4);
 
       await expect(() => tx).to.changeTokenBalances(
         erc20,
         [user2WithTokens, userWithNFT, deployer],
-        [-606, 600, 6]
+        [-400, 396, 4]
       );
 
       const marketERC20AllowanceAfter = await erc20.allowance(
@@ -377,7 +401,76 @@ describe('Offer', async () => {
 
       expect(
         marketERC20AllowanceAfter.sub(marketERC20AllowanceBefore)
-      ).to.equal(-606);
+      ).to.equal(-400);
+    });
+
+    it('should transfer ERC20 asset for partial acceptance', async () => {
+      const marketERC20AllowanceBefore = await erc20.allowance(
+        user2WithTokens.address,
+        offers.address
+      );
+
+      const tx = offers.connect(userWithNFT).acceptOffer(2, 3);
+
+      await expect(() => tx).to.changeTokenBalances(
+        erc20,
+        [user2WithTokens, userWithNFT, deployer],
+        [-300, 297, 3]
+      );
+
+      const marketERC20AllowanceAfter = await erc20.allowance(
+        user2WithTokens.address,
+        offers.address
+      );
+
+      expect(
+        marketERC20AllowanceAfter.sub(marketERC20AllowanceBefore)
+      ).to.equal(-300);
+    });
+
+    it('should transfer ERC20 asset for partial acceptance, for subsequent offer', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 1);
+
+      const marketERC20AllowanceBefore = await erc20.allowance(
+        user2WithTokens.address,
+        offers.address
+      );
+
+      const tx = offers.connect(userWithNFT).acceptOffer(2, 3);
+
+      await expect(() => tx).to.changeTokenBalances(
+        erc20,
+        [user2WithTokens, userWithNFT, deployer],
+        [-300, 297, 3]
+      );
+
+      const marketERC20AllowanceAfter = await erc20.allowance(
+        user2WithTokens.address,
+        offers.address
+      );
+
+      expect(
+        marketERC20AllowanceAfter.sub(marketERC20AllowanceBefore)
+      ).to.equal(-300);
+    });
+
+    it('should transfer ERC20 asset for partial acceptance, for subsequent offer with new owner', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 2);
+
+      // Transfer some of the tokens away so we have a new owner
+      await nft1155
+        .connect(user2WithTokens)
+        .safeTransferFrom(user2WithTokens.address, user2.address, 1, 1, []);
+
+      await nft1155.connect(user2).setApprovalForAll(offers.address, true);
+
+      await expect(() =>
+        offers.connect(user2).acceptOffer(2, 1)
+      ).to.changeTokenBalances(
+        erc20,
+        [user2, userWithNFT, deployer, user2WithTokens],
+        [99, 0, 1, -100]
+      );
     });
 
     it('should transfer NFT asset for single NFT', async () => {
@@ -390,7 +483,7 @@ describe('Offer', async () => {
         1
       );
 
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
       const sellerBalanceAfter = await nft1155.balanceOf(
         userWithNFT.address,
         1
@@ -414,7 +507,7 @@ describe('Offer', async () => {
         1
       );
 
-      await offers.connect(userWithNFT).acceptOffer(2);
+      await offers.connect(userWithNFT).acceptOffer(2, 3);
       const sellerBalanceAfter = await nft1155.balanceOf(
         userWithNFT.address,
         1
@@ -424,13 +517,40 @@ describe('Offer', async () => {
         1
       );
 
-      expect(sellerBalanceAfter.sub(sellerBalanceBefore)).to.equal(-4);
-      expect(buyerBalanceAfter.sub(buyerBalanceBefore)).to.equal(4);
+      expect(sellerBalanceAfter.sub(sellerBalanceBefore)).to.equal(-3);
+      expect(buyerBalanceAfter.sub(buyerBalanceBefore)).to.equal(3);
+    });
+
+    it('should transfer NFT asset for subsequent partial offer acceptance', async () => {
+      await offers.connect(userWithNFT).acceptOffer(2, 3);
+
+      const sellerBalanceBefore = await nft1155.balanceOf(
+        userWithNFT.address,
+        1
+      );
+      const buyerBalanceBefore = await nft1155.balanceOf(
+        user2WithTokens.address,
+        1
+      );
+
+      await offers.connect(userWithNFT).acceptOffer(2, 1);
+
+      const sellerBalanceAfter = await nft1155.balanceOf(
+        userWithNFT.address,
+        1
+      );
+      const buyerBalanceAfter = await nft1155.balanceOf(
+        user2WithTokens.address,
+        1
+      );
+
+      expect(sellerBalanceAfter.sub(sellerBalanceBefore)).to.equal(-1);
+      expect(buyerBalanceAfter.sub(buyerBalanceBefore)).to.equal(1);
     });
 
     it('should fail if no such offer', async () => {
       await expect(
-        offers.connect(userWithNFT).acceptOffer(5)
+        offers.connect(userWithNFT).acceptOffer(5, 1)
       ).to.be.revertedWith('No offer found');
     });
 
@@ -438,7 +558,7 @@ describe('Offer', async () => {
       // remove approval
       await erc20.connect(userWithTokens).approve(offers.address, 4);
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.be.revertedWith('Not enough allowance');
     });
 
@@ -448,13 +568,13 @@ describe('Offer', async () => {
         .connect(userWithNFT)
         .setApprovalForAll(offers.address, false);
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.be.revertedWith('ERC1155: caller is not token owner nor approved');
     });
 
     it('should fail if not enough balance for an offer of one NFT', async () => {
       await expect(
-        offers.connect(userWithTokens).acceptOffer(1)
+        offers.connect(userWithTokens).acceptOffer(1, 1)
       ).to.be.revertedWith('Not enough balance');
     });
 
@@ -465,16 +585,16 @@ describe('Offer', async () => {
         .safeTransferFrom(userWithNFT.address, user2.address, 1, 2, []);
 
       await expect(
-        offers.connect(userWithNFT).acceptOffer(2)
+        offers.connect(userWithNFT).acceptOffer(2, 4)
       ).to.be.revertedWith('Not enough balance');
     });
 
-    it('should fail if trying to reuse an offer', async () => {
-      await offers.connect(userWithNFT).acceptOffer(1);
+    it('should fail if offer has been exhausted', async () => {
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
 
       await expect(
-        offers.connect(userWithNFT).acceptOffer(1)
-      ).to.be.revertedWith('The offer is used already');
+        offers.connect(userWithNFT).acceptOffer(1, 1)
+      ).to.be.revertedWith('Offer quantity exhausted');
     });
   });
 
@@ -485,6 +605,13 @@ describe('Offer', async () => {
       await nft721.connect(userWithNFT).createToken('dummy', 765);
       await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
 
+      const NFT1155 = await ethers.getContractFactory('NFT1155');
+      nft1155 = (await NFT1155.connect(deployer).deploy()) as NFT1155;
+      await nft1155.connect(userWithNFT).createToken('dummy', 5, 876);
+      await nft1155
+        .connect(userWithNFT)
+        .setApprovalForAll(offers.address, true);
+
       await erc20.connect(user2).freeMint(10000);
       await erc20.connect(user2).approve(offers.address, 10000);
 
@@ -494,12 +621,12 @@ describe('Offer', async () => {
     });
 
     it('should work', async () => {
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
     });
 
     it('should transfer ERC20 asset and royalty in primary sale', async () => {
       await expect(() =>
-        offers.connect(userWithNFT).acceptOffer(1)
+        offers.connect(userWithNFT).acceptOffer(1, 1)
       ).to.changeTokenBalances(
         erc20,
         [userWithTokens, userWithNFT, deployer],
@@ -508,7 +635,7 @@ describe('Offer', async () => {
     });
 
     it('should transfer ERC20 asset and royalty in secondary sale', async () => {
-      await offers.connect(userWithNFT).acceptOffer(1);
+      await offers.connect(userWithNFT).acceptOffer(1, 1);
 
       await offers
         .connect(user2)
@@ -520,7 +647,7 @@ describe('Offer', async () => {
 
       // 7,65% of 606 = 46
       await expect(() =>
-        offers.connect(userWithTokens).acceptOffer(2)
+        offers.connect(userWithTokens).acceptOffer(2, 1)
       ).to.changeTokenBalances(
         erc20,
         [userWithTokens, userWithNFT, user2, deployer],
