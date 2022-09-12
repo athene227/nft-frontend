@@ -507,7 +507,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //     .getAuctionBids(Number(nft.listingId))
       //     .call();
       // const currentBid = Number(auctionMarketItem.currentBid);
-      const myBalanceinWei = await getMyBalance(userAddress, web3);
+
+      const myBalanceinWei = await getMyTokenBalance(
+        userAddress,
+        nft?.priceToken[0]?.address,
+        web3
+      );
       const bidInWei = web3.utils.toWei(data.price.toString(), 'ether');
       const bidWithCommissionWeiValue =
         Number(bidInWei) + getPriceAfterPercent(Number(bidInWei), 1);
@@ -693,7 +698,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
-  const _acceptOffer = async (offer: any, resetForm: () => void) => {
+  const _acceptOffer = async (
+    offer: any,
+    acceptedAmount: number,
+    resetForm: () => void
+  ) => {
     try {
       if (!nft) return;
       if (!web3) {
@@ -756,7 +765,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* accept offer on contract
       await nftMarketOffersContract.methods
-        .acceptOffer(Number(offer.offerId))
+        .acceptOffer(Number(offer.offerId), Number(acceptedAmount))
         .send({ from: userAddress });
 
       //* create tracking before accept offer
@@ -1111,7 +1120,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
               <div className="p_list" key={index}>
                 <div
                   className="author_list_pp"
-                  onClick={() => navigateToUserPage(bid.buyerAddress)}
+                  onClick={() => navigateToUserPage(bid?.buyerAddress)}
                 >
                   <span>
                     <UserAvatar
@@ -1127,7 +1136,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <div className="p_list_info">
                   Bid{' '}
                   <b>
-                    {bid.price} {COIN}
+                    {bid?.price} {nft?.priceToken[0]?.name || COIN}
                   </b>
                   <span>
                     by{' '}
@@ -1287,10 +1296,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const renderNftDetails = () => {
     return (
-      <div className="tab-1 onStep fadeIn">
-        {/* {renderBuyButtons()} */}
-        <div className="detail_properties">{renderAttributes(nft)}</div>
-      </div>
+      nft && (
+        <div className="tab-1 onStep fadeIn">
+          {/* {renderBuyButtons()} */}
+          <div className="detail_properties">{renderAttributes(nft)}</div>
+        </div>
+      )
     );
   };
 
@@ -1428,27 +1439,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                     </strong>
                   </p>
                 )}
-                {nft.marketType === MARKET_TYPE.AUCTION &&
-                  nft?.status === STATUS.ON_SELL && (
-                    <p>
-                      Minimum bid:{' '}
-                      <strong>
-                        {nft?.minimumBid} {nft?.priceToken[0]?.name || COIN}
-                      </strong>
-                    </p>
-                  )}
-
-                {/*
-                {nft.price > 0 && (
-                  <p className="item_detail_price">
-                    <i>
-                      <img src="./../../img/icon/price-pulse.png" />
-                    </i>{' '}
-                    <strong>
-                      {nft.price} {COIN}
-                    </strong>
-                  </p>
-                )} */}
                 {nft.marketType === MARKET_TYPE.AUCTION &&
                   nft?.status === STATUS.ON_SELL && (
                     <p>

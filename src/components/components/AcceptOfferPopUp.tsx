@@ -30,7 +30,7 @@ interface IProps {
   };
   multiple: boolean;
   onClose: (shouldRefresh: boolean) => void;
-  submit: (values: any, resetForm: any) => void;
+  submit: (offer: any, acceptedAmount: number, resetForm: any) => void;
 }
 
 const AcceptOfferPopUp = (props: IProps) => {
@@ -301,7 +301,11 @@ const AcceptOfferPopUp = (props: IProps) => {
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          submit(acceptOfferState.selectedOffer, actions.resetForm);
+          submit(
+            acceptOfferState.selectedOffer,
+            values.amount,
+            actions.resetForm
+          );
         }}
         render={displayBuyForm}
         validationSchema={buySchema}
