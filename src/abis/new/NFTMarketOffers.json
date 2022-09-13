@@ -26,15 +26,22 @@
           "internalType": "uint256",
           "name": "acceptQuantity",
           "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "accepter",
-          "type": "address"
         }
       ],
       "name": "OfferAccepted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OfferCancelled",
       "type": "event"
     },
     {
@@ -118,6 +125,15 @@
         }
       ],
       "name": "addToWhitelist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "offerId", "type": "uint256" }
+      ],
+      "name": "cancelOffer",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -280,7 +296,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x01aD143947993df79C1061Bf7011A094cFD2cda9"
+      "address": "0x8610Dac3d614F44939eBB0D08ac0a178e610FC0E"
     }
   }
 }
