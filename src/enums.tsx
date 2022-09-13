@@ -32,6 +32,7 @@ export enum PROCESS_TRAKING_ACTION {
   BID = 'BID',
   OFFER = 'OFFER',
   ACCEPTOFFER = 'ACCEPTOFFER',
+  CANCEL_OFFER = 'CANCEL_OFFER',
   TERMINATE_AUCTION_NOT_SOLD = 'TERMINATE_AUCTION_NOT_SOLD',
   TERMINATE_AUCTION_SOLD = 'TERMINATE_AUCTION_SOLD'
 }
@@ -153,7 +154,8 @@ export enum MARKET_CONTRACT_EVENTS {
   AuctionCancelled = 'AuctionCancelled',
   AuctionTerminated = 'AuctionTerminated',
   OfferCreated = 'OfferCreated',
-  OfferAccepted = 'OfferAccepted'
+  OfferAccepted = 'OfferAccepted',
+  OfferCancelled = 'OfferCancelled'
 }
 
 export enum ATTRIBUTE_TYPE {

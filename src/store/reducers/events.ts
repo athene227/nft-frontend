@@ -23,6 +23,7 @@ const states = (state = defaultState, action: any) => {
     case getType(actions.addTerminateAuctionEvent):
     case getType(actions.addOfferCreatedEvent):
     case getType(actions.addOfferAcceptedEvent):
+    case getType(actions.addOfferCanceledEvent):
       return { ...state, eventList: [...state.eventList, payload] };
     case getType(actions.clearEvents):
       return { ...state, eventList: [] };

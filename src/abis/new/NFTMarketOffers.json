@@ -26,6 +26,12 @@
           "internalType": "uint256",
           "name": "acceptQuantity",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "accepter",
+          "type": "address"
         }
       ],
       "name": "OfferAccepted",
@@ -296,7 +302,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x8610Dac3d614F44939eBB0D08ac0a178e610FC0E"
+      "address": "0x6Db9a58Ff15B079Dd7DC96D23B24e54a51f4B574"
     }
   }
 }

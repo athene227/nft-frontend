@@ -52,6 +52,7 @@ import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
+import CancelOfferPopUp from '../components/CancelOfferPopUp';
 import Clock from '../components/Clock/Clock';
 import Footer from '../components/footer';
 import MakeOfferPopUp from '../components/MakeOfferPopUp';
@@ -158,6 +159,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const [openAcceptOffer, setOpenAcceptOffer] = React.useState(false);
   const [openCancelListing, setOpenCancelListing] = React.useState(false);
   const [openTerminateAuction, setOpenTerminateAuction] = React.useState(false);
+  const [openCancelOffer, setOpenCancelOffer] = React.useState(false);
+  const [cancelOfferState, setCancelOfferState] = React.useState<{
+    loader: boolean;
+    error: null | string;
+    selectedOffer: any | null;
+  }>({ loader: false, error: null, selectedOffer: null });
 
   const nftEvents = useSelector(selectors.nftEvents);
 
@@ -239,6 +246,24 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const closeAcceptOfferPopUp = (shouldRefresh = false) => {
     setAcceptOfferState({ loader: false, error: null, selectedOffer: null });
     setOpenAcceptOffer(false);
+    if (shouldRefresh && nft) {
+      const { tokenId, nftAddress } = nft;
+      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
+    }
+  };
+
+  const openCancelOfferPopUp = () => {
+    if (!web3) {
+      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
+      return;
+    }
+    dispatch(clearEvents());
+    setOpenCancelOffer(true);
+  };
+
+  const closeCancelOfferPopUp = (shouldRefresh = false) => {
+    setCancelOfferState({ loader: false, error: null, selectedOffer: null });
+    setOpenCancelOffer(false);
     if (shouldRefresh && nft) {
       const { tokenId, nftAddress } = nft;
       navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
@@ -387,7 +412,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
-      //* check if user not buyng from himself
+      //* check if user not buying from himself
       if (nft.ownerAddress === userAddress) {
         throw new Error(ERRORS.CANT_BUY_FROM_YOURSELF);
       }
@@ -710,8 +735,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         return;
       }
 
-      setAcceptOfferState({ loader: true, error: null, selectedOffer: offer });
-
       console.log(
         '🚀 ~ file: ItemDetailSingle.tsx ~ line 652 ~ _acceptOffer ~ offer',
         offer
@@ -723,6 +746,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
+
+      setAcceptOfferState({ loader: true, error: null, selectedOffer: offer });
 
       const offerTrackingItem = {
         name: nft.name,
@@ -777,10 +802,67 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
-      // //* turn off loader
+      //* turn off loader
       setAcceptOfferState({ loader: false, error: null, selectedOffer: offer });
     } catch (error) {
       setAcceptOfferState({
+        loader: false,
+        error: getErrorMessage(error),
+        selectedOffer: offer
+      });
+    }
+  };
+
+  const _cancelOffer = async (offer: any, resetForm: () => void) => {
+    try {
+      if (!nft) return;
+      if (!web3) {
+        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
+        return;
+      }
+
+      //* getting network id *//
+      const networkId = await getNetworkId(web3);
+      if (networkId !== SELECTED_NETWORK) {
+        notification.error(ERRORS.WRONG_NETWORK);
+        throw new Error(ERRORS.WRONG_NETWORK);
+      }
+
+      setCancelOfferState({ loader: true, error: null, selectedOffer: offer });
+
+      const offerTrackingItem = {
+        name: nft.name,
+        description: nft.description,
+        listingId: nft.listingId,
+        tokenId: nft.tokenId,
+        networkId: nft.networkId
+      };
+
+      //* create tracking before accept offer
+      await ApiService.createProcessTracking({
+        ...offerTrackingItem,
+        userAddress,
+        price: offer.amount,
+        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
+      });
+
+      await nftMarketOffersContract.methods
+        .cancelOffer(Number(offer.offerId))
+        .send({ from: userAddress });
+
+      await ApiService.createProcessTracking({
+        ...offerTrackingItem,
+        userAddress,
+        price: offer.amount,
+        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
+        processStatus: PROCESS_TRAKING_STATUS.AFTER
+      });
+
+      //* turn off loader
+      setCancelOfferState({ loader: false, error: null, selectedOffer: offer });
+    } catch (error) {
+      setCancelOfferState({
         loader: false,
         error: getErrorMessage(error),
         selectedOffer: offer
@@ -1225,16 +1307,27 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                       </button>
                     )
                   ))}
-                {offer.offererAddress === userAddress && (
-                  <button
-                    className="btn-main lead"
-                    onClick={() => {
-                      console.log('Cancel Offer Clicked-', offer);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                )}
+                {offer.offererAddress === userAddress &&
+                  (cancelOfferState.loader &&
+                  cancelOfferState.selectedOffer &&
+                  cancelOfferState.selectedOffer.offerId === offer.offerId ? (
+                    <Loader size={50} />
+                  ) : (
+                    <button
+                      className="btn-main lead"
+                      onClick={() => {
+                        console.log('Cancel Offer Clicked-', offer);
+                        setCancelOfferState({
+                          error: null,
+                          loader: false,
+                          selectedOffer: offer
+                        });
+                        openCancelOfferPopUp();
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  ))}
               </div>
             </>
           ))}
@@ -1317,7 +1410,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
               className="btn-main lead mb-5"
               onClick={openCancelListingPopUp}
             >
-              Cancel listing
+              Cancel Listing
             </button>
           )}
           {/* {cancelListingState.error && <Alert text={cancelListingState.error} type={ALERT_TYPE.DANGER} />} */}
@@ -1644,6 +1737,17 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             onClose={closeAcceptOfferPopUp}
             submit={_acceptOffer}
             acceptOfferState={acceptOfferState}
+            multiple={false}
+          />
+        </div>
+      )}
+      {openCancelOffer && cancelOfferState.selectedOffer && nft && (
+        <div className="checkout nft_detail_popup">
+          <CancelOfferPopUp
+            nft={nft}
+            onClose={closeCancelOfferPopUp}
+            submit={_cancelOffer}
+            cancelOfferState={cancelOfferState}
             multiple={false}
           />
         </div>

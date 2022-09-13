@@ -266,20 +266,6 @@ const AcceptOfferPopUp = (props: IProps) => {
                 <div className="buy-popup-imgdesc">
                   <h2>{nft?.name}</h2>
                   <p>{nft?.description}</p>
-                  <div className="buy-popup-price">
-                    {nft?.price && nft?.price > 0 && (
-                      <p className="item_detail_price">
-                        <i>
-                          <img src="./../../img/icon/price-pulse.png" />
-                        </i>{' '}
-                        <strong>
-                          {nft?.price}{' '}
-                          {acceptOfferState.selectedOffer?.pricetoken[0]
-                            ?.name || COIN}
-                        </strong>
-                      </p>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>

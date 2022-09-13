@@ -212,6 +212,7 @@ export const addTerminateAuctionEvent = action(
 )();
 export const addOfferCreatedEvent = action('events/addOfferCreatedEvent')();
 export const addOfferAcceptedEvent = action('events/addOfferAcceptedEvent')();
+export const addOfferCanceledEvent = action('events/addOfferCanceledEvent')();
 export const clearEvents = action('events/clearEvents')();
 
 export const fetchNewNfts: any = asyncAction(
