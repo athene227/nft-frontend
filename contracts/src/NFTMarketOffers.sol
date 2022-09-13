@@ -28,11 +28,8 @@ contract NFTMarketOffers is MarketTools {
   }
 
   event OfferCreated(uint256 indexed offerId);
-  event OfferAccepted(
-    uint256 indexed offerId,
-    uint256 acceptQuantity,
-    address accepter
-  );
+  event OfferAccepted(uint256 indexed offerId, uint256 acceptQuantity);
+  event OfferCancelled(uint256 indexed offerId);
 
   /**
    * @dev Initializes the contract
@@ -165,6 +162,21 @@ contract NFTMarketOffers is MarketTools {
       acceptQuantity
     );
 
-    emit OfferAccepted(offerId, acceptQuantity, msg.sender);
+    emit OfferAccepted(offerId, acceptQuantity);
+  }
+
+  /**
+   * @dev Cancels a previously made offer
+   * @param offerId ID of the offer
+   */
+  function cancelOffer(uint256 offerId) external whenNotPaused {
+    Offer storage offer = offers[offerId];
+    require(offer.offerer != address(0x0), 'No offer found');
+    require(offer.offerer == msg.sender, 'Only offerer can cancel');
+    require(offer.quantity > 0, 'Nothing to cancel');
+
+    offer.quantity = 0;
+
+    emit OfferCancelled(offerId);
   }
 }

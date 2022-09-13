@@ -598,6 +598,57 @@ describe('Offer', async () => {
     });
   });
 
+  describe('Cancelling an offer', async () => {
+    beforeEach(async function () {
+      const NFT721 = await ethers.getContractFactory('NFT721');
+      nft721 = (await NFT721.connect(deployer).deploy()) as NFT721;
+      await nft721.connect(userWithNFT).createToken('dummy', 0);
+      await nft721.connect(userWithNFT).setApprovalForAll(offers.address, true);
+
+      const deadline = await getTimestamp();
+
+      await offers
+        .connect(userWithTokens)
+        .offerOnNft(nft721.address, 1, 1, erc20.address, 505, deadline + 5000);
+    });
+
+    it('should work', async () => {
+      await offers.connect(userWithTokens).cancelOffer(1);
+    });
+
+    it('should emit the correct events', async () => {
+      await expect(offers.connect(userWithTokens).cancelOffer(1))
+        .to.emit(offers, 'OfferCancelled')
+        .withArgs(1);
+    });
+
+    it('prevents acceptance', async () => {
+      await offers.connect(userWithTokens).cancelOffer(1);
+      await expect(
+        offers.connect(userWithNFT).acceptOffer(1, 1)
+      ).to.be.revertedWith('Offer quantity exhausted');
+    });
+
+    it('fails if no such offer', async () => {
+      await expect(
+        offers.connect(userWithTokens).cancelOffer(10)
+      ).to.be.revertedWith('No offer found');
+    });
+
+    it('fails if not your offer', async () => {
+      await expect(
+        offers.connect(userWithNFT).cancelOffer(1)
+      ).to.be.revertedWith('Only offerer can cancel');
+    });
+
+    it("fails if trying to cancel when there's nothing to cancel", async () => {
+      offers.connect(userWithNFT).acceptOffer(1, 1);
+      await expect(
+        offers.connect(userWithTokens).cancelOffer(1)
+      ).to.be.revertedWith('Nothing to cancel');
+    });
+  });
+
   describe('Handling royalties', async () => {
     beforeEach(async function () {
       const NFT721 = await ethers.getContractFactory('NFT721');

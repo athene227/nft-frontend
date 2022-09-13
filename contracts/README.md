@@ -73,6 +73,8 @@ NFTs, up to the listed amount of NFTs. Each NFT has the same price.
 A simple sale immediately transfers the sale price for the seller and the NFTs
 to the buyer.
 
+Buying one's own NFT is not allowed.
+
 #### `cancelSimpleListing`
 
 Cancels a simple listing. Only the creator of the listing can cancel their own listing.
@@ -89,6 +91,8 @@ An auction price is always denoted in some whitelisted ERC-20 token. The auction
 #### `bid`
 
 Used for bidding on an auction item. You can bid any amount - it does not need to be higher than previous bids. You have to hold enough of the price asset and must've given allowance for the marketplace to withdraw your tokens in advance.
+
+Bidding on one's own NFT is not allowed.
 
 #### `terminateAuction`
 
@@ -129,7 +133,13 @@ For ERC-721 the offer has to be for one NFT. For ERC-1155 the offer can be for a
 
 #### `acceptOffer`
 
-The owner of an NFT can choose to accept a previously created offer. This exchange the assets between the owner and the offerer.
+The owner of an NFT can choose to accept a previously created offer, fully or partially. This exchange the assets between the owner and the offerer.
+
+A partially accepted offer means that an owner accepts to sell only some amount of NFTs for the offered price - regardless of how many the owner owns. A partially accepted offer can then be further accepted by other owners (or even by the same one) until the offer quantity has been reached.
+
+#### `cancelOffer`
+
+Cancels an offer. TCan be called only by the offer creator.
 
 ### Other functionality
 
