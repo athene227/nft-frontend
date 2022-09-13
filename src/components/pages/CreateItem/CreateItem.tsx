@@ -164,8 +164,7 @@ const CreateItem = () => {
       expirationDate: new Date(data.expirationDate), //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
       // auction fields
       minimumBid: marketType == MARKET_TYPE.AUCTION ? data.minimumBid : '',
-      priceTokenType:
-        marketType == MARKET_TYPE.AUCTION ? data.pricetokentype : ''
+      priceTokenId: marketType == MARKET_TYPE.AUCTION ? data.priceTokenId : ''
     };
 
     const _attributes = data.attributes.map((item: any) => {
@@ -221,6 +220,7 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenURI: metaDataUrl() as string,
+          priceTokenId: undefined,
           status: STATUS.NOT_LISTED,
           totalAmount: SINGLE,
           leftAmount: SINGLE,
@@ -288,7 +288,9 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
+          listingId,
           price: data.price,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.ON_SELL,
           totalAmount: SINGLE,
@@ -318,7 +320,7 @@ const CreateItem = () => {
 
   const createAuction = async (NFT_NETWORK_DATA: any, data: any) => {
     console.log(
-      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ CreateItem ~ data',
+      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ createAuction ~ data',
       data
     );
 
@@ -492,6 +494,7 @@ const CreateItem = () => {
         transactionHash,
         data: {
           ...nftToCreate,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.NOT_LISTED,
           totalAmount: Number(data.supply),
@@ -555,7 +558,9 @@ const CreateItem = () => {
         data: {
           ...nftToCreate,
           tokenId: itemCreateProgressRef.current.tokenId,
+          listingId,
           // price: priceInWei,
+          priceTokenId: undefined,
           tokenURI: metaDataUrl() as string,
           status: STATUS.ON_SELL,
           totalAmount: Number(data.supply),
@@ -589,6 +594,10 @@ const CreateItem = () => {
     resetForm: () => void,
     isRetry = false
   ) => {
+    console.log(
+      '🚀 ~ file: CreateItem.tsx ~ line 591 ~ CreateItem ~ data',
+      data
+    );
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
       return;

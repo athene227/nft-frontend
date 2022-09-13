@@ -3,6 +3,8 @@ import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
+import ERC20Abi from 'src/abis/new/MockERC20.json';
+import { IPriceToken } from 'src/types/priceTokens.types';
 import {
   ALERT_TYPE,
   COIN,
@@ -46,6 +48,7 @@ const BuyPopUp = (props: IProps) => {
   const { nft, onClose, submit, placeBidState, lastBid, bids } = props;
   const [balance, setBalance] = useState(0);
   const [highestBidAmount, setHighestBidAmount] = useState('');
+  const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
   const [dataState, setDataState] = useState<{
     loader: boolean;
     error: null | string;
@@ -62,11 +65,15 @@ const BuyPopUp = (props: IProps) => {
 
   const web3State = useSelector(selectors.web3State);
   const { web3, accounts, nftMarketAuctionContract } = web3State.web3.data;
+  const userAddress = accounts[0];
 
   const _getMyBalance = async () => {
-    const wei_balance = await web3.eth.getBalance(accounts[0]);
-    const eth_balance = web3?.utils.fromWei(wei_balance, 'ether');
-    return eth_balance;
+    const tokenContract = new web3.eth.Contract(
+      ERC20Abi.abi,
+      nft?.priceToken[0]?.address
+    );
+    const balance = await tokenContract.methods.balanceOf(userAddress).call();
+    return web3?.utils.fromWei(balance, 'ether');
   };
 
   const _getAuctionMarketItem = async () => {
@@ -186,11 +193,15 @@ const BuyPopUp = (props: IProps) => {
                 <div className="bid_options">
                   <p>
                     Minimum Bid is{' '}
-                    <span className="bold">{`${nft?.minimumBid} `}</span>
+                    <span className="bold">{`${nft?.minimumBid} ${
+                      nft?.priceToken[0]?.name || COIN
+                    }`}</span>
                   </p>
                   <p>
                     Highest Bid is{' '}
-                    <span className="bold">{`${getLastBid()} `}</span>
+                    <span className="bold">{`${getLastBid()} ${
+                      nft?.priceToken[0]?.name || COIN
+                    }`}</span>
                   </p>
                   <div className="detailcheckout mt-4">
                     <div className="listcheckout">

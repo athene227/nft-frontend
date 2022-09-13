@@ -28,7 +28,11 @@ contract NFTMarketOffers is MarketTools {
   }
 
   event OfferCreated(uint256 indexed offerId);
-  event OfferAccepted(uint256 indexed offerId, uint256 acceptQuantity);
+  event OfferAccepted(
+    uint256 indexed offerId,
+    uint256 acceptQuantity,
+    address accepter
+  );
 
   /**
    * @dev Initializes the contract
@@ -161,6 +165,6 @@ contract NFTMarketOffers is MarketTools {
       acceptQuantity
     );
 
-    emit OfferAccepted(offerId, acceptQuantity);
+    emit OfferAccepted(offerId, acceptQuantity, msg.sender);
   }
 }

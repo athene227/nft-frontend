@@ -22,7 +22,7 @@ import Alert from './Alert';
 import TransactionHash from './TransactionHash';
 
 interface IProps {
-  nft: INft;
+  nft: INft | undefined;
   acceptOfferState: {
     error: null | string;
     loader: boolean;
@@ -30,11 +30,15 @@ interface IProps {
   };
   multiple: boolean;
   onClose: (shouldRefresh: boolean) => void;
-  submit: (values: any, resetForm: any) => void;
+  submit: (offer: any, acceptedAmount: number, resetForm: any) => void;
 }
 
 const AcceptOfferPopUp = (props: IProps) => {
   const { nft, onClose, submit, acceptOfferState, multiple } = props;
+  console.log(
+    '🚀 ~ file: AcceptOfferPopUp.tsx ~ line 38 ~ AcceptOfferPopUp ~ nft',
+    nft
+  );
   const [userBalance, setUserBalance] = useState(0);
   const [dataState, setDataState] = React.useState<{
     loader: boolean;
@@ -263,7 +267,7 @@ const AcceptOfferPopUp = (props: IProps) => {
                   <h2>{nft?.name}</h2>
                   <p>{nft?.description}</p>
                   <div className="buy-popup-price">
-                    {nft?.price > 0 && (
+                    {nft?.price && nft?.price > 0 && (
                       <p className="item_detail_price">
                         <i>
                           <img src="./../../img/icon/price-pulse.png" />
@@ -301,7 +305,11 @@ const AcceptOfferPopUp = (props: IProps) => {
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          submit(acceptOfferState.selectedOffer, actions.resetForm);
+          submit(
+            acceptOfferState.selectedOffer,
+            values.amount,
+            actions.resetForm
+          );
         }}
         render={displayBuyForm}
         validationSchema={buySchema}
