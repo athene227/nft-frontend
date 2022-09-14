@@ -338,10 +338,6 @@ export default function CreateForm(props: IProps) {
     handleChange,
     getFieldProps
   }: FormikProps<any>) => {
-    console.log(
-      '----------------------------------------------------------',
-      values
-    );
     const onChangeName = (e: any) => {
       setFieldValue('name', e.target.value);
       setNameInput && setNameInput(e.target.value);

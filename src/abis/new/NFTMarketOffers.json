@@ -47,6 +47,19 @@
           "type": "uint256"
         }
       ],
+      "name": "OfferCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
       "name": "OfferCreated",
       "type": "event"
     },
@@ -118,6 +131,15 @@
         }
       ],
       "name": "addToWhitelist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "offerId", "type": "uint256" }
+      ],
+      "name": "cancelOffer",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -280,7 +302,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x01aD143947993df79C1061Bf7011A094cFD2cda9"
+      "address": "0x6Db9a58Ff15B079Dd7DC96D23B24e54a51f4B574"
     }
   }
 }

@@ -18,6 +18,7 @@ import {
   addCancelSimpleEvent,
   addMintEvent,
   addOfferAcceptedEvent,
+  addOfferCanceledEvent,
   addOfferCreatedEvent,
   addSimpleMarketItemEvent,
   addTerminateAuctionEvent
@@ -170,6 +171,9 @@ const App = () => {
             break;
           case MARKET_CONTRACT_EVENTS.OfferAccepted:
             dispatch(addOfferAcceptedEvent(res));
+            break;
+          case MARKET_CONTRACT_EVENTS.OfferCancelled:
+            dispatch(addOfferCanceledEvent(res));
             break;
           default:
             break;
