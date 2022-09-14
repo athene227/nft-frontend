@@ -323,6 +323,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         nftAddress: nft.nftAddress
       });
       setNftHistory(res.data);
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 326 ~ fetchNftHistory ~ res.data',
+        res.data
+      );
 
       setFetchHistoryState({ loader: false, error: null });
     } catch (error) {
@@ -754,13 +758,14 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         description: nft.description,
         listingId: nft.listingId,
         tokenId: nft.tokenId,
+        nftAddress: nft.nftAddress,
         networkId: nft.networkId
       };
 
       //* create tracking before accept offer
       await ApiService.createProcessTracking({
         ...offerTrackingItem,
-        userAddress,
+        userAddress: offer.offererAddress,
         price: offer.amount,
         action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
@@ -796,7 +801,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* create tracking before accept offer
       await ApiService.createProcessTracking({
         ...offerTrackingItem,
-        userAddress,
+        userAddress: offer.offererAddress,
         price: offer.amount,
         action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
         processStatus: PROCESS_TRAKING_STATUS.AFTER

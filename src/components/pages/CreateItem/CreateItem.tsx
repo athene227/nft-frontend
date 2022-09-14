@@ -230,6 +230,7 @@ const CreateItem = () => {
 
       await ApiService.createProcessTracking({
         ...nftToCreate,
+        tokenId,
         userAddress,
         action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
@@ -378,6 +379,7 @@ const CreateItem = () => {
 
       await ApiService.createProcessTracking({
         ...nftToCreate,
+        tokenId,
         userAddress,
         action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
