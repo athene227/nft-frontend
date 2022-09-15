@@ -4,6 +4,7 @@ import progressBg from '../../../assets/images/progress-bg.png';
 import tabImgbg from '../../../assets/images/tab-img-bg.png';
 import tabImgbghover from '../../../assets/images/tab-img-bg-hover.png';
 
+
 const CreateSingleWrapper = styled.div`
   /*** create 2 ***/
   font-family: 'DM Sans';
@@ -21,7 +22,7 @@ const CreateSingleWrapper = styled.div`
       font-size: 32px;
     }
   }
-
+  
   .add-attr-popup {
     max-width: 550px;
 
@@ -39,7 +40,7 @@ const CreateSingleWrapper = styled.div`
       }
 
       .nft-attr-normal {
-        margin: auto;9
+        margin: auto;
         width: 100%;
         border-radius: 0px;
         background: ${({ theme }) => theme.colors['nft-attr-bg2']};
@@ -141,11 +142,7 @@ const CreateSingleWrapper = styled.div`
         &.active {
           span {
             background: rgb(63, 94, 251);
-            background: linear-gradient(
-                rgba(255, 255, 255, 0),
-                rgba(255, 255, 255, 0)
-              ),
-              linear-gradient(101deg, #0084fe, #fe00c7);
+            background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,0)), linear-gradient(101deg,#0084fe,#fe00c7);
             strong {
               border: none;
               background-color: ${({ theme }) => theme.colors['tab-bg2']};
@@ -235,38 +232,9 @@ const CreateSingleWrapper = styled.div`
 
       border-radius: 5px;
       margin-bottom: 0;
-      &.textarea{
-        min-height:140px;
-        resize:none;
-      }
     }
     .input__holder__single:focus {
       background: ${({ theme }) => theme.colors['input-holder-focus']};
-    }
-    .form-control-select {
-      .MuiInputBase-formControl {
-        border: 0;
-      }
-      .MuiSelect-select {
-        font-family: 'DM Sans';
-        background: ${({ theme }) => theme.colors['input-holder-bg']};
-        border: 1px solid ${({ theme }) => theme.colors['input-holder-border']};
-        backdrop-filter: blur(40px);
-        font-size: 18px;
-        line-height: 23px;
-        font-weight: 500;
-        padding-left: 30px;
-        padding-right: 30px;
-        display:flex;
-        align-items: center;
-        /* Note: backdrop-filter has minimal browser support */
-
-        border-radius: 5px;
-        margin-bottom: 0;
-        &:focus {
-          background: ${({ theme }) => theme.colors['input-holder-focus']};
-        }
-      }
     }
 
     .bg__market {
@@ -334,9 +302,9 @@ const CreateSingleWrapper = styled.div`
         margin-bottom: 0;
       }
       .form-label {
-        &.label-sub {
-          margin-bottom: 2px !important;
-        }
+        &.label-sub{
+        margin-bottom: 2px!important;
+      }
       }
       .sublabel {
         font-size: 14px;
@@ -349,7 +317,7 @@ const CreateSingleWrapper = styled.div`
       backdrop-filter: blur(40px);
       background-color: ${({ theme }) => theme.colors['input-holder-bg']};
       border-radius: 5px;
-      padding: 20px 20px;
+      padding: 20px 30px;
       background: ${({ theme }) => theme.colors['new__item_bg']};
       background: linear-gradient(
         90deg,
@@ -392,38 +360,34 @@ const CreateSingleWrapper = styled.div`
           margin-bottom: 7px !important;
         }
         i {
-          /* display: none; */
-          margin-right: 8px;
-          position: relative;
-          Ftop: -3px;
+          display: none;
         }
-        .MuiSwitch-root {
-          padding: 5px;
-
-          .MuiSwitch-track {
+        .MuiSwitch-root{
+          padding:5px;
+          
+          .MuiSwitch-track{
             border-radius: 500px;
             opacity: 1;
+            
           }
           .MuiSwitch-thumb {
-            color: #7a7f88;
+            
+            color:#7a7f88;
             width: 25px;
             height: 25px;
             border-radius: 50%;
             margin-top: -2.5px;
             margin-left: -5px;
           }
-          .Mui-checked {
+          .Mui-checked{
             .MuiSwitch-thumb {
-              background: linear-gradient(
-                360deg,
-                #ff00d1 -18.12%,
-                #0880fc 82.18%
-              );
-              color: #ffffff;
-              margin-left: 0px;
-            }
+              background: linear-gradient(360deg, #FF00D1 -18.12%, #0880FC 82.18%);
+            color:#ffffff;
+            margin-left: 0px;
+          }
           }
         }
+       
       }
     }
     .add-collection-field {
@@ -490,11 +454,7 @@ const CreateSingleWrapper = styled.div`
           }
           &:hover {
             background: rgb(63, 94, 251);
-            background: linear-gradient(
-                rgba(255, 255, 255, 0),
-                rgba(255, 255, 255, 0)
-              ),
-              linear-gradient(101deg, #0084fe, #fe00c7);
+            background: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,0)), linear-gradient(101deg,#0084fe,#fe00c7);
             strong {
               border: none;
               background-color: ${({ theme }) => theme.colors['tab-bg2']};
@@ -645,7 +605,6 @@ const CreateSingleWrapper = styled.div`
         margin-top: 15px;
         padding-left: 15px;
         padding-right: 15px;
-        position: relative;
       }
       .nft__item_info {
         background: rgba(0, 0, 0, 0.01);
@@ -674,35 +633,13 @@ const CreateSingleWrapper = styled.div`
         }
         .nft-collection-name {
           font-weight: 400;
-          font-size: 15.331px;
+          font-size: 22.331px;
           line-height: 27px;
-          img{
-            width:17px;
-            margin-right:3px;
-          }
-        }
-        .nft-supply-details{
-          font-weight: 700;
-          font-size: 14px;
-          line-height: 14px;
-          /* identical to box height, or 100% */
-          color: #6670A6;
-          span{
-            display:block;
-            font-size: 16px;
-            line-height: 21px;
-            /* identical to box height */
-            color: #FFFFFF;
-            margin-bottom:4px;
-          }
         }
         .nft__item_price {
           font-weight: 400;
           font-size: 26.0529px;
           line-height: 32px;
-          display: flex;
-          align-items: center;
-
           /* identical to box height */
 
           letter-spacing: 0.01em;
@@ -713,37 +650,21 @@ const CreateSingleWrapper = styled.div`
             float: right;
             color: ${({ theme }) => theme.colors['text-light']};
           }
-          .author_list_pp {
-            margin-left: 0;
-            margin-right: 6px;
-            background: none;
-            border: 0px;
-            width: 26px;
-            height: auto;
-          }
         }
         .nft__item_action {
-          padding-bottom: 13px;
           position: static;
-          min-width:180px;
-          opacity:0;
-          visibility: hidden;
-          pointer-events: none;
-          transition: 0.3s all ease-in;
           span {
             background: linear-gradient(95.16deg, #fe00c7 2.64%, #0084fe 100%);
             // border: 2.79138px solid rgba(255, 255, 255, 0.1);
             border-radius: 9.3046px;
             display: inline-block;
+            max-width: 150px;
             padding: 13px 15px;
             font-size: 20px;
             width: 100%;
+            margin-top: 20px;
             color: #ffffff;
             text-align: center;
-            font-weight: 500;
-            font-size: 18px;
-            line-height: 23px;
-            cursor:pointer;
           }
         }
         .nft__item_like {
@@ -756,20 +677,13 @@ const CreateSingleWrapper = styled.div`
           }
         }
       }
-      &:hover{
-        .nft__item_action{
-          opacity:1;
-          visibility: visible;
-          pointer-events: visible;
-        }
-      }
     }
     .de_countdown {
       position: absolute;
       font-family: 'Neulis Alt';
-      bottom: 15px;
+      top: 63%;
       left: 30px;
-      right: auto;
+      right: 30px;
       background-color: white;
       justify-content: center;
       font-size: 22px;
@@ -800,252 +714,8 @@ const CreateSingleWrapper = styled.div`
       left: 0;
     }
   }
-  input[type='datetime-local'] {
-    padding-right: 10px !important;
+  input[type="datetime-local"]{
+    padding-right: 10px!important;
   }
-  .create-collection-control {
-    .create-collection.btn-main {
-      padding: 11px 17px;
-      font-size: 14px;
-      line-height: 17px;
-      height:40px;
-      margin-bottom:1rem;
-    }
-  }
-  .form-field-details{
-    margin-bottom: 25px;
-    .form-ccfield{
-      background: ${({ theme }) => theme.colors['input-holder-bg']};
-      margin-bottom: 0;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    .attribute-fields{
-    background: linear-gradient(90deg, rgba(244, 5, 201, 0.07) -1.88%, rgba(57, 147, 255, 0.07) 129.09%);
-    border: 1px solid #282A53;
-    backdrop-filter: blur(40px);
-    /* Note: backdrop-filter has minimal browser support */
-    border-radius: 5px;
-    padding: 12px 20px 25px;
-    border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    .attribute-fields-property{
-      display: flex;
-      align-items:center;
-      flex-wrap: wrap;
-      gap:24px;
-      .attribute-field-property{
-        min-width: 129px;
-      }
-      
-     .nft-attr-normal{
-        width:100%;
-        text-align:center;
-        background: linear-gradient(90deg, rgba(254, 0, 199, 0.3) 0%, rgba(0, 132, 254, 0.3) 100%);
-        border: 2px solid #1A96F8;
-        border-radius: 10px;
-        min-height:91px;
-        .nft-attr-name{
-          font-size: 13px;
-          line-height: 17px;
-          text-transform:uppercase;
-          margin-bottom: 11px;
-        }
-        .nft-attr-value{
-          font-size: 22px;
-          line-height: 29px;
-        }
-      }
-    }
-    .attribute-fields-stat{
-      padding-top:16px;
-      display:block;
-      .attribute-field-stat{
-        background: linear-gradient(90deg, rgba(254, 0, 199, 0.3) 0%, rgba(0, 132, 254, 0.3) 100%);
-        border: 2px solid #1A96F8;
-        border-radius: 10px;
-        padding:7px 10px 10px;
-        margin-bottom: 15px;
-        .nft-attr-ranking {
-        .nft-attr-name{
-          padding-left:5px;
-          font-weight: 500;
-          font-size: 14px;
-          line-height: 18px;
-          letter-spacing: 0.02em;
-          color: #FFFFFF;
-          &.disabled{
-            opacity: 0.5;
-          }
-        }
-        .nft-attr-value{
-          padding-right: 5px;
-          font-weight: 500;
-          font-size: 14px;
-          line-height: 18px;
-          letter-spacing: 0.02em;
-          color: #8F8AA1;
-        }
-        .progress{
-          border: 1px solid #224484;
-        }
-      }
-        .attr-ranking-details{
-          margin-bottom:7px;
-        }
-      }
-    }
-  }
-  .attribute-editable-property{
-    padding-top:15px;
-    table{
-      tr{
-        thead{
-          border:none;
-        }
-        th{
-          font-weight: 500;
-          font-size: 12px;
-          line-height: 16px;
-          color: #FFFFFF;
-          padding-left:0px;
-          padding-right:0;
-          border:none;
-          &:nth-of-type(2){
-            padding-left:10px;
-          }
-        }
-        td{
-          vertical-align: middle; 
-          padding-left:0;
-          padding-right:0;
-          border:none;
-          &:nth-of-type(2){
-            padding-left: 12px;
-          }
-          &:last-of-type{
-            text-align:right;
-            padding-left:8px;
-          }
-          input{
-            background-color:transparent;
-          }
-        }
-      td.actions{
-        .icon-custom{
-          background-color: rgba(255,255,255,0.1);
-          padding:10px;
-          border-radius: 55%;
-          width:41px;
-          height:41px;
-          display: inline-block;
-          color:#ffffff;
-          line-height: 19px;
-          text-align: center;
-          svg{
-            width:11px;
-          }
-        }
-      }
-    }
-    }
-    .table>:not(:first-child){
-      border-top:none;
-    }
-    .editable-buttons{
-      .btn-add{
-        max-width:40px;
-        width:100%;
-        padding:5px;
-      }
-      .btn-save{
-        max-width:170px;
-        width:100%;
-      }
-    }
-  }
-  .attribute-editable-stats{
-    table{
-      td{
-        ul{
-          list-style: none;
-          padding-left:0;
-          display:flex;
-          margin-bottom: 0;
-          li{
-            &:first-of-type{
-              input{
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-              }
-            }
-            &:nth-of-type(2){
-              width:50px;
-              padding:16px;
-              background: #282A53;
-              border: 1px solid #282A53;
-              backdrop-filter: blur(40px);
-              span{
-                font-weight: 500;
-              font-size: 18px;
-              line-height: 23px;
-              color: #FFFFFF;
-              opacity: 0.5;
-              text-align:center;
-
-              }  
-            }
-            &:last-of-type{
-              input{
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  }
-  .upload-image-preview{
-    width:200px;
-    height:200px;
-    border-radius: 14.8874px;
-    margin-bottom:25px;
-    position:relative;
-    img{
-      max-width:100%;
-      border-radius: 14.8874px;
-    }
-    ul{
-      position:absolute;
-      top: 8px;
-      right:8px;
-      li{
-        display:inline-block;
-        margin-right:10px;
-        &:last-of-type{
-          margin-right:0;
-        }
-        a{
-          background: rgba(6, 19, 45, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(10.4096px);
-          /* Note: backdrop-filter has minimal browser support */
-          border-radius: 520.481px;
-          width:50px;
-          height:50px;
-          color:#ffffff;
-          display:flex;
-          align-items: center;
-          justify-content:center;
-          font-size:17px;
-        }
-      }
-    }
-  }
-
-  
-
 `;
 export default CreateSingleWrapper;

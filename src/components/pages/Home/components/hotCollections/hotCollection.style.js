@@ -4,7 +4,7 @@ const HotCollectionWrapper = styled.div`
   .section-hot-collections {
     .hot_selection {
       .nft__item_price {
-        color: #00b2fe;
+        color: #00B2FE;
       }
       .nft__item_price_sec {
         margin-right: 10px;

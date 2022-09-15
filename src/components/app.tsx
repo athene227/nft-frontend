@@ -43,6 +43,7 @@ import Contact from './pages/contact';
 // import CreateOption from './pages/CreateOption/CreateOption';
 // import CreateSingle from './pages/CreateSingle/CreateSingle';
 import CreateItem from './pages/CreateItem/CreateItem';
+import CreateItemNew from './pages/CreateItem/CreateItemLatest';
 import ElegantIcons from './pages/elegantIcons';
 import EtlineIcons from './pages/etlineIcons';
 import Explore from './pages/Explore/explore';
@@ -230,6 +231,7 @@ const App = () => {
             {/* <CreateSingle path="/createSingle" /> */}
             {/* <CreateMultiple path="/createMultiple" /> */}
             <CreateItem path="/createItem" />
+            <CreateItemNew path="/createItemLatest"/>
             <Listing path="/listing/:tokenId/:nftAddress" />
             <Profile path="/profile" />
             <MyProfile path="/myProfile" />

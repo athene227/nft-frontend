@@ -2,6 +2,10 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { createTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { withStyles } from '@mui/styles';
 import {
   ErrorMessage,
@@ -28,6 +32,7 @@ import CreateCollectionPopUp from 'src/components/components/CreateCollectionPop
 import Loader from 'src/components/components/Loader';
 import NftAttribute from 'src/components/components/NftAttributes';
 import PreviewNft from 'src/components/components/PreviewNft';
+import PreviewNftImage from 'src/components/components/PreviewNftImage';
 import {
   ALERT_TYPE,
   ATTRIBUTE_TYPE,
@@ -37,6 +42,7 @@ import {
   MARKET_TYPE
 } from 'src/enums';
 import ipfs from 'src/services/ipfs';
+import { getImage } from 'src/services/ipfs';
 import notification from 'src/services/notification';
 import {
   createCollection,
@@ -509,52 +515,10 @@ export default function CreateForm(props: IProps) {
       return element;
     };
 
+    const [profileImage, setProfileImage] = useState(false);
     const getImageUrl = () => {
-      return image || './img/collections/coll-item-3.jpg';
+      return image || './img/collections/coll-item-3.png';
     };
-    //   const MySwitch = withStyles({
-    //     root: {
-
-    //     },
-    //     switchBase: {
-    //         // thumb when unchecked
-    //         color: "orange",
-    //         opacity: 0.8,
-    //         "&$checked": {
-    //             // thumb when checked
-    //             color: "orange",
-    //             opacity: 1,
-    //             // track when checked
-    //             "& + $track": {
-    //                 backgroundColor: "black",
-    //                 opacity: 1,
-    //             },
-    //             // The rules above override the default rules for graying
-    //             // out the thumb and track when the switch is disabled,
-    //             // so we have to add that back in ourselves
-    //             "&$disabled": {
-    //                 // gray out the thumb
-    //                 color: "#bbb",
-    //                 "& + $track": {
-    //                     // gray out the track
-    //                     backgroundColor: "#ddd"
-    //                 }
-    //             }
-    //         },
-    //     },
-    //     thumb: {
-
-    //     },
-    //     checked: {},
-    //     track: {
-    //       borderRadius: 26 / 2,
-    //       border: `1px solid gray`,
-    //       backgroundColor: 'gray',
-    //       opacity: 1,
-    //     },
-    //     disabled: {}
-    // })(Switch);
-
     return (
       <>
         <div className="row">
@@ -574,32 +538,47 @@ export default function CreateForm(props: IProps) {
                     OGG, GLB, GLTF. <br />
                     Max size: 100MB
                   </p> */}
-                  <div className={`d-create-file upload__file`}>
-                    <div
-                      className="col-lg-6 col-sm-8 col-xs-12"
-                      style={{
-                        margin: 'auto',
-                        marginBottom: '5%'
-                      }}
-                    ></div>
-                    <div className="browse">
-                      <input
-                        type="button"
-                        id="get_file"
-                        className={`btn-main btn_gradient`}
-                        value={
-                          image.length == 0 ? 'Choose File' : 'Change File'
-                        }
+
+                  {getImageUrl() != './img/collections/coll-item-3.png' && (
+                    <div className="upload-image-main">
+                      <PreviewNftImage
+                        imageUrl={getImageUrl()}
+                        userImage={getProfileImage(userDetails?.profileImage)}
                       />
-                      <input
-                        id="upload_file"
-                        type="file"
-                        multiple
-                        onChange={onChangeImage}
-                      />
-                      <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
                     </div>
-                  </div>
+                  )}
+
+                  {profileImage === false &&
+                    getImageUrl() == './img/collections/coll-item-3.png' && (
+                      <div className={`d-create-file upload__file`}>
+                        <div
+                          className="col-lg-6 col-sm-8 col-xs-12"
+                          style={{
+                            margin: 'auto',
+                            marginBottom: '5%'
+                          }}
+                        ></div>
+                        <div className="browse">
+                          <input
+                            type="button"
+                            id="get_file"
+                            className={`btn-main btn_gradient`}
+                            value={
+                              image.length == 0
+                                ? 'Choose File/ Drag Here'
+                                : 'Change File/ Drop Here'
+                            }
+                          />
+                          <input
+                            id="upload_file"
+                            type="file"
+                            multiple
+                            onChange={onChangeImage}
+                          />
+                          <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
+                        </div>
+                      </div>
+                    )}
                 </div>
 
                 <div className="form-cfield">

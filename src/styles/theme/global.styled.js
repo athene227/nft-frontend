@@ -2876,7 +2876,7 @@ input[type=number]::-webkit-outer-spin-button {
       margin-right:3px;
     }
     &:after{
-      // content:'Left';
+       content:'Left';
       display:inline-block;
       margin-right:3px;
       color:#202A5D80;
@@ -3080,6 +3080,46 @@ select.form-control{
 
 input:-internal-autofill-selected {
   background-color:${({ theme }) => theme.colors['background']}!important;
+}
+.form-control-select{
+  .MuiInputBase-formControl{
+    border:0;
+  }
+  .MuiSelect-select{
+    padding: 1rem;
+  margin-bottom: 20px;
+  border: none;
+  border: solid 1px rgba(255, 255, 255, 0.1);
+  background:${({ theme }) => theme.colors['form_control_bg']};
+  border-radius: 3px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  height: auto;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  color:${({ theme }) => theme.colors['text-light']};
+
+  &:focus {
+    background-color: inherit;
+    color:${({ theme }) => theme.colors['text-light']};
+    border-color: #86b7fe;
+    outline: 0;
+  }
+  img{
+    width:25px;
+    margin-right:8px;
+  }
+  }
+  fieldset{
+    display:none;
+  }
+}
+.form-control-item{
+  img{
+    width:25px;
+    margin-right:8px;
+  }
 }
 
 // general input
@@ -3756,6 +3796,47 @@ rgba(0, 129, 255, 1)); */
     height: 25px;
     border-width: thin; */
 }
+.MuiPaper-root.MuiPaper-elevation{
+  background: rgba(15, 24, 59, 0.9);
+border: 1px solid rgba(255, 255, 255, 0.05);
+box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(400px);
+border-radius: 5px;
+}
+.MuiMenu-list{
+   padding-top:7px;
+/* Note: backdrop-filter has minimal browser support */
+
+
+    .form-control-item{
+      color:#ffffff;
+      position:relative;
+      padding:13px 20px!important;
+      &:after{
+        content:'';
+        height:1px;
+        background-color:#ffffff;
+        opacity: 0.1;
+        width:100%;
+        position:absolute;
+        bottom:0;
+      }
+      &:last-of-type{
+        &:after{
+          display:none;
+        }
+      }
+      &.Mui-selected{
+        background-color: rgba(0,0, 0, 0.1);
+        &:hover{
+          background-color: rgba(0,0, 0, 0.1);
+        }
+      }
+    }
+  }
+  .cursor-pointer{
+    cursor:pointer;
+  }
 `;
 
 export default GlobalStyle;

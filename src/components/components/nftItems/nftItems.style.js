@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const NftItems = styled.div`
   .nft-general-style {
     .nft_items__holder {
-  
       .nft {
         .custom_col {
           @media screen and (min-width: 1200px) {
@@ -59,7 +58,7 @@ const NftItems = styled.div`
           }
 
           .nft__publisher {
-            font-size:12px;
+            font-size: 12px;
           }
 
           .img_hover {
@@ -76,10 +75,10 @@ const NftItems = styled.div`
             position: absolute;
             /* right: 10px; */
             right: 10px;
-            color: ${({theme})=> theme.colors.item__price_color};
+            color: ${({ theme }) => theme.colors.item__price_color};
             font-size: 14px;
             /* line-height:17px; */
-            font-weight:700;
+            font-weight: 700;
 
             img {
               width: 18px;
@@ -109,7 +108,7 @@ const NftItems = styled.div`
           border-radius: 8.2928px;
 
           .nft__item_wrap {
-            & > div{
+            & > div {
               overflow: visible;
             }
             img {
@@ -136,7 +135,7 @@ const NftItems = styled.div`
             width: 30px;
             height: 30px;
             /* top: -30px; */
-            top:0;
+            top: 0;
             /* right: 0; */
             right: -20px;
 
@@ -149,10 +148,10 @@ const NftItems = styled.div`
           .btn_grad_custom {
             color: white;
             font-family: 'Neulis Alt';
-            font-weight:700;
+            font-weight: 700;
             border-radius: 5px;
             font-size: 12px;
-            line-height:14.88px;
+            line-height: 14.88px;
             padding: 8px 15px;
             bottom: 5px;
             position: absolute;
