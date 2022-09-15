@@ -202,7 +202,10 @@ export default function AuctionSaleForm(props: IProps) {
     <Formik
       initialValues={getInitialValue()}
       onSubmit={(values, actions) => {
-        submit(values, actions.resetForm);
+        const obj = priceTokens?.find(
+          (item) => item.name === values.pricetokentype
+        );
+        submit({ ...values, priceTokenId: obj?._id }, actions.resetForm);
       }}
       render={displayAuctionForm}
       validationSchema={SignupSchema}

@@ -73,7 +73,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
   };
   interface InftInputs {
     minimumBid: string;
-    pricetokentype: string;
+    priceTokenId: string;
     expirationDate: string;
     price: string;
   }
@@ -125,12 +125,15 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         royalty: nft.royalty,
         tokenId: nft.tokenId,
         attributes: nft.attributes,
-        priceTokenType: 'ETH',
+        priceTokenId: '',
         category: nft.category,
         networkId,
         marketType,
         isListedOnce: true,
         multiple: false,
+        totalAmount: 1,
+        leftAmount: 0,
+        listedAmount: 1,
         listedAt: new Date()
       };
       // const myBalance = await getMyBalance(userAddress, web3)
@@ -145,8 +148,8 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         if (data.minimumBid) {
           itemToCreate.minimumBid = data.minimumBid;
         }
-        if (data.pricetokentype) {
-          itemToCreate.priceTokenType = priceTokenType;
+        if (data.priceTokenId) {
+          itemToCreate.priceTokenId = data.priceTokenId;
         }
         if (data.expirationDate) {
           itemToCreate.expirationDate = _date;

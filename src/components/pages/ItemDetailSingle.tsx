@@ -571,6 +571,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         description: nft.description,
         listingId: nft.listingId,
         tokenId: nft.tokenId,
+        nftAddress: nft.nftAddress,
         networkId: nft.networkId
       };
 
@@ -663,6 +664,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         description: nft.description,
         listingId: nft.listingId,
         tokenId: nft.tokenId,
+        nftAddress: nft.nftAddress,
         networkId: nft.networkId
       };
       const offerDeadline = Number(
@@ -840,6 +842,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         description: nft.description,
         listingId: nft.listingId,
         tokenId: nft.tokenId,
+        nftAddress: nft.nftAddress,
         networkId: nft.networkId
       };
 
@@ -1119,6 +1122,46 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
+  const _convertActionToText = (action: string) => {
+    let res: string;
+    switch (action) {
+      case PROCESS_TRAKING_ACTION.CREATE_AUCTION:
+        res = 'created an auction';
+        break;
+      case PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD:
+        res = 'terminated an auction';
+        break;
+      case PROCESS_TRAKING_ACTION.ACCEPTOFFER:
+        res = 'offer accepted';
+        break;
+      case PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE:
+        res = 'bought a simple item';
+        break;
+      case PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE:
+        res = 'minted a single NFT';
+        break;
+      case PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE:
+        res = 'listed a simple item';
+        break;
+      case PROCESS_TRAKING_ACTION.LIST_AUCTION:
+        res = 'listed an auction item';
+        break;
+      case PROCESS_TRAKING_ACTION.OFFER:
+        res = 'created an offer';
+        break;
+      case PROCESS_TRAKING_ACTION.BID:
+        res = 'placed a bid';
+        break;
+      case PROCESS_TRAKING_ACTION.CANCEL_OFFER:
+        res = 'cancelled an offer';
+        break;
+      default:
+        res = '';
+        break;
+    }
+    return res;
+  };
+
   const renderTimeClock = () => {
     if (!nft) return;
     if (
@@ -1384,6 +1427,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                       </b>
                     </span>
                   </div>
+                  <p className="ml-2">
+                    {`${_convertActionToText(item?.action)}`}
+                  </p>
                 </div>
               );
             })}
