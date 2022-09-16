@@ -6,7 +6,7 @@ export const setUserProfile = (data: any) => async (dispatch: any) => {
   try {
     dispatch(actions.setUserProfile.success({ data }));
   } catch (err) {
-    console.log('🚀 ~ file: users.tsx ~ line 10 ~ setUserProfile ~ err', err);
+    console.log('error in setUserProfile', err);
     dispatch(actions.setUserProfile.failure(err));
   }
 };
@@ -20,10 +20,7 @@ export const fetchOwnerDetails =
 
       dispatch(actions.fetchOwnerDetails.success({ data }));
     } catch (err) {
-      console.log(
-        '🚀 ~ file: users.tsx ~ line 24 ~ fetchOwnerDetails ~ err',
-        err
-      );
+      console.log('error in fetchOwnerDetails', err);
       dispatch(actions.fetchOwnerDetails.failure(err));
     }
   };

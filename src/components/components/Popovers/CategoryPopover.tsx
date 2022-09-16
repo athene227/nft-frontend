@@ -1,27 +1,23 @@
-import CategoryIcon from '@mui/icons-material/Category';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useState } from 'react';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import {
-  Checkbox,
   List,
   ListItem,
+  Checkbox,
   ListItemButton,
   ListItemText
 } from '@mui/material';
-import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { ICollection } from 'src/collections.types';
-
 import classes from './CustomPopover.module.scss';
-
+import CheckIcon from '@mui/icons-material/Check';
+import CategoryIcon from '@mui/icons-material/Category';
 interface CategoryPopoverProps {
   collectionList: ICollection[];
-  nftCount: Object;
   onUpdate: (v: any) => void;
 }
 
 const CategoryPopover = ({
   collectionList,
-  nftCount,
   onUpdate
 }: CategoryPopoverProps) => {
   const [collectionPopShow, setCollectionPopShow] = useState(false);
@@ -103,16 +99,7 @@ const CategoryPopover = ({
                       style={{ paddingLeft: 0, paddingRight: 0 }}
                       onClick={() => handleSelectCollection(item.value)}
                     >
-                      <ListItemText
-                        id={labelId}
-                        primary={
-                          item.name +
-                          ' ' +
-                          (nftCount[item.name] == undefined
-                            ? 0
-                            : nftCount[item.name])
-                        }
-                      />
+                      <ListItemText id={labelId} primary={item.name} />
                     </ListItemButton>
                   </ListItem>
                 );
@@ -139,12 +126,7 @@ const CategoryPopover = ({
         onClick={() => setCollectionPopShow(!collectionPopShow)}
       >
         <CategoryIcon size={30} className={`m-2 button__icon`} />
-        <span>
-          Category
-          <i
-            className={`mt-3 pull-right fa fa-angle-down font-weight-bold`}
-          ></i>
-        </span>
+        <span>Category</span>
       </button>
     </OverlayTrigger>
   );

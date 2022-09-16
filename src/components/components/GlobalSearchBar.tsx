@@ -1,21 +1,21 @@
 /* eslint-disable react/jsx-no-bind */
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useState, useEffect } from 'react';
+import { navigate } from '@reach/router';
 import {
   Autocomplete,
-  Avatar,
-  Button,
+  TextField,
   CircularProgress,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
+  ListItemAvatar,
+  Avatar,
   ListItemText,
-  TextField
+  Button
 } from '@mui/material';
-import InputAdornment from '@mui/material/InputAdornment';
-import { navigate } from '@reach/router';
-import React, { useEffect, useState } from 'react';
 import { ApiService } from 'src/core/axios';
 import { getImage } from 'src/services/ipfs';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 interface IOption {
   label: string;
   image: string;
@@ -65,10 +65,7 @@ const GlobalSearchbar = (props: any) => {
           key: '1'
         }
       ];
-      console.log(
-        '🚀 ~ file: GlobalSearchBar.tsx ~ line 69 ~ onChangeHandle ~ options',
-        options
-      );
+      console.log(options);
       setOptions(options);
     } catch (e) {
       setLoading(false);

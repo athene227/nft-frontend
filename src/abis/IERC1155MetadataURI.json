@@ -323,19 +323,13 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts v4.4.1 (token/ERC1155/extensions/IERC1155MetadataURI.sol)\n\npragma solidity ^0.8.0;\n\nimport \"../IERC1155.sol\";\n\n/**\n * @dev Interface of the optional ERC1155MetadataExtension interface, as defined\n * in the https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[EIP].\n *\n * _Available since v3.1._\n */\ninterface IERC1155MetadataURI is IERC1155 {\n    /**\n     * @dev Returns the URI for token type `id`.\n     *\n     * If the `\\{id\\}` substring is present in the URI, it must be replaced by\n     * clients with the actual token type ID.\n     */\n    function uri(uint256 id) external view returns (string memory);\n}\n",
-  "sourcePath": "@openzeppelin\\contracts\\token\\ERC1155\\extensions\\IERC1155MetadataURI.sol",
+  "sourcePath": "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol",
   "ast": {
     "absolutePath": "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol",
     "exportedSymbols": {
-      "IERC1155": [
-        1384
-      ],
-      "IERC1155MetadataURI": [
-        1597
-      ],
-      "IERC165": [
-        3382
-      ]
+      "IERC1155": [1384],
+      "IERC1155MetadataURI": [1597],
+      "IERC165": [3382]
     },
     "id": 1598,
     "license": "MIT",
@@ -343,12 +337,7 @@
     "nodes": [
       {
         "id": 1584,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
+        "literals": ["solidity", "^", "0.8", ".0"],
         "nodeType": "PragmaDirective",
         "src": "117:23:5"
       },
@@ -390,11 +379,7 @@
         },
         "fullyImplemented": false,
         "id": 1597,
-        "linearizedBaseContracts": [
-          1597,
-          1384,
-          3382
-        ],
+        "linearizedBaseContracts": [1597, 1384, 3382],
         "name": "IERC1155MetadataURI",
         "nameLocation": "374:19:5",
         "nodeType": "ContractDefinition",
@@ -499,15 +484,9 @@
   "legacyAST": {
     "absolutePath": "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol",
     "exportedSymbols": {
-      "IERC1155": [
-        1384
-      ],
-      "IERC1155MetadataURI": [
-        1597
-      ],
-      "IERC165": [
-        3382
-      ]
+      "IERC1155": [1384],
+      "IERC1155MetadataURI": [1597],
+      "IERC165": [3382]
     },
     "id": 1598,
     "license": "MIT",
@@ -515,12 +494,7 @@
     "nodes": [
       {
         "id": 1584,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
+        "literals": ["solidity", "^", "0.8", ".0"],
         "nodeType": "PragmaDirective",
         "src": "117:23:5"
       },
@@ -562,11 +536,7 @@
         },
         "fullyImplemented": false,
         "id": 1597,
-        "linearizedBaseContracts": [
-          1597,
-          1384,
-          3382
-        ],
+        "linearizedBaseContracts": [1597, 1384, 3382],
         "name": "IERC1155MetadataURI",
         "nameLocation": "374:19:5",
         "nodeType": "ContractDefinition",
@@ -673,8 +643,8 @@
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.4",
-  "updatedAt": "2022-06-29T11:27:08.395Z",
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-06-07T17:36:30.242Z",
   "devdoc": {
     "details": "Interface of the optional ERC1155MetadataExtension interface, as defined in the https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[EIP]. _Available since v3.1._",
     "kind": "dev",

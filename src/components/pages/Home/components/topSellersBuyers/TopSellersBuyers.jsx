@@ -34,10 +34,7 @@ function TopSellersBuyers() {
       });
       setCollectionData(res.data);
     } catch (error) {
-      console.log(
-        '🚀 ~ file: TopSellersBuyers.jsx ~ line 37 ~ getTopCollections ~ error',
-        error
-      );
+      console.log('error in getTopCollection', error);
     }
   };
 
@@ -48,16 +45,9 @@ function TopSellersBuyers() {
         day: sellerTime
       });
       setSellerData(res.data);
-      console.log(
-        '🚀 ~ file: TopSellersBuyers.jsx ~ line 52 ~ getTopSellers ~ TOP_SELLERS_BUYERS.SELLERS, res.data',
-        TOP_SELLERS_BUYERS.SELLERS,
-        res.data
-      );
+      console.log(TOP_SELLERS_BUYERS.SELLERS, res.data);
     } catch (error) {
-      console.log(
-        '🚀 ~ file: TopSellersBuyers.jsx ~ line 53 ~ getTopSellers ~ error',
-        error
-      );
+      console.log('error in getTopSeller', error);
     }
   };
 
@@ -65,16 +55,9 @@ function TopSellersBuyers() {
     try {
       const res = await ApiService.getTopBuyers({ limit: 10, day: sellerTime });
       setSellerData(res.data);
-      console.log(
-        '🚀 ~ file: TopSellersBuyers.jsx ~ line 69 ~ getTopBuyers ~ TOP_SELLERS_BUYERS.BUYERS, res.data',
-        TOP_SELLERS_BUYERS.BUYERS,
-        res.data
-      );
+      console.log(TOP_SELLERS_BUYERS.BUYERS, res.data);
     } catch (error) {
-      console.log(
-        '🚀 ~ file: TopSellersBuyers.jsx ~ line 72 ~ getTopBuyers ~ error',
-        error
-      );
+      console.log('error in getTopBuyers', error);
     }
   };
 

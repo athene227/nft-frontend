@@ -1,0 +1,135 @@
+$stats-bg: #12121280;
+$live-bg-shadow: #040f2526;
+$live-bg-color: #0e1e45;
+.section-live-auction {
+    background-image: url("../images/liveauction-bg.png");
+    .themeLight & {
+        background-image: none;
+    }
+    background-size: 150% 110%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    .swiper-wrapper {
+        margin-left: -12px;
+    }
+    .live_item {
+        .nft__item_preview {
+            width: 360px;
+            height: 360px;
+        }
+
+        .stats {
+            position: absolute;
+            bottom: 0%;
+            // border: 2px solid white;
+            z-index: 0;
+            width: 90%;
+            margin: 2%;
+            background: $stats-bg;
+            backdrop-filter: blur(50px);
+            border-radius: 10px;
+            // clip-path: polygon(20% 0%, 100% 0, 100% 20%, 100% 80%, 80% 100%, 0 100%, 0% 85%, 0 20%);
+
+            .stats_heading {
+                font-size: 25px;
+                font-weight: 700;
+                color: white;
+            }
+
+            .stats_info {
+                font-size: 14px;
+                color: $white;
+                margin-bottom: 0;
+            }
+
+            .stats_price {
+                color: var(--color);
+                font-size: 16px;
+                font-weight: 900;
+                @media only screen and (max-width: 641px) {
+                    font-size: 12px;
+                }
+            }
+
+            .stats_timer {
+                color: white;
+                font-size: 16px;
+                font-weight: 700;
+                @media only screen and (max-width: 641px) {
+                    font-size: 11px;
+                }
+            }
+        }
+    }
+
+    .live_bg_col {
+        background: $live-bg-color;
+        .themeLight & {
+        }
+        border-radius: 20px;
+        width: 400px;
+        height: 620px;
+        @media screen and (max-width: 768px) {
+            margin: 0 auto;
+        }
+        box-shadow: 20px 30px 30px $live-bg-shadow;
+        backdrop-filter: blur(193.17px);
+        /* Note: backdrop-filter has minimal browser support */
+
+        border-radius: 10px;
+        padding: 10px 20px 30px;
+        @media only screen and (max-width: 641px) {
+            width: 260px;
+        }
+    }
+    .swiper-slide-active.swiper-slide {
+        // backdrop-filter: blur(0px);
+        .live_bg_col {
+            background: $live-bg-color;
+        }
+    }
+    .swiper-slide {
+        // backdrop-filter: blur(10px);
+        .live_bg_col {
+            // background: rgba(14, 30, 69, 0.6);
+        }
+    }
+    .swiper-slide-next,
+    .swiper-slide-prev {
+        // backdrop-filter: blur(5px);
+        .live_bg_col {
+            // background: rgba(14, 30, 69, 0.5);
+        }
+    }
+    .themeLight .LiveAuctionItem_live_bg_col__13Njj {
+        background: $white;
+    }
+    .icon_font {
+        font-size: 20px;
+    }
+
+    .author_list_dimensions {
+        width: 30px;
+        height: 30px;
+    }
+    .themeLight & {
+        .nft__item.sec-bg {
+            background-color: $white;
+        }
+        .swiper-button-prev-unique,
+        .swiper-button-next-unique {
+            color: $text-light;
+        }
+    }
+    .nft__item_info {
+        .author_list_pp {
+            margin-left: 0;
+        }
+        .nft__item_price {
+            // margin-right: -15px;
+        }
+    }
+    .author_icon_custom {
+        margin-left: -14px;
+    }
+}

@@ -1,13 +1,17 @@
-import { navigate } from '@reach/router';
+/* eslint-disable react/jsx-no-bind */
 import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
-import Clock from 'src/components/components/Clock/Clock';
-import UserAvatar from 'src/components/components/UserAvatar';
-import { MARKET_TYPE, STATUS } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
-import * as selectors from 'src/store/selectors';
-import { INft } from 'src/types/nfts.types';
 import styled from 'styled-components';
+import Clock from 'src/components/components/Clock/Clock';
+import { navigate } from '@reach/router';
+import { useSelector } from 'react-redux';
+import * as selectors from 'src/store/selectors';
+import { STATUS, MARKET_TYPE } from 'src/enums';
+import { INft } from 'src/types/nfts.types';
+import { dateHasPassed } from 'src/utils';
+import { getImage } from 'src/services/ipfs';
+import { ImageList } from '@mui/material';
+import classes from './ExploreItems.module.scss';
+import UserAvatar from 'src/components/components/UserAvatar';
 
 const Outer = styled.div`
   display: flex;
@@ -28,21 +32,23 @@ interface IProps {
 
 const ExploreItemCard = ({
   nft,
-  className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4'
+  className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4',
+  clockTop = true,
+  height,
+  onImgLoad
 }: IProps) => {
   const web3State = useSelector(selectors.web3State);
   const { accounts } = web3State.web3.data;
   const userAddress = accounts[0];
-  const { imageUrl, previewImageUrl } = nft;
 
   const navigateTo = (link: string) => {
     navigate(link);
   };
   const navigateToItemDetail = () => {
-    if (nft?.multiple) {
-      navigate(`/ItemDetailMultiple/${nft?.tokenId}/${nft?.nftAddress}`);
+    if (nft.multiple) {
+      navigateTo(`/ItemDetailMultiple/${nft.tokenId}/${nft.nftAddress}`);
     } else {
-      navigate(`/ItemDetail/${nft?.tokenId}/${nft?.nftAddress}`);
+      navigateTo(`/ItemDetail/${nft.tokenId}/${nft.nftAddress}`);
     }
   };
 
@@ -83,16 +89,15 @@ const ExploreItemCard = ({
               <Outer>
                 <span>
                   <img
-                    onClick={() => navigateToItemDetail()}
-                    src={getImage(previewImageUrl || imageUrl)}
-                    className="lazy nft__item_preview img-fluid"
+                    src={getImage(nft.imageUrl)}
+                    className="lazy nft__item_preview"
                     alt=""
                   />
                 </span>
               </Outer>
             </div>
             <div className="nft__item_info d-flex flex-column ">
-              <div className="col-12 d-flex justify-content-between mb-0 pl-0">
+              <div className="col-12 d-flex justify-content-between mb-2">
                 <div>
                   <h4 className={`mb-0 nft__item__name_hover`}>{nft.name}</h4>
                 </div>
@@ -106,11 +111,9 @@ const ExploreItemCard = ({
                 </div>
               </div>
 
-              <div className="d-flex justify-content-between">
+              <div className="col-12 d-flex justify-content-between">
                 <div className={`nft__item_user nft__item__name_hover`}>
-                  <span className="nft__publisher">
-                    {nft?.owner[0]?.username}
-                  </span>
+                  {nft?.owner[0]?.username}
                 </div>
               </div>
 
@@ -129,13 +132,14 @@ const ExploreItemCard = ({
                     <span onClick={() => navigateToItemDetail()}>Listed</span>
                   )}
                 </div>
+
                 <div className={`nft__item_price`}>
                   {nft.marketType === 'SIMPLE' ? nft.price : nft.minimumBid}
                   <img
                     className={`icon_margin`}
                     src="./img/items/PulseChain-Logo-Shape.png"
                     alt=""
-                  ></img>{' '}
+                  ></img>
                   PLS
                 </div>
               </div>

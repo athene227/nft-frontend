@@ -1,6 +1,5 @@
 import { SortOrder } from 'src/enums';
 import { getType } from 'typesafe-actions';
-
 import * as actions from '../actions';
 
 export interface ISortState {

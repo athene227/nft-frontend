@@ -20,9 +20,9 @@ function LiveAuctionItem({ hotAuction }) {
       <div className="d-item">
         <div className={`nft__item sec-bg live_bg_col`}>
           <div className="nft-item-customcontent">
-            {hotAuction.expirationDate && (
+            {hotAuction.deadline && (
               <div className="de_countdown">
-                <Clock deadline={hotAuction.expirationDate} />
+                <Clock deadline={hotAuction.deadline} />
               </div>
             )}
             <div className={`nft__item_wrap live_item`}>

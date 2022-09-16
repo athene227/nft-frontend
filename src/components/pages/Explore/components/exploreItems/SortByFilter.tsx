@@ -1,8 +1,8 @@
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
-import { BiSortAlt2 } from 'react-icons/bi';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
+import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { MdCheck } from 'react-icons/md';
+import { BiSortAlt2 } from 'react-icons/bi';
 import { sortOrders } from 'src/components/components/constants/sort';
 import { SortOrder } from 'src/enums';
 
@@ -10,7 +10,6 @@ interface SortByPopoverProps {
   currentOrder: SortOrder;
   onUpdate: (value: string) => void;
 }
-
 const SortByPopover = ({ currentOrder, onUpdate }: SortByPopoverProps) => {
   const [sortPopShow, setSortPopShow] = useState(false);
   const updateSortOrder = (value: string) => {

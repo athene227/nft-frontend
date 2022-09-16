@@ -341,40 +341,20 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/ERC721URIStorage.sol)\n\npragma solidity ^0.8.0;\n\nimport \"../ERC721.sol\";\n\n/**\n * @dev ERC721 token with storage based token URI management.\n */\nabstract contract ERC721URIStorage is ERC721 {\n    using Strings for uint256;\n\n    // Optional mapping for token URIs\n    mapping(uint256 => string) private _tokenURIs;\n\n    /**\n     * @dev See {IERC721Metadata-tokenURI}.\n     */\n    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {\n        require(_exists(tokenId), \"ERC721URIStorage: URI query for nonexistent token\");\n\n        string memory _tokenURI = _tokenURIs[tokenId];\n        string memory base = _baseURI();\n\n        // If there is no base URI, return the token URI.\n        if (bytes(base).length == 0) {\n            return _tokenURI;\n        }\n        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).\n        if (bytes(_tokenURI).length > 0) {\n            return string(abi.encodePacked(base, _tokenURI));\n        }\n\n        return super.tokenURI(tokenId);\n    }\n\n    /**\n     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.\n     *\n     * Requirements:\n     *\n     * - `tokenId` must exist.\n     */\n    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {\n        require(_exists(tokenId), \"ERC721URIStorage: URI set of nonexistent token\");\n        _tokenURIs[tokenId] = _tokenURI;\n    }\n\n    /**\n     * @dev Destroys `tokenId`.\n     * The approval is cleared when the token is burned.\n     *\n     * Requirements:\n     *\n     * - `tokenId` must exist.\n     *\n     * Emits a {Transfer} event.\n     */\n    function _burn(uint256 tokenId) internal virtual override {\n        super._burn(tokenId);\n\n        if (bytes(_tokenURIs[tokenId]).length != 0) {\n            delete _tokenURIs[tokenId];\n        }\n    }\n}\n",
-  "sourcePath": "@openzeppelin\\contracts\\token\\ERC721\\extensions\\ERC721URIStorage.sol",
+  "sourcePath": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
   "ast": {
     "absolutePath": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
     "exportedSymbols": {
-      "Address": [
-        3047
-      ],
-      "Context": [
-        3069
-      ],
-      "ERC165": [
-        3370
-      ],
-      "ERC721": [
-        2463
-      ],
-      "ERC721URIStorage": [
-        2725
-      ],
-      "IERC165": [
-        3382
-      ],
-      "IERC721": [
-        2579
-      ],
-      "IERC721Metadata": [
-        2752
-      ],
-      "IERC721Receiver": [
-        2597
-      ],
-      "Strings": [
-        3346
-      ]
+      "Address": [3047],
+      "Context": [3069],
+      "ERC165": [3370],
+      "ERC721": [2463],
+      "ERC721URIStorage": [2725],
+      "IERC165": [3382],
+      "IERC721": [2579],
+      "IERC721Metadata": [2752],
+      "IERC721Receiver": [2597],
+      "Strings": [3346]
     },
     "id": 2726,
     "license": "MIT",
@@ -382,12 +362,7 @@
     "nodes": [
       {
         "id": 2599,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
+        "literals": ["solidity", "^", "0.8", ".0"],
         "nodeType": "PragmaDirective",
         "src": "113:23:9"
       },
@@ -429,15 +404,7 @@
         },
         "fullyImplemented": false,
         "id": 2725,
-        "linearizedBaseContracts": [
-          2725,
-          2463,
-          2752,
-          2579,
-          3370,
-          3382,
-          3069
-        ],
+        "linearizedBaseContracts": [2725, 2463, 2752, 2579, 3370, 3382, 3069],
         "name": "ERC721URIStorage",
         "nameLocation": "251:16:9",
         "nodeType": "ContractDefinition",
@@ -511,9 +478,7 @@
             "visibility": "private"
           },
           {
-            "baseFunctions": [
-              1805
-            ],
+            "baseFunctions": [1805],
             "body": {
               "id": 2671,
               "nodeType": "Block",
@@ -601,10 +566,7 @@
                       "id": 2619,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "565:7:9",
                       "typeDescriptions": {
@@ -632,9 +594,7 @@
                   "src": "565:78:9"
                 },
                 {
-                  "assignments": [
-                    2627
-                  ],
+                  "assignments": [2627],
                   "declarations": [
                     {
                       "constant": false,
@@ -706,9 +666,7 @@
                   "src": "654:45:9"
                 },
                 {
-                  "assignments": [
-                    2633
-                  ],
+                  "assignments": [2633],
                   "declarations": [
                     {
                       "constant": false,
@@ -1403,10 +1361,7 @@
                       "id": 2680,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "1368:7:9",
                       "typeDescriptions": {
@@ -1590,9 +1545,7 @@
             "visibility": "internal"
           },
           {
-            "baseFunctions": [
-              2247
-            ],
+            "baseFunctions": [2247],
             "body": {
               "id": 2723,
               "nodeType": "Block",
@@ -1942,36 +1895,16 @@
   "legacyAST": {
     "absolutePath": "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
     "exportedSymbols": {
-      "Address": [
-        3047
-      ],
-      "Context": [
-        3069
-      ],
-      "ERC165": [
-        3370
-      ],
-      "ERC721": [
-        2463
-      ],
-      "ERC721URIStorage": [
-        2725
-      ],
-      "IERC165": [
-        3382
-      ],
-      "IERC721": [
-        2579
-      ],
-      "IERC721Metadata": [
-        2752
-      ],
-      "IERC721Receiver": [
-        2597
-      ],
-      "Strings": [
-        3346
-      ]
+      "Address": [3047],
+      "Context": [3069],
+      "ERC165": [3370],
+      "ERC721": [2463],
+      "ERC721URIStorage": [2725],
+      "IERC165": [3382],
+      "IERC721": [2579],
+      "IERC721Metadata": [2752],
+      "IERC721Receiver": [2597],
+      "Strings": [3346]
     },
     "id": 2726,
     "license": "MIT",
@@ -1979,12 +1912,7 @@
     "nodes": [
       {
         "id": 2599,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
+        "literals": ["solidity", "^", "0.8", ".0"],
         "nodeType": "PragmaDirective",
         "src": "113:23:9"
       },
@@ -2026,15 +1954,7 @@
         },
         "fullyImplemented": false,
         "id": 2725,
-        "linearizedBaseContracts": [
-          2725,
-          2463,
-          2752,
-          2579,
-          3370,
-          3382,
-          3069
-        ],
+        "linearizedBaseContracts": [2725, 2463, 2752, 2579, 3370, 3382, 3069],
         "name": "ERC721URIStorage",
         "nameLocation": "251:16:9",
         "nodeType": "ContractDefinition",
@@ -2108,9 +2028,7 @@
             "visibility": "private"
           },
           {
-            "baseFunctions": [
-              1805
-            ],
+            "baseFunctions": [1805],
             "body": {
               "id": 2671,
               "nodeType": "Block",
@@ -2198,10 +2116,7 @@
                       "id": 2619,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "565:7:9",
                       "typeDescriptions": {
@@ -2229,9 +2144,7 @@
                   "src": "565:78:9"
                 },
                 {
-                  "assignments": [
-                    2627
-                  ],
+                  "assignments": [2627],
                   "declarations": [
                     {
                       "constant": false,
@@ -2303,9 +2216,7 @@
                   "src": "654:45:9"
                 },
                 {
-                  "assignments": [
-                    2633
-                  ],
+                  "assignments": [2633],
                   "declarations": [
                     {
                       "constant": false,
@@ -3000,10 +2911,7 @@
                       "id": 2680,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "1368:7:9",
                       "typeDescriptions": {
@@ -3187,9 +3095,7 @@
             "visibility": "internal"
           },
           {
-            "baseFunctions": [
-              2247
-            ],
+            "baseFunctions": [2247],
             "body": {
               "id": 2723,
               "nodeType": "Block",
@@ -3541,8 +3447,8 @@
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.4",
-  "updatedAt": "2022-06-29T11:27:08.470Z",
+  "schemaVersion": "3.4.6",
+  "updatedAt": "2022-06-07T17:36:30.257Z",
   "devdoc": {
     "details": "ERC721 token with storage based token URI management.",
     "kind": "dev",

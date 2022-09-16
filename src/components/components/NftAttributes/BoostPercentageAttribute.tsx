@@ -1,13 +1,12 @@
-import 'react-circular-progressbar/dist/styles.css';
-
 import React from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { BsFillLightningFill } from 'react-icons/bs';
 import { INftAttribute } from 'src/types/nfts.types';
+import 'react-circular-progressbar/dist/styles.css';
 
 const BoostPercentageAttribute = ({ data }: { data: INftAttribute }) => (
   <div className={`nft-attr-bsnumber ${data.value > 100 ? 'danger' : ''}`}>
-    <div className="boost-progress-wrapper" style={{ width: '60px' }}>
+    <div className="boost-progress-wrapper">
       <CircularProgressbarWithChildren value={data.value as number}>
         <BsFillLightningFill className="text-white" />
       </CircularProgressbarWithChildren>

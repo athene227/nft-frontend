@@ -48,6 +48,7 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
   event AuctionBidAccepted(uint256 indexed listingId, uint256 indexed bidIndex);
   event AuctionTerminated(uint256 indexed listingId);
   event AuctionCancelled(uint256 indexed listingId);
+  event AuctionExtended(uint256 indexed listingId, uint256 newDeadline);
 
   /**
    * @dev Initializes the contract
@@ -155,6 +156,11 @@ contract NFTMarketAuction is ReentrancyGuard, MarketTools {
     );
 
     auctionBids[listingId].push(AuctionBid(bidAmount, msg.sender, false));
+    if (marketItem.deadline < block.timestamp + 10 minutes) {
+      // If deadline is within 10 minutes extend it by 10 minutes
+      marketItem.deadline = block.timestamp + 10 minutes;
+      emit AuctionExtended(listingId, marketItem.deadline);
+    }
 
     emit AuctionBidCreated(
       listingId,

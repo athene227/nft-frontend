@@ -1,24 +1,18 @@
-// import { header } from 'react-bootstrap';
-import { Link, navigate } from '@reach/router';
-import jwtDecode from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
-import useOnclickOutside from 'react-cool-onclickoutside';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
 import Breakpoint, {
   BreakpointProvider,
   setDefaultBreakpoints
 } from 'react-socks';
-// contracts
-import NFT from 'src/abis/NFT.json';
-import NFTMarket from 'src/abis/NFTMarket.json';
-import { ApiService } from 'src/core/axios';
-import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
-import notification from 'src/services/notification';
-import { setUserProfile } from 'src/store/actions/thunks/users';
-import { setupWeb3 } from 'src/store/actions/thunks/web3';
+import jwtDecode from 'jwt-decode';
+
+// import { header } from 'react-bootstrap';
+import { Link, navigate } from '@reach/router';
+import Web3 from 'web3';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import useOnclickOutside from 'react-cool-onclickoutside';
 import * as selectors from 'src/store/selectors';
+import { useSelector, useDispatch } from 'react-redux';
 import { IUser } from 'src/types/users.types';
 import {
   getMyBalance,
@@ -26,10 +20,16 @@ import {
   getNetworkId,
   shortAddress
 } from 'src/utils';
-import Web3 from 'web3';
-
+import { getImage } from 'src/services/ipfs';
+import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
+import { ApiService } from 'src/core/axios';
+import { setupWeb3 } from 'src/store/actions/thunks/web3';
+// contracts
+import NFT from 'src/abis/NFT.json';
+import NFTMarket from 'src/abis/NFTMarket.json';
+import { setUserProfile } from 'src/store/actions/thunks/users';
+import notification from 'src/services/notification';
 import GlobalSearchBar from '../components/GlobalSearchBar';
-import HeaderWrapper from './header.styled';
 
 setDefaultBreakpoints([{ xs: 0 }, { l: 1199 }, { xl: 1200 }]);
 
@@ -192,10 +192,8 @@ const Header = function () {
     (window as any).ethereum?.on(
       'accountsChanged',
       async function (accounts: string[]) {
-        console.log(
-          '🚀 ~ file: Header.tsx ~ line 195 ~ accountsChanged',
-          accounts
-        );
+        console.log('account changed');
+        console.log('accountsChanged - accounts -', accounts);
         if (accounts.length) {
           loadWeb3({ fromConnectButton: false });
         } else {
@@ -298,10 +296,7 @@ const Header = function () {
         })
       );
     } catch (error) {
-      console.log(
-        '🚀 ~ file: Header.tsx ~ line 301 ~ handleLoggedOut ~ error',
-        error
-      );
+      console.log('error in handleLoggedOut', error);
     }
   };
 
@@ -336,7 +331,7 @@ const Header = function () {
       setLoadingState({ loading: true, error: null });
       // await addPulseNetwork()
 
-      // get accounts
+      // get accouns
       const accounts = await _web3.eth.getAccounts();
 
       if (!fromConnectButton) {
@@ -460,10 +455,7 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: Header.tsx ~ line 464 ~ loadBlockchainData ~ error',
-        error
-      );
+      console.log('error in loadBlockchainData', error);
     }
     setLoadingState({ loading: false, error: null });
   };
@@ -484,7 +476,7 @@ const Header = function () {
         );
       }
     } catch (error) {
-      console.log('🚀 ~ file: Header.tsx ~ line 485 ~ Web3 ~ error', error);
+      console.log('error in web 3', error);
       notification.error('Please connect to metamask');
       removeTokens();
     }
@@ -613,78 +605,41 @@ const Header = function () {
   };
 
   return (
-    <HeaderWrapper>
-      <header id="myHeader" className="navbar white">
-        <div className="container">
-          <div className="row w-100-nav">
-            <div className="logo px-0">
-              <div className="navbar-title navbar-item">
-                <NavLink to="/">
-                  <img
-                    src="./img/NFT-BETA-LOGO.png"
-                    className="img-fluid d-3"
-                    alt="#"
-                    width={80}
-                  />
-                </NavLink>
-              </div>
-            </div>
-
-            {
-              <div className="search">
-                <input
-                  id="quick_search"
-                  className="xs-hide"
-                  name="quick_search"
-                  placeholder="search item here..."
-                  type="text"
+    <header id="myHeader" className="navbar white">
+      <div className="container">
+        <div className="row w-100-nav">
+          <div className="logo px-0">
+            <div className="navbar-title navbar-item">
+              <NavLink to="/">
+                <img
+                  src="./img/NFT-BETA-LOGO.png"
+                  className="img-fluid d-3"
+                  alt="#"
+                  width={80}
                 />
-                <i className="fa fa-search"></i>
-              </div>
-            }
+              </NavLink>
+            </div>
+          </div>
 
-            <BreakpointProvider>
-              <Breakpoint l down>
-                {showmenu && (
-                  <div className="menu">
-                    <div className="navbar-item">
-                      <NavLink
-                        to="/explore"
-                        onClick={() => btn_icon(!showmenu)}
-                      >
-                        Explore
-                        <span className="lines"></span>
-                      </NavLink>
-                    </div>
-                    <div className="navbar-item">
-                      <NavLink to="/CreateOption">
-                        Create
-                        <span className="lines"></span>
-                      </NavLink>
-                    </div>
-                    <div className="d-flex justify-content-evenly align-items-center">
-                      <span className="col-6 btn-main btn-grad-outline mx-3">
-                        Design
-                      </span>
-                      <span className="col-6 btn-main btn-grad-outline mx-3">
-                        Create
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </Breakpoint>
+          {
+            <div className="search">
+              <input
+                id="quick_search"
+                className="xs-hide"
+                name="quick_search"
+                placeholder="search item here..."
+                type="text"
+              />
+              <i className="fa fa-search"></i>
+            </div>
+          }
 
-              <Breakpoint xl>
-                <span className="menu">
+          <BreakpointProvider>
+            <Breakpoint l down>
+              {showmenu && (
+                <div className="menu">
                   <div className="navbar-item">
-                    <NavLink to="/">
-                      Home
-                      <span className="lines"></span>
-                    </NavLink>
-                  </div>
-
-                  <div className="navbar-item">
-                    <NavLink to="/explore">
+                    <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>
                       Explore
                       <span className="lines"></span>
                     </NavLink>
@@ -703,21 +658,53 @@ const Header = function () {
                       Create
                     </span>
                   </div>
-                </span>
-              </Breakpoint>
-            </BreakpointProvider>
+                </div>
+              )}
+            </Breakpoint>
 
-            {renderConnectionView()}
-          </div>
+            <Breakpoint xl>
+              <span className="menu">
+                <div className="navbar-item">
+                  <NavLink to="/">
+                    Home
+                    <span className="lines"></span>
+                  </NavLink>
+                </div>
 
-          <button className="nav-icon" onClick={() => btn_icon(!showmenu)}>
-            <div className="menu-line white"></div>
-            <div className="menu-line1 white"></div>
-            <div className="menu-line2 white"></div>
-          </button>
+                <div className="navbar-item">
+                  <NavLink to="/explore">
+                    Explore
+                    <span className="lines"></span>
+                  </NavLink>
+                </div>
+                <div className="navbar-item">
+                  <NavLink to="/CreateOption">
+                    Create
+                    <span className="lines"></span>
+                  </NavLink>
+                </div>
+                <div className="d-flex justify-content-evenly align-items-center">
+                  <span className="col-6 btn-main btn-grad-outline mx-3">
+                    Design
+                  </span>
+                  <span className="col-6 btn-main btn-grad-outline mx-3">
+                    Create
+                  </span>
+                </div>
+              </span>
+            </Breakpoint>
+          </BreakpointProvider>
+
+          {renderConnectionView()}
         </div>
-      </header>
-    </HeaderWrapper>
+
+        <button className="nav-icon" onClick={() => btn_icon(!showmenu)}>
+          <div className="menu-line white"></div>
+          <div className="menu-line1 white"></div>
+          <div className="menu-line2 white"></div>
+        </button>
+      </div>
+    </header>
   );
 };
 export default Header;

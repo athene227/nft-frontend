@@ -1,10 +1,9 @@
 import React, { memo, useState } from 'react';
+import NftCard from './NftCard';
+import Loader from './Loader';
+import Alert from './Alert';
 import { ALERT_TYPE } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
-
-import Alert from './Alert';
-import Loader from './Loader';
-import NftCard from './NftCard';
 
 // react functional component
 const ColumnNewRedux = (props: {

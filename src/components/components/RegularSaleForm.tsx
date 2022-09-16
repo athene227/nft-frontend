@@ -1,16 +1,15 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React from 'react';
-import Loader from 'src/components/components/Loader';
-import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
-import { INft } from 'src/types/nfts.types';
+import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
+import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
+import Loader from 'src/components/components/Loader';
+import { INft } from 'src/types/nfts.types';
 import Alert from './Alert';
 // import { sellNft } from 'src/store/actions/thunks/nfts';
 
 interface IProps {
   nft: INft;
-  submit: (values: any, resetForm: () => void) => void;
+  submit: (values: any, resetForm: Function) => void;
   setPriceInput: (val: string) => void;
   setAmountInput?: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };

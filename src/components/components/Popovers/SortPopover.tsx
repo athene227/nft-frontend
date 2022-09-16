@@ -1,16 +1,16 @@
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
-import { BiSortAlt2 } from 'react-icons/bi';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
+import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { MdCheck } from 'react-icons/md';
+import { BiSortAlt2 } from 'react-icons/bi';
 import { sortOrders } from 'src/components/components/constants/sort';
+
 import { SortOrder } from 'src/enums';
 
 interface SortPopoverProps {
   currentOrder: SortOrder;
   onUpdate: (value: string) => void;
 }
-
 const SortPopover = ({ currentOrder, onUpdate }: SortPopoverProps) => {
   const [sortPopShow, setSortPopShow] = useState(false);
   const updateSortOrder = (value: string) => {
@@ -84,9 +84,6 @@ const SortPopover = ({ currentOrder, onUpdate }: SortPopoverProps) => {
         <BiSortAlt2 size={25} className={`m-2 button__icon`} />
         <span>
           {sortOrders.find((order) => order.value === currentOrder)?.label}
-          <i
-            className={`mt-3 pull-right fa fa-angle-down font-weight-bold`}
-          ></i>
         </span>
       </button>
     </OverlayTrigger>

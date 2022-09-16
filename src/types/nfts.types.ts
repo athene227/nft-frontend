@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { SIDE } from '../../src/enums';
+
 import { ICollection } from 'src/collections.types';
 import {
   ATTRIBUTE_TYPE,
@@ -7,13 +7,11 @@ import {
   MARKET_TYPE,
   STATUS
 } from 'src/enums';
-
-import { IPriceToken } from './priceTokens.types';
 import { IUser } from './users.types';
 
 export interface INftAttribute {
   trait_type: string;
-  value: number;
+  value: string | number;
   display_type: ATTRIBUTE_TYPE;
   max_value?: number;
 }
@@ -27,7 +25,6 @@ export interface INft {
   royalty: number;
   description: string;
   imageUrl: string;
-  previewImageUrl: string;
   attributes?: INftAttribute[];
   marketType: MARKET_TYPE;
   creatorAddress: string;
@@ -38,10 +35,12 @@ export interface INft {
   status: STATUS;
   item_type: string;
   collections: string;
+  deadline: string;
   authorLink: string;
   nftLink: string;
   bidLink: string;
   authorImg: string;
+  previewImg: string;
   price: number;
   bid: string;
   likes: number;
@@ -52,8 +51,6 @@ export interface INft {
   listedAmount: number;
   amount: number;
   minimumBid: string;
-  priceTokenId: string;
-  priceToken: IPriceToken[];
   startingDate: Date;
   expirationDate: Date;
   users: IUser[];
@@ -63,7 +60,6 @@ export interface INft {
   nftCollection: ICollection[];
   bids?: [];
   totalBid?: number;
-  transactionHash: string;
 }
 
 export interface ISimpleMarketItem {
@@ -77,18 +73,13 @@ export interface ISimpleMarketItem {
 
 export interface IAuctionMarketItem {
   nftContract: string;
-  nftTokenId: string;
-  priceTokenAddress: string;
+  tokenId: string;
   startPrice: string;
+  currentBid: string;
+  currentBidderAddress: string;
   ownerAddress: string;
-  deadline: number;
+  deadline: string;
   isClosed: boolean;
-}
-
-export interface IAuctionBidItem {
-  bidAmount: string;
-  bidder: string;
-  isCanceled: boolean;
 }
 
 export interface INftFilterQuery {
@@ -99,13 +90,10 @@ export interface INftFilterQuery {
 export interface MarketItemCreateProgress {
   status: ITEM_CREATE_STATUS;
   imageUrl: string | null;
-  previewImageUrl: string | null;
   metaDataUrl: string | null;
   tokenId: string | null;
   tokenTransactionHash: string | null;
   listingId: string | null;
   listingTransactionHash: string | null;
   error: any;
-  multiple?: boolean;
-  nftAddress?: any;
 }

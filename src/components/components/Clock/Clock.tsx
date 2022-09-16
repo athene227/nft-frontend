@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import classes from './Clock.module.scss';
 
 interface IProps {
@@ -18,10 +17,9 @@ const Clock = (props: IProps) => {
   const [time, setTime] = useState(initialTime);
   const [notifiedTimeout, setNotifiedTimeout] = useState(false);
   const { deadline, className, onTimeout } = props;
-  let interval: any;
   useEffect(() => {
     getTimeUntil(deadline);
-    interval = setInterval(() => getTimeUntil(deadline), 1000);
+    setInterval(() => getTimeUntil(deadline), 1000);
   }, []);
 
   const leading0 = (num: number) => {
@@ -33,7 +31,6 @@ const Clock = (props: IProps) => {
     if (time < 0) {
       setTime({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       if (!notifiedTimeout) {
-        clearInterval(interval);
         onTimeout && onTimeout();
         setNotifiedTimeout(true);
       }

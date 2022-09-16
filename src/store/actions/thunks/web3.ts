@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
 
@@ -11,12 +10,6 @@ export const setupWeb3 =
       accounts: any;
       networkId: any;
       balance: any;
-      mockERC20Contract: any;
-      nft721Contract: any;
-      nft1155Contract: any;
-      nftMarketSimpleContract: any;
-      nftMarketAuctionContract: any;
-      nftMarketOffersContract: any;
     };
   }) =>
   async (dispatch: any) => {
@@ -24,7 +17,7 @@ export const setupWeb3 =
     try {
       dispatch(actions.setupWeb3.success(data));
     } catch (err) {
-      console.log('🚀 ~ file: web3.ts ~ line 26 ~ setupWeb3 ~ err', err);
+      console.log('error in setupWeb3', err);
       dispatch(actions.setupWeb3.failure(err));
     }
   };

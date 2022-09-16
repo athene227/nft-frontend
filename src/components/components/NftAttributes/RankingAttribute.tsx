@@ -4,7 +4,7 @@ import { INftAttribute } from 'src/types/nfts.types';
 
 const RankingAttribute = ({ data }: { data: INftAttribute }) => {
   const maxValue = data.max_value || (data.value as number);
-  const percent = ((data.value as number) * 100) / (maxValue as number);
+  const percent = ((data.value as number) * 100) / maxValue;
   const cls = data.max_value && data.max_value >= data.value ? '' : 'danger';
 
   return (

@@ -1,15 +1,15 @@
-import BoltIcon from '@mui/icons-material/Bolt';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useState } from 'react';
+import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
 import {
-  Checkbox,
   List,
   ListItem,
+  Checkbox,
   ListItemButton,
   ListItemText
 } from '@mui/material';
-import React, { useState } from 'react';
-import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { ICollection } from 'src/collections.types';
+import CheckIcon from '@mui/icons-material/Check';
+import BoltIcon from '@mui/icons-material/Bolt';
 
 interface StatusPopoverProps {
   collectionList: ICollection[];
@@ -124,12 +124,7 @@ const StatusPopover = ({ collectionList, onUpdate }: StatusPopoverProps) => {
         onClick={() => setCollectionPopShow(!collectionPopShow)}
       >
         <BoltIcon size={30} className={`m-2 button__icon`} />
-        <span>
-          Status{' '}
-          <i
-            className={`mt-3 pull-right fa fa-angle-down font-weight-bold`}
-          ></i>
-        </span>
+        <span>Status</span>
       </button>
     </OverlayTrigger>
   );

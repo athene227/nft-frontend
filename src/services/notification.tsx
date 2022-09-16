@@ -1,4 +1,4 @@
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const notification = {
   success: (message: string) => {

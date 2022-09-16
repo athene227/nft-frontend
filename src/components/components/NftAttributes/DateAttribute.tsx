@@ -1,9 +1,8 @@
-import 'react-circular-progressbar/dist/styles.css';
-
-import moment from 'moment';
 import React from 'react';
 import { BsCalendar } from 'react-icons/bs';
 import { INftAttribute } from 'src/types/nfts.types';
+import 'react-circular-progressbar/dist/styles.css';
+import moment from 'moment';
 
 const DateAttribute = ({ data }: { data: INftAttribute }) => (
   <div className="nft-attr-normal">

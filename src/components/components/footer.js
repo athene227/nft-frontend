@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from '@reach/router';
-import FooterWrapper from './footer/footer.styled';
 
 const footer = () => (
-  <FooterWrapper>
   <footer className="footer-light">
     <div className="container">
       <div className="row">
@@ -115,6 +113,5 @@ const footer = () => (
       </div>
     </div>
   </footer>
-  </FooterWrapper>
 );
 export default footer;

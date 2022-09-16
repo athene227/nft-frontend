@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { ICollection } from 'src/collections.types';
-import Loader from 'src/components/components/Loader';
-import { ApiService } from 'src/core/axios';
-import { ALERT_TYPE } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
-import { INft } from 'src/types/nfts.types';
-import { getErrorMessage } from 'src/utils';
-import { createGlobalStyle } from 'styled-components';
-
-import Alert from '../components/Alert';
 import ColumnNewRedux from '../components/ColumnNewRedux';
 import Footer from '../components/footer';
+import { createGlobalStyle } from 'styled-components';
+import { ApiService } from 'src/core/axios';
+import { getErrorMessage } from 'src/utils';
+import { INft } from 'src/types/nfts.types';
+import { ICollection } from 'src/collections.types';
+import Loader from 'src/components/components/Loader';
+
+import Alert from '../components/Alert';
+import { ALERT_TYPE } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -39,11 +39,9 @@ const Colection = function (props: { collectionId: string }) {
       // setNfts(res.data);
       setCollectionState({ loader: false, error: null });
     } catch (error) {
-      console.log(
-        '🚀 ~ file: Collection.tsx ~ line 42 ~ fetchCollection ~ error',
-        error
-      );
       setCollectionState({ loader: false, error: getErrorMessage(error) });
+
+      console.log('error in fetchCollection', error);
     }
   };
 
@@ -55,11 +53,8 @@ const Colection = function (props: { collectionId: string }) {
       setNfts(res.data);
       setNftsState({ loader: false, error: null });
     } catch (error) {
-      console.log(
-        '🚀 ~ file: Collection.tsx ~ line 55 ~ fetchNftsByCollectionId ~ error',
-        error
-      );
       setNftsState({ loader: false, error: getErrorMessage(error) });
+      console.log('error in fetchNftsByCollectionId', error);
     }
   };
 

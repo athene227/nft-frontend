@@ -250,7 +250,6 @@ export const pageLimit = 20;
 export const initialItemCreateStatus = {
   status: ITEM_CREATE_STATUS.IPFS_FILE,
   imageUrl: null,
-  previewImageUrl: null,
   metaDataUrl: null,
   listingId: null,
   listingTransactionHash: null,

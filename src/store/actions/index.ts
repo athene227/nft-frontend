@@ -178,7 +178,7 @@ export const createCollection: any = asyncAction(
   'collections/createCollection_FAIL'
 )();
 
-export const getCollections: any = asyncAction(
+export const getColletions: any = asyncAction(
   'collections/getCollections',
   'collections/getCollections_SUCCESS',
   'collections/getCollections_FAIL'
@@ -210,9 +210,6 @@ export const addCancelAuctionEvent = action('events/addCancelAuctionEvent')();
 export const addTerminateAuctionEvent = action(
   'events/addTerminateAuctionEvent'
 )();
-export const addOfferCreatedEvent = action('events/addOfferCreatedEvent')();
-export const addOfferAcceptedEvent = action('events/addOfferAcceptedEvent')();
-export const addOfferCanceledEvent = action('events/addOfferCanceledEvent')();
 export const clearEvents = action('events/clearEvents')();
 
 export const fetchNewNfts: any = asyncAction(

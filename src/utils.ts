@@ -1,14 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import moment from 'moment';
-import ERC20Abi from 'src/abis/new/MockERC20.json';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-
 import {
   IAuctionMarketItem,
+  INft,
   INftAttribute,
   ISimpleMarketItem
 } from './types/nfts.types';
+
+export function debounce(func, wait, immediate) {
+  let timeout;
+  return function () {
+    const context = this,
+      args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    }, wait);
+    if (immediate && !timeout) func.apply(context, args);
+  };
+}
 
 export function isMobile() {
   if (window) {
@@ -38,7 +48,7 @@ function currentYPosition() {
   return 0;
 }
 
-function elmYPosition(elm: any) {
+function elmYPosition(elm) {
   let y = elm.offsetTop;
   let node = elm;
   while (node.offsetParent && node.offsetParent !== document.body) {
@@ -48,12 +58,12 @@ function elmYPosition(elm: any) {
   return y;
 }
 
-export function scrollTo(scrollableElement: any, elmID: any) {
+export function scrollTo(scrollableElement, elmID) {
   const elm = document.getElementById(elmID);
   if (!elmID || !elm) {
     return;
   }
-  const startY: any = currentYPosition();
+  const startY = currentYPosition();
   const stopY = elmYPosition(elm);
   const distance = stopY > startY ? stopY - startY : startY - stopY;
   if (distance < 100) {
@@ -81,7 +91,7 @@ export function scrollTo(scrollableElement: any, elmID: any) {
     }
     return;
   }
-  for (let i: any = startY; i > stopY; i -= step) {
+  for (let i = startY; i > stopY; i -= step) {
     setTimeout(
       (function (leapY) {
         return () => {
@@ -97,7 +107,7 @@ export function scrollTo(scrollableElement: any, elmID: any) {
   return false;
 }
 
-export function getTimeDifference(date: any) {
+export function getTimeDifference(date) {
   const difference =
     moment(new Date(), 'DD/MM/YYYY HH:mm:ss').diff(
       moment(date, 'DD/MM/YYYY HH:mm:ss')
@@ -117,6 +127,26 @@ export function generateRandomId() {
   const tempId = Math.random().toString();
   const uid = tempId.substr(2, tempId.length - 1);
   return uid;
+}
+
+export function getQueryParam(prop) {
+  const params = {};
+  const search = decodeURIComponent(
+    window.location.href.slice(window.location.href.indexOf('?') + 1)
+  );
+  const definitions = search.split('&');
+  definitions.forEach(function (val, key) {
+    const parts = val.split('=', 2);
+    params[parts[0]] = parts[1];
+  });
+  return prop && prop in params ? params[prop] : params;
+}
+
+export function classList(classes) {
+  return Object.entries(classes)
+    .filter((entry) => entry[1])
+    .map((entry) => entry[0])
+    .join(' ');
 }
 
 export const getNetworkId = async (web3Instance: any) => {
@@ -186,19 +216,6 @@ export const getMyBalance = async (
   return inEth ? eth_balance : wei_balance;
 };
 
-export const getMyTokenBalance = async (
-  address: string,
-  tokenAddress: string,
-  web3: Web3
-) => {
-  const tokenContract = new web3.eth.Contract(
-    ERC20Abi.abi as AbiItem[],
-    tokenAddress
-  );
-  const balance = await tokenContract.methods.balanceOf(address).call();
-  return balance;
-};
-
 export const getPriceAfterPercent = (weiPrice: number, percent: number) => {
   return (weiPrice * percent) / 100;
 };
@@ -209,97 +226,99 @@ export const createToken = async (data: {
   jsonUri: string;
   quantity: number;
   royalty: number;
-  nftType: string;
+  startPrice: number;
+  deadline: number;
+  frontData: any;
 }) => {
-  const { nftContract, userAddress, jsonUri, quantity, royalty, nftType } =
-    data;
+  const {
+    nftContract,
+    userAddress,
+    jsonUri,
+    quantity,
+    royalty,
+    startPrice,
+    deadline,
+    frontData
+  } = data;
   // created token with the nft contract
-  let createdToken;
-  if (nftType === 'NFT721') {
-    createdToken = await nftContract.methods
-      .createToken(jsonUri, royalty)
-      .send({ from: userAddress });
-  } else {
-    // NFT1155
-    createdToken = await nftContract.methods
-      .createToken(jsonUri, quantity, royalty)
-      .send({ from: userAddress });
-  }
-  return createdToken.events.Mint;
+  const createdToken = await nftContract.methods
+    .createToken(jsonUri, quantity, royalty, startPrice, deadline, frontData)
+    .send({ from: userAddress });
+  const tokenId = createdToken.events.Mint.returnValues.newItemId;
+  return tokenId;
 };
 
 export const createSimpleMarketItem = async (data: {
-  nftMarketSimpleContract: any;
+  nftMarketContract: any;
   userAddress: string;
   nftAddress: string;
   tokenId: string;
   priceInWei: number;
   quantity: number;
-  deadline: number;
+  frontData: any;
 }) => {
   const {
-    nftMarketSimpleContract,
+    nftMarketContract,
     userAddress,
     nftAddress,
     tokenId,
     priceInWei,
     quantity,
-    deadline
+    frontData
   } = data;
-  console.log('🚀 ~ file: utils.ts ~ line 233 ~ data', data);
   // create on the market contract
-  const res = await nftMarketSimpleContract.methods
+  const res = await nftMarketContract.methods
     .createSimpleMarketItem(
       nftAddress,
       Number(tokenId),
       priceInWei,
       quantity,
-      deadline
+      frontData
     )
     .send({ from: userAddress });
 
-  console.log(
-    '🚀 ~ file: utils.ts ~ line 246 ~ res.events.SimpleItemCreated',
-    res.events.SimpleItemCreated
-  );
-  return res.events.SimpleItemCreated;
+  console.log('create a market on the contract');
+  console.log('res.events', res.events);
+  const itemIdOnMarketContract =
+    res.events.SimpleMarketItemCreated.returnValues['0'];
+  return itemIdOnMarketContract;
 };
 
 export const createAuctionMarketItem = async (data: {
-  nftMarketAuctionContract: any;
+  nftMarketContract: any;
   userAddress: string;
   nftAddress: string;
-  priceTokenAddress: string;
   tokenId: string;
   startPriceInWei: number;
   deadline: number;
-  // frontData: any;
+  frontData: any;
 }) => {
   const {
-    nftMarketAuctionContract,
+    nftMarketContract,
     userAddress,
     nftAddress,
-    priceTokenAddress,
     tokenId,
     startPriceInWei,
-    deadline
+    deadline,
+    frontData
   } = data;
   // create on the market contract
-  const res = await nftMarketAuctionContract.methods
+  const res = await nftMarketContract.methods
     .createAuctionMarketItem(
       nftAddress,
       Number(tokenId),
-      priceTokenAddress,
       startPriceInWei,
-      deadline
+      deadline,
+      frontData
     )
     .send({ from: userAddress });
 
-  console.log(
-    '🚀 ~ file: utils.ts ~ line 312 ~ res.events.AuctionItemCreated',
-    res.events.AuctionItemCreated
-  );
-  return res.events.AuctionItemCreated;
+  console.log('create a market on the contract');
+  console.log('res.events', res.events);
+
+  const itemIdOnMarketContract =
+    res.events.AuctionMarketItemCreated.returnValues['0'];
+  return itemIdOnMarketContract;
 };
 
 export const setInLocalStorage = (key: string, val: string) => {
@@ -310,24 +329,24 @@ export const getFromLocalStorage = (key: string) => {
 };
 
 export const cancelSimpleListing = async (data: {
-  nftMarketSimpleContract: any;
+  nftMarketContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketSimpleContract, userAddress, listingId } = data;
-  const res = await nftMarketSimpleContract.methods
+  const { nftMarketContract, userAddress, listingId } = data;
+  const res = await nftMarketContract.methods
     .cancelSimpleListing(listingId)
     .send({ from: userAddress });
   return res;
 };
 
 export const cancelAuctionListing = async (data: {
-  nftMarketAuctionContract: any;
+  nftMarketContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketAuctionContract, userAddress, listingId } = data;
-  const res = await nftMarketAuctionContract.methods
+  const { nftMarketContract, userAddress, listingId } = data;
+  const res = await nftMarketContract.methods
     .cancelAuctionListing(listingId)
     .send({ from: userAddress });
   return res;
@@ -342,101 +361,75 @@ export const cancelAuctionListing = async (data: {
 //   return res;
 // }
 
-export const approveContract = async (data: {
-  mockERC20Contract: any;
-  spender: string;
-  owner: string;
-  amount: number;
-}) => {
-  const { mockERC20Contract, spender, owner, amount } = data;
-  const res = await mockERC20Contract.methods
-    .approve(spender, BigInt(amount))
-    .send({ from: owner });
-  return res;
-};
-
 export const placeBid = async (data: {
-  nftMarketAuctionContract: any;
+  nftMarketContract: any;
   userAddress: string;
   listingId: number;
   bid: number;
 }) => {
-  const { nftMarketAuctionContract, userAddress, listingId, bid } = data;
-  console.log('🚀 ~ file: utils.ts ~ line 383 ~ data', data);
-  const res = await nftMarketAuctionContract.methods
-    .bid(listingId, BigInt(bid))
-    .send({ from: userAddress });
+  const { nftMarketContract, userAddress, listingId, bid } = data;
+  const res = await nftMarketContract.methods
+    .bid(listingId)
+    .send({ from: userAddress, value: bid });
   return res;
 };
 
 export const buySimple = async (data: {
-  nftMarketSimpleContract: any;
+  nftMarketContract: any;
   userAddress: string;
   listingId: number;
   quantity: number;
   value: number;
 }) => {
-  const { nftMarketSimpleContract, userAddress, listingId, quantity, value } =
-    data;
-  const res = await nftMarketSimpleContract.methods
+  const { nftMarketContract, userAddress, listingId, quantity, value } = data;
+  const res = await nftMarketContract.methods
     .buySimple(listingId, quantity)
     .send({ from: userAddress, value });
   return res;
 };
 
 export const terminateAuction = async (data: {
-  nftMarketAuctionContract: any;
+  nftMarketContract: any;
   userAddress: string;
   listingId: number;
 }) => {
-  const { nftMarketAuctionContract, userAddress, listingId } = data;
-  const res = await nftMarketAuctionContract.methods
+  const { nftMarketContract, userAddress, listingId } = data;
+  const res = await nftMarketContract.methods
     .terminateAuction(listingId)
     .send({ from: userAddress });
   return res;
 };
 
 export const getSimpleMarketItem = async (data: {
-  nftMarketSimpleContract: any;
+  nftMarketContract: any;
   listingId: number;
 }): Promise<ISimpleMarketItem> => {
-  const { nftMarketSimpleContract, listingId } = data;
-  const marketItem = await nftMarketSimpleContract.methods
+  const { nftMarketContract, listingId } = data;
+  const marketItem = await nftMarketContract.methods
     .simpleListingIdToMarketItem(Number(listingId))
     .call();
   return marketItem;
 };
 export const getAuctionMarketItem = async (data: {
-  nftMarketAuctionContract: any;
+  nftMarketContract: any;
   listingId: number;
 }): Promise<IAuctionMarketItem> => {
-  const { nftMarketAuctionContract, listingId } = data;
-  const marketItem = await nftMarketAuctionContract.methods
+  const { nftMarketContract, listingId } = data;
+  const marketItem = await nftMarketContract.methods
     .auctionListingIdToMarketItem(Number(listingId))
     .call();
-  console.log('🚀 ~ file: utils.ts ~ line 435 ~ marketItem', marketItem);
   return marketItem;
-};
-
-export const getAuctionBids = async (data: {
-  nftMarketAuctionContract: any;
-  listingId: number;
-}): Promise<any> => {
-  const { nftMarketAuctionContract, listingId } = data;
-  const auctionBids = await nftMarketAuctionContract.methods
-    .getAuctionBids(listingId)
-    .call();
-  console.log('🚀 ~ file: utils.ts ~ line 454 ~ auctionBids', auctionBids);
-  return auctionBids;
 };
 
 export const getUserNftQuantityFromNftContract = async (data: {
   nftContract: any;
   userAddress: string;
+  tokenId: number;
 }): Promise<string> => {
-  const { nftContract, userAddress } = data;
-  console.log('🚀 ~ file: utils.ts ~ line 423 ~ data', data);
-  const balance = await nftContract.methods.balanceOf(userAddress).call();
+  const { nftContract, userAddress, tokenId } = data;
+  const balance = await nftContract.methods
+    .balanceOf(userAddress, tokenId)
+    .call();
   return balance;
 };
 
@@ -467,7 +460,7 @@ export const getNftAttributeType = (attr: INftAttribute) => {
 };
 
 ///////////////// Number Formatting Functions //////////////////////
-export function numFormatter(num: any) {
+export function numFormatter(num) {
   if (num >= 1000000000000) {
     return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
   }
@@ -482,7 +475,7 @@ export function numFormatter(num: any) {
   }
   return num.toFixed(2);
 }
-export function numFormatterFull(num: any) {
+export function numFormatterFull(num) {
   if (num >= 1000000000) {
     return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + ' Billion ';
   }
@@ -495,44 +488,6 @@ export function numFormatterFull(num: any) {
   return num.toFixed(2);
 }
 
-export function numberWithCommas(x: any) {
+export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-
-export const generatePreviewImage: (
-  imgUrl: string,
-  width: number,
-  height: number
-) => Promise<File> = (imgUrl: string, width: number, height: number) => {
-  const canvas: HTMLCanvasElement = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-  canvas.height = width;
-  canvas.width = height;
-
-  const image = new Image();
-
-  image.src = imgUrl;
-  context &&
-    context.drawImage(
-      image,
-      0,
-      0,
-      image.naturalWidth,
-      image.naturalHeight,
-      0,
-      0,
-      width,
-      height
-    );
-
-  return new Promise<File>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const file = new File([blob], 'preview.jpg', { type: blob.type });
-        resolve(file);
-      } else {
-        reject();
-      }
-    }, 'image/jpeg');
-  });
-};

@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { ICollection } from 'src/collections.types';
-import { API_ERRORS } from 'src/enums';
-import TokenService from 'src/services/token';
 import { IBid } from 'src/types/bids.types';
 import { INft } from 'src/types/nfts.types';
 import { IUser } from 'src/types/users.types';
+import TokenService from 'src/services/token';
+import { API_ERRORS } from 'src/enums';
+import { IToken, JwtDecoded } from 'src/types/auth.types';
+import jwtDecode from 'jwt-decode';
 
 export const Axios = axios.create();
 export const Canceler = axios.CancelToken.source();
@@ -17,10 +19,7 @@ Axios.interceptors.request.use(
     if (accessToken) {
       headers.Authorization = accessToken;
     }
-    config.headers = {
-      ...config.headers,
-      ...headers
-    };
+    config.headers = headers;
     return config;
   },
   (error) => {
@@ -35,10 +34,7 @@ Axios.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
     const { status, data } = error.response;
-    console.log(
-      '🚀 ~ file: axios.ts ~ line 38 ~ error.response',
-      error.response
-    );
+    console.log(error.response);
     if (
       status === 401 &&
       !originalRequest._retry &&
@@ -53,7 +49,7 @@ Axios.interceptors.response.use(
         TokenService.updateAccessToken(newToken);
         TokenService.setCurrentToken(newToken);
 
-        return Axios.request(originalRequest);
+        return Axios(originalRequest);
       } catch (err) {
         // if refreshToken is expired
         console.error(err);
@@ -82,13 +78,8 @@ const END_POINTS = {
   NFT_COLLECTIBLE_DETAILES: `${SERVER_URL}/${API_VERSION}/nfts/nftMultipleDetailes`,
   GET_HOT_AUCTIONS: `${SERVER_URL}/${API_VERSION}/nfts/getHotAuctions`,
   GET_NFT_COUNTS_BY_CATEGORY: `${SERVER_URL}/${API_VERSION}/nfts/getCountByCategory`,
-  GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/getImageUri`,
-  GET_PRICETOKENS_LIST: `${SERVER_URL}/${API_VERSION}/pricetokens`,
-  GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
-  // OFFERS
-  OFFERS: `${SERVER_URL}/${API_VERSION}/offers`,
   // COLLECTIONS
   COLLECTIONS: `${SERVER_URL}/${API_VERSION}/collections`,
   SEARCH: `${SERVER_URL}/${API_VERSION}/search`
@@ -104,7 +95,6 @@ export class ApiService {
       data
     });
   };
-
   static refreshToken = async () => {
     const { refreshToken } = TokenService.getCurrentToken();
 
@@ -114,7 +104,6 @@ export class ApiService {
       data: { refreshToken }
     });
   };
-
   static createProcessTracking = async (data: any) => {
     return Axios.request({
       url: `${END_POINTS.PROCESS_TRACKING}`,
@@ -171,7 +160,6 @@ export class ApiService {
       params
     });
   };
-
   //* users
   static getTopBuyers = async (params: { limit: number; day: number }) => {
     return Axios.request({
@@ -367,7 +355,6 @@ export class ApiService {
       params
     });
   };
-
   static searchNfts = (params: any) => {
     return Axios.request<{ data: INft[]; totalCount: number }>({
       url: `${END_POINTS.SEARCH}/nft`,
@@ -375,59 +362,9 @@ export class ApiService {
       params
     });
   };
-
   static searchUsers = (params: any) => {
     return Axios.request<{ data: IUser[]; totalCount: number }>({
       url: `${END_POINTS.SEARCH}/user`,
-      method: 'get',
-      params
-    });
-  };
-
-  static getImageUri = async (data: FormData) => {
-    return Axios.request({
-      url: END_POINTS.GET_IMAGE_URI,
-      method: 'post',
-      data
-    });
-  };
-
-  static getUri = async (data: any) => {
-    return Axios.request({
-      url: END_POINTS.GET_URI,
-      method: 'post',
-      data
-    });
-  };
-
-  static getPriceTokens = async () => {
-    return Axios.request({
-      url: END_POINTS.GET_PRICETOKENS_LIST,
-      method: 'get'
-    });
-  };
-
-  static createOffer = async (data: {
-    price: string;
-    buyerAddress: string;
-    quantity: number;
-    listingId: string;
-    toketId: string;
-    networkId: number;
-  }) => {
-    return Axios.request({
-      url: END_POINTS.OFFERS,
-      method: 'post',
-      data
-    });
-  };
-
-  static fetchNftOffers = async (params: {
-    tokenId: string;
-    nftAddress: string;
-  }) => {
-    return Axios.request({
-      url: END_POINTS.OFFERS,
       method: 'get',
       params
     });

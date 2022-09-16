@@ -1,6 +1,6 @@
 import React from 'react';
+import { numFormatter, numberWithCommas } from 'src/utils';
 import { getImage } from 'src/services/ipfs';
-import { numberWithCommas, numFormatter } from 'src/utils';
 
 const CollectionItem = ({ user, index }) => {
   return (

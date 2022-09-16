@@ -1,20 +1,19 @@
-import { Box, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-
-import CollectionCard from '../../components/components/CollectionCard';
-import Loader from '../../components/components/Loader';
-import NftCard from '../../components/components/NftCard';
-import UserCard from '../../components/components/UserCard';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Col, Row } from 'react-bootstrap';
+import * as selectors from '../../store/selectors';
+import * as actions from '../../store/actions/thunks';
 import {
   setSearchCollectionCurrentPage,
   setSearchNftCurrentPage,
   setSearchQuery,
   setSearchUserCurrentPage
 } from '../../store/actions';
-import * as actions from '../../store/actions/thunks';
-import * as selectors from '../../store/selectors';
+import Loader from '../../components/components/Loader';
+import CollectionCard from '../../components/components/CollectionCard';
+import NftCard from '../../components/components/NftCard';
+import UserCard from '../../components/components/UserCard';
 import CheckboxFilter from '../components/CheckboxFilter';
 
 interface TabPanelProps {
@@ -78,10 +77,7 @@ const SearchPage = (props: { query: string }) => {
   };
 
   useEffect(() => {
-    console.log(
-      '🚀 ~ file: SearchPage.tsx ~ line 81 ~ useEffect ~ query',
-      query
-    );
+    console.log(query);
     dispatch(setSearchQuery(query));
     dispatch(actions.fetchSearchCollectionResults());
     dispatch(actions.fetchSearchNftResults());

@@ -4,21 +4,21 @@ import {
   categories,
   status
 } from 'src/components/components/constants/filters';
-import CategoryPopover from 'src/components/components/Popovers/CategoryPopover';
-import CollectionPopover from 'src/components/components/Popovers/CollectionPopover';
-import PricePopover from 'src/components/components/Popovers/PricePopover';
-import SortPopover from 'src/components/components/Popovers/SortPopover';
-import StatusPopover from 'src/components/components/Popovers/StatusPopover';
 import {
   filterCategories,
+  filterStatus,
   filterCollections,
   filterPrice,
-  filterStatus,
   setSortOrder
 } from 'src/store/actions';
-import { fetchCountForCategories } from 'src/store/actions/thunks';
-import { getCollections } from 'src/store/actions/thunks/collections';
 import * as selectors from 'src/store/selectors';
+import { getCollections } from 'src/store/actions/thunks/collections';
+import PricePopover from 'src/components/components/Popovers/PricePopover';
+import CollectionPopover from 'src/components/components/Popovers/CollectionPopover';
+import SortPopover from 'src/components/components/Popovers/SortPopover';
+import { fetchCountForCategories } from 'src/store/actions/thunks';
+import CategoryPopover from 'src/components/components/Popovers/CategoryPopover';
+import StatusPopover from 'src/components/components/Popovers/StatusPopover';
 
 const ExploreFilter = () => {
   const dispatch = useDispatch();

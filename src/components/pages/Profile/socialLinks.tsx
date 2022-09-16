@@ -1,9 +1,11 @@
-import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
+import React from 'react';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import React from 'react';
-import { BsSnapchat } from 'react-icons/bs';
+import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
+
 import { FaDiscord, FaTiktok } from 'react-icons/fa';
+import { ImTwitch } from 'react-icons/im';
+import { BsSnapchat } from 'react-icons/bs';
 
 export const socialLinks = [
   {

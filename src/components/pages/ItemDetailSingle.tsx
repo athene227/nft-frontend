@@ -1,72 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import SEO, { SEOProps } from '@americanexpress/react-seo';
-import { navigate } from '@reach/router';
-import moment from 'moment';
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Loader from 'src/components/components/Loader';
+import { useSelector, useDispatch } from 'react-redux';
+import Clock from '../components/Clock/Clock';
+import Footer from '../components/footer';
+import * as selectors from '../../store/selectors';
+import { fetchNftDetail } from '../../store/actions/thunks/nfts';
+import BuyPopUp from '../components/BuyPopUp';
+import PlaceBidPopUp from '../components/PlaceBidPopUp';
+
+import {
+  dateHasPassed,
+  formatDate,
+  getErrorMessage,
+  getProfileImage,
+  getMyBalance,
+  getPriceAfterPercent,
+  cancelSimpleListing,
+  cancelAuctionListing,
+  placeBid,
+  terminateAuction,
+  buySimple,
+  getNetworkId,
+  getAuctionMarketItem
+} from 'src/utils';
 import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
   COIN,
   ERRORS,
-  MARKET_CONTRACT_EVENTS,
   MARKET_TYPE,
   PROCESS_TRAKING_ACTION,
   PROCESS_TRAKING_STATUS,
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
-import { getImage } from 'src/services/ipfs';
+import Loader from 'src/components/components/Loader';
+import { navigate } from '@reach/router';
+import { IAuctionMarketItem, ISimpleMarketItem } from 'src/types/nfts.types';
+import { IBid } from 'src/types/bids.types';
+import Alert from '../components/Alert';
+import CancelListingPopUp from '../components/CancelListingPopUp';
 import notification from 'src/services/notification';
+import moment from 'moment';
+import { renderAttributes } from '../components/NftAttributes';
+import { getImage } from 'src/services/ipfs';
 import { clearEvents } from 'src/store/actions';
 import { fetchBids } from 'src/store/actions/thunks/bids';
-import { IBid } from 'src/types/bids.types';
-import {
-  IAuctionBidItem,
-  IAuctionMarketItem,
-  ISimpleMarketItem
-} from 'src/types/nfts.types';
-import {
-  approveContract,
-  buySimple,
-  cancelAuctionListing,
-  cancelSimpleListing,
-  dateHasPassed,
-  formatDate,
-  getAuctionBids,
-  getAuctionMarketItem,
-  getErrorMessage,
-  getMyBalance,
-  getMyTokenBalance,
-  getNetworkId,
-  getPriceAfterPercent,
-  getProfileImage,
-  placeBid,
-  terminateAuction
-} from 'src/utils';
-
-import { fetchNftDetail } from '../../store/actions/thunks/nfts';
-import * as selectors from '../../store/selectors';
-import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
-import Alert from '../components/Alert';
-import BuyPopUp from '../components/BuyPopUp';
-import CancelListingPopUp from '../components/CancelListingPopUp';
-import CancelOfferPopUp from '../components/CancelOfferPopUp';
-import Clock from '../components/Clock/Clock';
-import Footer from '../components/footer';
-import MakeOfferPopUp from '../components/MakeOfferPopUp';
-import { renderAttributes } from '../components/NftAttributes';
-import PlaceBidPopUp from '../components/PlaceBidPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';
 import UserAvatar from '../components/UserAvatar';
-import BanrLayer from './../pages/Home/components/landing/bannerLayer';
 
 enum TAB_TYPE {
   BIDS = 'BIDS',
-  HISTORY = 'HISTORY',
-  DETAILS = 'DETAILS',
-  OFFERS = 'OFFERS'
+  HISTORY = 'HISTORY'
 }
 
 function usePrevious<T>(value: T): T {
@@ -88,15 +72,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
-  const [makeOfferState, setMakeOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-  }>({ loader: false, error: null });
-  const [acceptOfferState, setAcceptOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-    selectedOffer: any | null;
-  }>({ loader: false, error: null, selectedOffer: null });
   const [cancelListingState, setCancelListingState] = React.useState<{
     loader: boolean;
     error: null | string;
@@ -110,12 +85,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     loader: boolean;
     error: null | string;
   }>({ loader: false, error: null });
-  const [fetchOffersState, setFetchOffersState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-  }>({ loader: false, error: null });
   const [nftHistory, setNftHistory] = React.useState<any[]>([]);
-  const [offersList, setOffersList] = React.useState<any[]>([]);
 
   const SINGLE = 1;
 
@@ -126,22 +96,11 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const dispatch = useDispatch();
   const nftDetailState = useSelector(selectors.nftDetailState);
   const nft = nftDetailState.data;
-  console.log(
-    '🚀 ~ file: ItemDetailSingle.tsx ~ line 100 ~ ItemDetailSingle ~ nft',
-    nft
-  );
   const nftLoader = nftDetailState.loading; // nft details loader
   const nftError = nftDetailState.error; // nft details error
   const web3State = useSelector(selectors.web3State);
-  const {
-    web3,
-    accounts,
-    mockERC20Contract,
-    nft721Contract,
-    nftMarketSimpleContract,
-    nftMarketAuctionContract,
-    nftMarketOffersContract
-  } = web3State.web3.data;
+  const { web3, accounts, nftMarketContract, nftContract } =
+    web3State.web3.data;
   const userAddress = accounts[0];
 
   const bidsState = useSelector((state) => selectors.bidsState(state));
@@ -155,18 +114,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const [openBuy, setOpenBuy] = React.useState(false);
   const [openPlaceBid, setOpenPlaceBid] = React.useState(false);
-  const [openMakeOffer, setOpenMakeOffer] = React.useState(false);
-  const [openAcceptOffer, setOpenAcceptOffer] = React.useState(false);
   const [openCancelListing, setOpenCancelListing] = React.useState(false);
-  const [openTerminateAuction, setOpenTerminateAuction] = React.useState(false);
-  const [openCancelOffer, setOpenCancelOffer] = React.useState(false);
-  const [cancelOfferState, setCancelOfferState] = React.useState<{
-    loader: boolean;
-    error: null | string;
-    selectedOffer: any | null;
-  }>({ loader: false, error: null, selectedOffer: null });
-
-  const nftEvents = useSelector(selectors.nftEvents);
+  const [openTeminateAuction, setOpenTerminateAuction] = React.useState(false);
 
   useEffect(() => {
     dispatch(
@@ -207,67 +156,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     setOpenPlaceBid(true);
   };
 
-  const closePlaceBidPopUp = (shouldRefresh = false) => {
+  const closePlaceBidPopup = () => {
     setPlaceBidState({ loader: false, error: null });
     setOpenPlaceBid(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openMakeOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenMakeOffer(true);
-  };
-
-  const closeMakeOfferPopUp = (shouldRefresh = false) => {
-    setMakeOfferState({ loader: false, error: null });
-    setOpenMakeOffer(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openAcceptOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenAcceptOffer(true);
-  };
-
-  const closeAcceptOfferPopUp = (shouldRefresh = false) => {
-    setAcceptOfferState({ loader: false, error: null, selectedOffer: null });
-    setOpenAcceptOffer(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
-  };
-
-  const openCancelOfferPopUp = () => {
-    if (!web3) {
-      notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-      return;
-    }
-    dispatch(clearEvents());
-    setOpenCancelOffer(true);
-  };
-
-  const closeCancelOfferPopUp = (shouldRefresh = false) => {
-    setCancelOfferState({ loader: false, error: null, selectedOffer: null });
-    setOpenCancelOffer(false);
-    if (shouldRefresh && nft) {
-      const { tokenId, nftAddress } = nft;
-      navigate(`/ItemDetail/${tokenId}/${nftAddress}`);
-    }
   };
 
   const openCancelListingPopUp = () => {
@@ -305,7 +196,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
   const fetchNftBids = async () => {
     if (!nft) return;
-
     dispatch(
       fetchBids({
         listingId: nft.listingId,
@@ -313,7 +203,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       })
     );
   };
-
   const fetchNftHistory = async () => {
     if (!nft) return;
     try {
@@ -323,34 +212,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         nftAddress: nft.nftAddress
       });
       setNftHistory(res.data);
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 326 ~ fetchNftHistory ~ res.data',
-        res.data
-      );
 
       setFetchHistoryState({ loader: false, error: null });
     } catch (error) {
       setFetchHistoryState({ loader: false, error: getErrorMessage(error) });
-    }
-  };
-
-  const fetchNftOffers = async () => {
-    if (!nft) return;
-    try {
-      setFetchOffersState({ loader: true, error: null });
-      const res: any = await ApiService.fetchNftOffers({
-        tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress
-      });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 286 ~ fetchNftOffers ~ offers',
-        res.data
-      );
-      setOffersList(res.data);
-
-      setFetchOffersState({ loader: false, error: null });
-    } catch (error) {
-      setFetchOffersState({ loader: false, error: getErrorMessage(error) });
     }
   };
 
@@ -368,25 +233,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         console.log('*********fetchNftHistory************');
         fetchNftHistory();
       }
-      if (tabType === TAB_TYPE.DETAILS) {
-        console.log('*********fetchNftDetails************');
-        // fetchNftHistory();
-      }
-      if (tabType === TAB_TYPE.OFFERS) {
-        console.log('*********fetchNftOffers************');
-        fetchNftOffers();
-      }
     }
   }, [nft?._id, tabType]);
 
   useEffect(() => {
-    if (
-      nft?.marketType === MARKET_TYPE.SIMPLE ||
-      nft?.status === STATUS.NOT_LISTED
-    ) {
+    if (nft?.marketType === MARKET_TYPE.SIMPLE) {
       setTab(TAB_TYPE.HISTORY);
-    } else if (nft?.marketType === MARKET_TYPE.AUCTION) {
-      setTab(TAB_TYPE.BIDS);
     }
   }, [nft?._id]);
 
@@ -416,10 +268,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.WRONG_NETWORK);
         throw new Error(ERRORS.WRONG_NETWORK);
       }
-      //* check if user not buying from himself
-      if (nft.ownerAddress === userAddress) {
-        throw new Error(ERRORS.CANT_BUY_FROM_YOURSELF);
-      }
 
       const price = Number(nft.price);
       const weiPrice = web3.utils.toWei(price.toString(), 'ether');
@@ -428,7 +276,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       const myBalance = await getMyBalance(userAddress, web3);
       //* getting the market item from the contract
       const simpleMarketItem: ISimpleMarketItem =
-        await nftMarketSimpleContract.methods
+        await nftMarketContract.methods
           .simpleListingIdToMarketItem(Number(nft.listingId))
           .call();
 
@@ -459,7 +307,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         royalty: nft.royalty,
         collectionId: nft.collectionId,
         attributes: nft.attributes,
-        category: nft.category,
         listingId: '',
         isListedOnce: true,
         multiple: false,
@@ -477,20 +324,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with the nft market contract
-      const res = await buySimple({
-        nftMarketSimpleContract,
+      const itemSold = await buySimple({
+        nftMarketContract,
         userAddress,
         listingId: Number(nft.listingId),
         quantity: SINGLE,
         value
-      });
-
-      await ApiService.createdNft({
-        transactionHash: res.transactionHash,
-        data: {
-          ...nftItem,
-          status: STATUS.NOT_LISTED
-        }
       });
 
       //* turn off loader
@@ -499,10 +338,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       // setOpenBuy(false);
     } catch (error) {
       setBuyState({ loader: false, error: getErrorMessage(error) });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 350 ~ buy ~ getErrorMessage(error)',
-        getErrorMessage(error)
-      );
+      console.log('error in buy', getErrorMessage(error));
     }
   };
 
@@ -526,22 +362,13 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* getting the market item from the contract
       const auctionMarketItem = await getAuctionMarketItem({
-        nftMarketAuctionContract,
+        nftMarketContract,
         listingId: Number(nft.listingId)
       });
 
       //* checks
-      // const auctionBids: IAuctionBidItem[] =
-      //   await nftMarketAuctionContract.methods
-      //     .getAuctionBids(Number(nft.listingId))
-      //     .call();
-      // const currentBid = Number(auctionMarketItem.currentBid);
-
-      const myBalanceinWei = await getMyTokenBalance(
-        userAddress,
-        nft?.priceToken[0]?.address,
-        web3
-      );
+      const currentBid = Number(auctionMarketItem.currentBid);
+      const myBalanceinWei = await getMyBalance(userAddress, web3);
       const bidInWei = web3.utils.toWei(data.price.toString(), 'ether');
       const bidWithCommissionWeiValue =
         Number(bidInWei) + getPriceAfterPercent(Number(bidInWei), 1);
@@ -550,7 +377,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         notification.error(ERRORS.NOT_ENOUGH_BALANCE);
         throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
       }
-      if (Number(bidInWei) <= Number(auctionMarketItem.startPrice)) {
+      if (bidInWei <= currentBid) {
         notification.error(ERRORS.NOT_ABOVE_MINIMUM_PRICE);
         throw new Error(ERRORS.NOT_ABOVE_MINIMUM_PRICE);
       }
@@ -571,10 +398,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         description: nft.description,
         listingId: nft.listingId,
         tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress,
         networkId: nft.networkId
       };
-
       //* create tracking before place a bid
 
       await ApiService.createProcessTracking({
@@ -585,296 +410,18 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
-      //* approve contract
-      await approveContract({
-        mockERC20Contract,
-        spender: nftMarketAuctionContract._address,
-        owner: userAddress,
-        amount: bidWithCommissionWeiValue
-      });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 434 ~ placeBid ~ nftMarketAuctionContract._address',
-        nftMarketAuctionContract._address
-      );
-
-      console.log('🚀 ~ file: ItemDetailSingle.tsx ~ line 452 ~ placeBid');
       //* place bid on contract
       await placeBid({
-        nftMarketAuctionContract,
+        nftMarketContract,
         userAddress,
         listingId: Number(nft.listingId),
-        bid: bidInWei
+        bid: bidWithCommissionWeiValue
       });
 
       //* turn off loader
       setPlaceBidState({ loader: false, error: null });
     } catch (error) {
       setPlaceBidState({ loader: false, error: getErrorMessage(error) });
-    }
-  };
-
-  const _makeOffer = async (
-    data: {
-      price: string;
-      quantity: number;
-      expirationDates: string;
-      expirationDay: string;
-      pricetokentype: string;
-      pricetokenaddress: string;
-      priceTokenId: string;
-    },
-    resetForm: () => void
-  ) => {
-    try {
-      if (!nft) return;
-      if (!web3) {
-        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-        return;
-      }
-
-      console.log(
-        '-----------------------------------------------------',
-        data
-      );
-      //* set loader
-      setMakeOfferState({ loader: true, error: null });
-      //* getting network id *//
-      const networkId = await getNetworkId(web3);
-      if (networkId !== SELECTED_NETWORK) {
-        notification.error(ERRORS.WRONG_NETWORK);
-        throw new Error(ERRORS.WRONG_NETWORK);
-      }
-
-      //* checks
-      const myBalanceinWei = await getMyTokenBalance(
-        userAddress,
-        data.pricetokenaddress,
-        web3
-      );
-      const offerInWei = web3.utils.toWei(data.price.toString(), 'ether');
-      const offerWithCommissionWeiValue =
-        Number(offerInWei) + getPriceAfterPercent(Number(offerInWei), 1);
-      console.log(myBalanceinWei, offerWithCommissionWeiValue);
-      if (Number(myBalanceinWei) < offerWithCommissionWeiValue) {
-        notification.error(ERRORS.NOT_ENOUGH_BALANCE);
-        throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
-      }
-      const offerTrackingItem = {
-        name: nft.name,
-        description: nft.description,
-        listingId: nft.listingId,
-        tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress,
-        networkId: nft.networkId
-      };
-      const offerDeadline = Number(
-        data.expirationDates === '0'
-          ? moment(data.expirationDay)
-          : moment(new Date()).add(Number(data.expirationDates), 'days')
-      );
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 549 ~ ItemDetailSingle ~ offerDeadline',
-        offerDeadline
-      );
-      //* create tracking before make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-      //* approve contract
-      await approveContract({
-        mockERC20Contract,
-        spender: nftMarketOffersContract._address,
-        owner: userAddress,
-        amount: offerWithCommissionWeiValue * data.quantity
-      });
-      //* make offer on contract
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ ItemDetailSingle ~ offerOnNFTParams',
-        { offerInWei, offerDeadline, pricetokenAddress: data.pricetokenaddress }
-      );
-      console.log(
-        '++++++++++++++++++++++++++++++++++',
-        data.quantity,
-        data.pricetokenaddress,
-        offerInWei,
-        offerDeadline
-      );
-      await nftMarketOffersContract.methods
-        .offerOnNft(
-          nft.nftAddress,
-          Number(nft.tokenId),
-          data.quantity,
-          data.pricetokenaddress,
-          offerInWei,
-          offerDeadline
-        )
-        .send({ from: userAddress });
-
-      //* create tracking after make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-      //* turn off loader
-      setMakeOfferState({ loader: false, error: null });
-    } catch (error) {
-      setMakeOfferState({ loader: false, error: getErrorMessage(error) });
-    }
-  };
-
-  const _acceptOffer = async (
-    offer: any,
-    acceptedAmount: number,
-    resetForm: () => void
-  ) => {
-    try {
-      if (!nft) return;
-      if (!web3) {
-        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-        return;
-      }
-
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 652 ~ _acceptOffer ~ offer',
-        offer
-      );
-
-      //* getting network id *//
-      const networkId = await getNetworkId(web3);
-      if (networkId !== SELECTED_NETWORK) {
-        notification.error(ERRORS.WRONG_NETWORK);
-        throw new Error(ERRORS.WRONG_NETWORK);
-      }
-
-      setAcceptOfferState({ loader: true, error: null, selectedOffer: offer });
-
-      const offerTrackingItem = {
-        name: nft.name,
-        description: nft.description,
-        listingId: nft.listingId,
-        tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress,
-        networkId: nft.networkId
-      };
-
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress: offer.offererAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-
-      //! Cancel Market Items
-      if (nft.status !== STATUS.NOT_LISTED) {
-        if (nft.marketType === MARKET_TYPE.AUCTION) {
-          await cancelAuctionListing({
-            nftMarketAuctionContract,
-            userAddress,
-            listingId: Number(nft.listingId)
-          });
-        } else {
-          await cancelSimpleListing({
-            nftMarketSimpleContract,
-            userAddress,
-            listingId: Number(nft.listingId)
-          });
-        }
-      }
-
-      //* approve
-      await nft721Contract.methods
-        .approve(nftMarketOffersContract._address, Number(nft.tokenId))
-        .send({ from: userAddress });
-
-      //* accept offer on contract
-      await nftMarketOffersContract.methods
-        .acceptOffer(Number(offer.offerId), Number(acceptedAmount))
-        .send({ from: userAddress });
-
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress: offer.offererAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
-      //* turn off loader
-      setAcceptOfferState({ loader: false, error: null, selectedOffer: offer });
-    } catch (error) {
-      setAcceptOfferState({
-        loader: false,
-        error: getErrorMessage(error),
-        selectedOffer: offer
-      });
-    }
-  };
-
-  const _cancelOffer = async (offer: any, resetForm: () => void) => {
-    try {
-      if (!nft) return;
-      if (!web3) {
-        notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
-        return;
-      }
-
-      //* getting network id *//
-      const networkId = await getNetworkId(web3);
-      if (networkId !== SELECTED_NETWORK) {
-        notification.error(ERRORS.WRONG_NETWORK);
-        throw new Error(ERRORS.WRONG_NETWORK);
-      }
-
-      setCancelOfferState({ loader: true, error: null, selectedOffer: offer });
-
-      const offerTrackingItem = {
-        name: nft.name,
-        description: nft.description,
-        listingId: nft.listingId,
-        tokenId: nft.tokenId,
-        nftAddress: nft.nftAddress,
-        networkId: nft.networkId
-      };
-
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-
-      await nftMarketOffersContract.methods
-        .cancelOffer(Number(offer.offerId))
-        .send({ from: userAddress });
-
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
-      //* turn off loader
-      setCancelOfferState({ loader: false, error: null, selectedOffer: offer });
-    } catch (error) {
-      setCancelOfferState({
-        loader: false,
-        error: getErrorMessage(error),
-        selectedOffer: offer
-      });
     }
   };
 
@@ -915,16 +462,16 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         multiple: nft.multiple,
         attributes: nft.attributes,
         ownerAddress: userAddress,
-        priceTokenId: nft.priceTokenId,
         status: STATUS.ON_SELL
       };
 
+      let res;
       if (nft.marketType === MARKET_TYPE.SIMPLE) {
-        //* mongo - before cancelling
+        //* mongo - before cacneling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const simpleMarketItem: ISimpleMarketItem =
-          await nftMarketSimpleContract.methods
+          await nftMarketContract.methods
             .simpleListingIdToMarketItem(Number(nft.listingId))
             .call();
 
@@ -946,23 +493,20 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
 
         //* cancel simple listing on contract
-        await cancelSimpleListing({
-          nftMarketSimpleContract,
+        res = await cancelSimpleListing({
+          nftMarketContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
       } else if (nft.marketType === MARKET_TYPE.AUCTION) {
-        //* mongo - before cancelling
+        //* mongo - before cacneling
         // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
 
         const auctionMarketItem: IAuctionMarketItem =
-          await nftMarketAuctionContract.methods
+          await nftMarketContract.methods
             .auctionListingIdToMarketItem(Number(nft.listingId))
             .call();
-        const auctionBids: IAuctionBidItem[] = await getAuctionBids({
-          nftMarketAuctionContract,
-          listingId: Number(nft.listingId)
-        });
+        const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
         const now = moment().unix();
 
         if (auctionMarketItem.ownerAddress.toLowerCase() !== nft.ownerAddress) {
@@ -970,7 +514,9 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           throw new Error(ERRORS.ONLY_OWNER_CAN_CANCEL);
         }
         // if deadline is bigger than now you can cancel
-        // if now is bigger than auction deadline===>err
+        // if now is bigger than auction dedline===>error
+        console.log('deadling', Number(auctionMarketItem.deadline));
+        console.log('now', now);
 
         if (Number(auctionMarketItem.deadline) < now) {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
@@ -980,7 +526,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           notification.error(ERRORS.AUCTION_IS_CLOSED);
           throw new Error(ERRORS.AUCTION_IS_CLOSED);
         }
-        if (auctionBids.length !== 0) {
+        if (auctionMarketItem.currentBidderAddress !== ZERO_ADDRESS) {
           notification.error(ERRORS.THERE_ARE_BIDS);
           throw new Error(ERRORS.THERE_ARE_BIDS);
         }
@@ -993,8 +539,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         });
 
         //* cancel auction listing on contract
-        await cancelAuctionListing({
-          nftMarketAuctionContract,
+        res = await cancelAuctionListing({
+          nftMarketContract,
           userAddress,
           listingId: Number(nft.listingId)
         });
@@ -1003,10 +549,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       //* turn off loader
       setCancelListingState({ loader: false, error: null });
     } catch (error) {
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 583 ~ cancelListing ~ error',
-        error
-      );
+      console.log('error in cancelListing', error);
       setCancelListingState({ loader: false, error: getErrorMessage(error) });
     }
   };
@@ -1034,10 +577,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
 
       //* checks
       const auctionMarketItem: IAuctionMarketItem =
-        await nftMarketAuctionContract.methods
+        await nftMarketContract.methods
           .auctionListingIdToMarketItem(Number(nft.listingId))
           .call();
-
+      const ZERO_ADDRESS = web3.utils.padLeft('0x0', 40);
       const now = moment().unix();
 
       if (auctionMarketItem.isClosed) {
@@ -1069,45 +612,43 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         networkId: nft.networkId,
         minimumBid: nft.minimumBid
       };
-      const auctionBids: IAuctionBidItem[] = await getAuctionBids({
-        nftMarketAuctionContract,
-        listingId: Number(nft.listingId)
-      });
-      //* create tracking before terminate auction
-      await ApiService.createProcessTracking({
-        ...nftItem,
-        userAddress,
-        action: auctionBids.length
-          ? PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD
-          : PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_NOT_SOLD,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-      //* terminate on contract
-      await terminateAuction({
-        nftMarketAuctionContract,
-        userAddress,
-        listingId: Number(nft.listingId)
-      });
 
-      const res = await ApiService.createdNft({
-        transactionHash: nft.transactionHash,
-        data: {
+      if (auctionMarketItem.currentBidderAddress === ZERO_ADDRESS) {
+        //* create tracking before terminate auction
+        await ApiService.createProcessTracking({
           ...nftItem,
-          listingId: nft.listingId,
-          status: STATUS.NOT_LISTED
-        }
-      });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 693 ~ const_terminateAuction= ~ res',
-        res
-      );
+          userAddress,
+          action: PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_NOT_SOLD,
+          processStatus: PROCESS_TRAKING_STATUS.BEFORE
+        });
+        //* terminate on contract
+        await terminateAuction({
+          nftMarketContract,
+          userAddress,
+          listingId: Number(nft.listingId)
+        });
 
-      setTerminateAuctionState({ loader: false, error: null });
+        setTerminateAuctionState({ loader: false, error: null });
+      } else {
+        //* create tracking before terminate auction
+        await ApiService.createProcessTracking({
+          ...nftItem,
+          userAddress,
+          action: PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD,
+          processStatus: PROCESS_TRAKING_STATUS.BEFORE
+        });
+        //* terminate on contract
+        await terminateAuction({
+          nftMarketContract,
+          userAddress,
+          listingId: Number(nft.listingId)
+        });
+
+        //* turn off loader
+        setTerminateAuctionState({ loader: false, error: null });
+      }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 682 ~ terminateAuction ~ error',
-        error
-      );
+      console.log('error in _terminateAuction', error);
       setTerminateAuctionState({
         loader: false,
         error: getErrorMessage(error)
@@ -1122,46 +663,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
-  const _convertActionToText = (action: string) => {
-    let res: string;
-    switch (action) {
-      case PROCESS_TRAKING_ACTION.CREATE_AUCTION:
-        res = 'created an auction';
-        break;
-      case PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD:
-        res = 'terminated an auction';
-        break;
-      case PROCESS_TRAKING_ACTION.ACCEPTOFFER:
-        res = 'offer accepted';
-        break;
-      case PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE:
-        res = 'bought a simple item';
-        break;
-      case PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE:
-        res = 'minted a single NFT';
-        break;
-      case PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE:
-        res = 'listed a simple item';
-        break;
-      case PROCESS_TRAKING_ACTION.LIST_AUCTION:
-        res = 'listed an auction item';
-        break;
-      case PROCESS_TRAKING_ACTION.OFFER:
-        res = 'created an offer';
-        break;
-      case PROCESS_TRAKING_ACTION.BID:
-        res = 'placed a bid';
-        break;
-      case PROCESS_TRAKING_ACTION.CANCEL_OFFER:
-        res = 'cancelled an offer';
-        break;
-      default:
-        res = '';
-        break;
-    }
-    return res;
-  };
-
   const renderTimeClock = () => {
     if (!nft) return;
     if (
@@ -1170,10 +671,10 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     ) {
       if (dateHasPassed(nft.expirationDate)) {
         return (
-          <div className="detail_button">
-            <div className="auction_ended">Auction ended</div>
+          <div>
+            <div>Auction ended</div>
             <button
-              className="btn-main btn-grad lead mb-5 mt-3"
+              className="btn-main lead mb-5 mt-3"
               onClick={openTerminateAuctionPopUp}
               disabled={terminateAuctionState.loader}
             >
@@ -1183,14 +684,14 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         );
       } else {
         return (
-          <div className="auction_endsin">
-            {/* {formatDate(nft?.expirationDate)} */}
+          <div>
+            Auction ends in
+            {formatDate(nft?.expirationDate)}
             <div className="de_countdown">
               <Clock
                 deadline={nft?.expirationDate}
                 onTimeout={onAuctionTimeout}
               />
-              <p>Auction ends in</p>
             </div>
           </div>
         );
@@ -1198,37 +699,28 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
   //
-
   const renderBuyButtons = () => {
     if (!nft) return;
-    return (
-      <div className="d-flex flex-row mt-5">
-        {nft.ownerAddress !== userAddress &&
-          nft.status === STATUS.ON_SELL &&
-          !dateHasPassed(nft.expirationDate) &&
-          nft.marketType === MARKET_TYPE.SIMPLE && (
-            <button className="btn-main lead mb-5 mr-5" onClick={openBuyPopUp}>
+    if (
+      nft.ownerAddress !== userAddress &&
+      nft.status === STATUS.ON_SELL &&
+      !dateHasPassed(nft.expirationDate)
+    ) {
+      return (
+        <div className="d-flex flex-row mt-5">
+          {nft.marketType === MARKET_TYPE.SIMPLE && (
+            <button className="btn-main lead mb-5 mr15" onClick={openBuyPopUp}>
               Buy Now
             </button>
           )}
-        {nft.ownerAddress !== userAddress &&
-          nft.status === STATUS.ON_SELL &&
-          !dateHasPassed(nft.expirationDate) &&
-          nft.marketType === MARKET_TYPE.AUCTION && (
-            <button
-              className="btn-main lead mb-5 mr-5"
-              onClick={openPlaceBidPopUp}
-            >
+          {nft.marketType === MARKET_TYPE.AUCTION && (
+            <button className="btn-main lead mb-5" onClick={openPlaceBidPopUp}>
               Place Bid
             </button>
           )}
-        {nft.ownerAddress !== userAddress && (
-          <button className="btn-main lead mb-5" onClick={openMakeOfferPopUp}>
-            Make Offer
-          </button>
-        )}
-      </div>
-    );
+        </div>
+      );
+    }
   };
 
   const renderBids = () => {
@@ -1250,7 +742,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
               <div className="p_list" key={index}>
                 <div
                   className="author_list_pp"
-                  onClick={() => navigateToUserPage(bid?.buyerAddress)}
+                  onClick={() => navigateToUserPage(bid.buyerAddress)}
                 >
                   <span>
                     <UserAvatar
@@ -1266,7 +758,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                 <div className="p_list_info">
                   Bid{' '}
                   <b>
-                    {bid?.price} {nft?.priceToken[0]?.name || COIN}
+                    {bid.price} {COIN}
                   </b>
                   <span>
                     by{' '}
@@ -1283,104 +775,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         </div>
       );
     }
-  };
-
-  const renderOffers = () => {
-    if (!nft) return;
-    if (fetchOffersState.loader) {
-      return <Loader size={30} />;
-    }
-    if (fetchOffersState.error) {
-      return <Alert text={fetchOffersState.error} type={ALERT_TYPE.DANGER} />;
-    }
-    return (
-      <div className="tab-1 onStep fadeIn">
-        {offersList.length > 0 &&
-          offersList.map((offer, index) => (
-            <>
-              <div className="p_list" key={index}>
-                <div
-                  className="author_list_pp"
-                  onClick={() => navigateToUserPage(offer?.offererAddress)}
-                >
-                  <span>
-                    <UserAvatar
-                      className="lazy"
-                      image={offer?.offerer[0]?.profileImage}
-                      userAddress={offer?.offererAddress}
-                      blockSize={5}
-                      size={50}
-                    />
-                    <i className="fa fa-check"></i>
-                  </span>
-                </div>
-                <div className="p_list_info">
-                  Offer{' '}
-                  <b>
-                    {offer?.amount} {offer?.pricetoken[0]?.name || COIN}
-                  </b>
-                  <span>
-                    by{' '}
-                    <b>
-                      {offer?.offerer[0]?.username
-                        ? `@${offer?.offerer[0]?.username}`
-                        : offer?.offererAddress}
-                    </b>{' '}
-                    at {formatDate(offer?.createdAt)}
-                  </span>
-                </div>
-                {nft.ownerAddress === userAddress &&
-                  (acceptOfferState.loader &&
-                  acceptOfferState.selectedOffer &&
-                  acceptOfferState.selectedOffer.offerId === offer.offerId ? (
-                    <Loader size={50} />
-                  ) : (
-                    offer?.offererAddress !== userAddress &&
-                    !(
-                      acceptOfferState.selectedOffer && acceptOfferState.loader
-                    ) && (
-                      <button
-                        className="btn-main lead"
-                        onClick={() => {
-                          // _acceptOffer(offer);
-                          setAcceptOfferState({
-                            error: null,
-                            loader: false,
-                            selectedOffer: offer
-                          });
-                          openAcceptOfferPopUp();
-                        }}
-                      >
-                        Accept Offer
-                      </button>
-                    )
-                  ))}
-                {offer.offererAddress === userAddress &&
-                  (cancelOfferState.loader &&
-                  cancelOfferState.selectedOffer &&
-                  cancelOfferState.selectedOffer.offerId === offer.offerId ? (
-                    <Loader size={50} />
-                  ) : (
-                    <button
-                      className="btn-main lead"
-                      onClick={() => {
-                        console.log('Cancel Offer Clicked-', offer);
-                        setCancelOfferState({
-                          error: null,
-                          loader: false,
-                          selectedOffer: offer
-                        });
-                        openCancelOfferPopUp();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  ))}
-              </div>
-            </>
-          ))}
-      </div>
-    );
   };
 
   const renderNftHistory = () => {
@@ -1427,9 +821,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                       </b>
                     </span>
                   </div>
-                  <p className="ml-2">
-                    {`${_convertActionToText(item?.action)}`}
-                  </p>
                 </div>
               );
             })}
@@ -1438,30 +829,16 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     }
   };
 
-  const renderNftDetails = () => {
-    return (
-      nft && (
-        <div className="tab-1 onStep fadeIn">
-          {/* {renderBuyButtons()} */}
-          <div className="detail_properties">{renderAttributes(nft)}</div>
-        </div>
-      )
-    );
-  };
-
   const renderCancelButton = () => {
     if (!nft) return;
     if (nft.ownerAddress === userAddress && nft.status === STATUS.ON_SELL) {
       return (
-        <div className="d-flex flex-row mt-5">
+        <div style={{ position: 'absolute', right: 0 }}>
           {cancelListingState.loader ? (
             <Loader />
           ) : (
-            <button
-              className="btn-main lead mb-5"
-              onClick={openCancelListingPopUp}
-            >
-              Cancel Listing
+            <button className="btn-main" onClick={openCancelListingPopUp}>
+              Cancel listing
             </button>
           )}
           {/* {cancelListingState.error && <Alert text={cancelListingState.error} type={ALERT_TYPE.DANGER} />} */}
@@ -1493,233 +870,136 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       return <Alert text={'no nft'} type={ALERT_TYPE.DANGER} />;
     }
     return (
-      <div className="container">
-        <div className="row nft-detail" style={{}}>
-          <BanrLayer />
-          <div className="col-md-5 text-center nft-detail-left">
-            <div className="nft-detail-image">
-              <img
-                src={getImage(nft?.imageUrl)}
-                style={{
-                  width: '100%'
-                }}
-                className="img-fluid img-rounded mb-sm-30"
-                alt=""
-                loading="lazy"
-              />
+      <div className="row mt-md-5 pt-md-4" style={{}}>
+        <div className="col-md-6 text-center">
+          <img
+            src={getImage(nft?.imageUrl)}
+            className="img-fluid img-rounded mb-sm-30"
+            alt=""
+            loading="lazy"
+          />
+        </div>
+        <div className="col-md-6" style={{ position: 'relative' }}>
+          {renderCancelButton()}
+          <div className="item_info">
+            {renderTimeClock()}
+            <h2>{nft?.name}</h2>
+            <p>{nft?.description}</p>
+            {nft?.nftCollection?.length > 0 && (
+              <div style={{}}>Collection: {nft.nftCollection[0].name}</div>
+            )}
+            {nft?.category && (
+              <span className="text-white">
+                Category: <strong>{nft.category}</strong>
+              </span>
+            )}
+            {nft.price > 0 && (
+              <p>
+                Price: {nft?.price} {COIN}
+              </p>
+            )}
+            {nft.marketType === MARKET_TYPE.AUCTION &&
+              nft?.status === STATUS.ON_SELL && (
+                <p>
+                  Minimum bid: {nft?.minimumBid} {COIN}
+                </p>
+              )}
+
+            {renderBuyButtons()}
+            <h6>Creator</h6>
+            <div
+              className="item_author"
+              onClick={() =>
+                navigateToUserPage(
+                  nft?.creator[0]?.publicAddress || nft?.creatorAddress
+                )
+              }
+            >
+              <div className="author_list_pp">
+                <span>
+                  <UserAvatar
+                    className="lazy"
+                    image={nft?.creator[0]?.profileImage}
+                    userAddress={nft?.creator[0]?.publicAddress}
+                    blockSize={5}
+                    size={50}
+                  />
+                  <i className="fa fa-check"></i>
+                </span>
+              </div>
+              {nft?.creator[0]?.username && (
+                <div className="author_list_info">
+                  <span>{nft?.creator[0].username}</span>
+                </div>
+              )}
             </div>
-            <div className="nft-bottom-detail">
-              <h3>Details</h3>
-              <ul>
-                <li>
-                  <a href="#">
-                    <i>
-                      <img
-                        src="../../../img/icon/pulsescan.png"
-                        alt="item-detail-icon"
-                      />
-                    </i>
-                    <span>View on PulseScan</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i>
-                      <img
-                        src="../../../img/icon/metabox.png"
-                        alt="item-detail-icon"
-                      />
-                    </i>
-                    <span>View Metadata</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <i>
-                      <img
-                        src="../../../img/icon/view.png"
-                        alt="item-detail-icon"
-                      />
-                    </i>
-                    <span>View on IPFS</span>
-                  </a>
+
+            <div className="spacer-20"></div>
+            <div className="spacer-40"></div>
+            <h6>Owner</h6>
+            <div
+              className="item_author"
+              onClick={() =>
+                navigateToUserPage(
+                  nft?.owner[0]?.publicAddress || nft?.ownerAddress
+                )
+              }
+            >
+              <div className="author_list_pp">
+                <span>
+                  <UserAvatar
+                    className="lazy"
+                    image={nft?.owner[0]?.profileImage}
+                    userAddress={nft?.owner[0]?.publicAddress}
+                    blockSize={5}
+                    size={50}
+                  />
+                  <i className="fa fa-check"></i>
+                </span>
+              </div>
+              {nft?.owner[0]?.username && (
+                <div className="author_list_info">
+                  <span>{nft?.owner[0]?.username}</span>
+                </div>
+              )}
+            </div>
+            <div className="spacer-40"></div>
+            {renderAttributes(nft)}
+            <div className="spacer-40"></div>
+            {nft?.ownerAddress === userAddress &&
+              nft?.status !== STATUS.ON_SELL && (
+                <button
+                  className="btn-main lead mb-5"
+                  onClick={() => listONSellContract()}
+                >
+                  SELL
+                </button>
+              )}
+            <div className="de_tab">
+              <ul className="de_nav">
+                {nft.marketType === MARKET_TYPE.AUCTION &&
+                  nft.status === STATUS.ON_SELL && (
+                    <li
+                      id="Mainbtn"
+                      className={tabType === TAB_TYPE.BIDS ? 'active' : ''}
+                    >
+                      <span onClick={() => pressTab(TAB_TYPE.BIDS)}>Bids</span>
+                    </li>
+                  )}
+                <li
+                  id="Mainbtn1"
+                  className={tabType === TAB_TYPE.HISTORY ? 'active' : ''}
+                >
+                  <span onClick={() => pressTab(TAB_TYPE.HISTORY)}>
+                    History
+                  </span>
                 </li>
               </ul>
-            </div>
-          </div>
-          <div className="col-md-7" style={{ position: 'relative' }}>
-            <div className="item_info">
-              <div className="item_detail_head">
-                <h2>{nft?.name}</h2>
-                <p>{nft?.description}</p>
-              </div>
-              <div className="item_detail_content">
-                {/* {nft?.creator[0]?.username && (
-                  <div style={{}}>
-                    <p>
-                      Created by: <strong>{nft?.creator[0].username}</strong>
-                    </p>
-                  </div>
-                )} */}
-                {nft?.nftCollection?.length > 0 && (
-                  <div style={{}}>
-                    <p>
-                      Collection: <strong>{nft.nftCollection[0].name}</strong>
-                    </p>
-                  </div>
-                )}
-                {nft?.category && (
-                  <p>
-                    Category: <strong>{nft.category}</strong>
-                  </p>
-                )}
-                {nft.price > 0 && (
-                  <p className="item_detail_price">
-                    <i>
-                      <img src="./../../img/icon/price-pulse.png" />
-                    </i>{' '}
-                    <strong>
-                      {nft.price} {COIN}
-                    </strong>
-                  </p>
-                )}
-                {nft.marketType === MARKET_TYPE.AUCTION &&
-                  nft?.status === STATUS.ON_SELL && (
-                    <p>
-                      Minimum bid:{' '}
-                      <strong>
-                        {nft?.minimumBid} {nft?.priceToken[0]?.name || COIN}
-                      </strong>
-                    </p>
-                  )}
 
-                <div className="row author-details align-items-center">
-                  <div className="col-lg-6">
-                    <div
-                      className="item_author d-flex align-items-center"
-                      onClick={() =>
-                        navigateToUserPage(
-                          nft?.creator[0]?.publicAddress || nft?.creatorAddress
-                        )
-                      }
-                    >
-                      <div className="author_list_pp">
-                        <span>
-                          <UserAvatar
-                            className="lazy"
-                            image={nft?.creator[0]?.profileImage}
-                            userAddress={nft?.creator[0]?.publicAddress}
-                            blockSize={5}
-                            size={50}
-                          />
-                          <i className="fa fa-check"></i>
-                        </span>
-                      </div>
-                      <div className="author_list_info">
-                        <h6>Creator</h6>
-                        {nft?.creator[0]?.username && (
-                          <span>{nft?.creator[0].username}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-6">
-                    <div
-                      className="item_author d-flex align-items-center"
-                      onClick={() =>
-                        navigateToUserPage(
-                          nft?.owner[0]?.publicAddress || nft?.ownerAddress
-                        )
-                      }
-                    >
-                      <div className="author_list_pp">
-                        <span>
-                          <UserAvatar
-                            className="lazy"
-                            image={nft?.owner[0]?.profileImage}
-                            userAddress={nft?.owner[0]?.publicAddress}
-                            blockSize={5}
-                            size={50}
-                          />
-                          <i className="fa fa-check"></i>
-                        </span>
-                      </div>
-                      <div className="author_list_info">
-                        <h6>Owner</h6>
-                        {nft?.owner[0]?.username && (
-                          <span>{nft?.owner[0]?.username}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {renderTimeClock()}
-                </div>
+              <div className="de_tab_content">
+                {tabType === TAB_TYPE.BIDS && renderBids()}
 
-                <div className="spacer-40"></div>
-                {nft?.ownerAddress === userAddress &&
-                  nft?.status !== STATUS.ON_SELL && (
-                    <button
-                      className="btn-main lead mb-5"
-                      onClick={() => listONSellContract()}
-                    >
-                      SELL
-                    </button>
-                  )}
-                <div className="de_tab">
-                  <ul className="de_nav">
-                    {nft.marketType === MARKET_TYPE.AUCTION &&
-                      nft.status === STATUS.ON_SELL && (
-                        <li
-                          id="Mainbtn"
-                          className={tabType === TAB_TYPE.BIDS ? 'active' : ''}
-                        >
-                          <span onClick={() => pressTab(TAB_TYPE.BIDS)}>
-                            Bids
-                          </span>
-                        </li>
-                      )}
-                    <li
-                      id="Mainbtn1"
-                      className={tabType === TAB_TYPE.HISTORY ? 'active' : ''}
-                    >
-                      <span onClick={() => pressTab(TAB_TYPE.HISTORY)}>
-                        History
-                      </span>
-                    </li>
-                    <li
-                      id="Mainbtn1"
-                      className={tabType === TAB_TYPE.OFFERS ? 'active' : ''}
-                    >
-                      <span onClick={() => pressTab(TAB_TYPE.OFFERS)}>
-                        Offers
-                      </span>
-                    </li>
-
-                    <li
-                      id="Mainbtn1"
-                      className={tabType === TAB_TYPE.DETAILS ? 'active' : ''}
-                    >
-                      <span onClick={() => pressTab(TAB_TYPE.DETAILS)}>
-                        Details
-                      </span>
-                    </li>
-                  </ul>
-
-                  <div className="de_tab_content">
-                    {tabType === TAB_TYPE.BIDS && renderBids()}
-                    {tabType === TAB_TYPE.HISTORY && renderNftHistory()}
-                    {tabType === TAB_TYPE.OFFERS && renderOffers()}
-
-                    {tabType === TAB_TYPE.DETAILS && renderNftDetails()}
-                    {/* && renderAttributes(nft) */}
-                  </div>
-                </div>
-                <div className="ssf"></div>
-                {/* {renderTimeClock()} */}
-                <div className="detail_button">
-                  {renderCancelButton()}
-                  {renderBuyButtons()}
-                </div>
+                {tabType === TAB_TYPE.HISTORY && renderNftHistory()}
               </div>
             </div>
           </div>
@@ -1727,28 +1007,14 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       </div>
     );
   };
-  const SeoConfig: SEOProps = {
-    title: nft?.name || '',
-    description: nft?.description || '',
-    siteUrl: `https://nftonpulse.io/ItemDetail/${nft?.tokenId}/${nft?.nftAddress}`,
-    image: {
-      src: getImage(nft?.imageUrl) || '',
-      alt: nft?.name || ''
-    },
-    keywords: [
-      nft?.name || '',
-      ...(nft?.description?.split(' ') || []),
-      'nft',
-      'pulse'
-    ]
-  };
 
   return (
     <div>
-      <SEO {...SeoConfig} />
-      <section className="nft-detail-page jumbotron">{renderView()}</section>
+      {/* <GlobalStyles /> */}
+      <section className="container">{renderView()}</section>
+      <Footer />
       {openBuy && nft && (
-        <div className="checkout nft_detail_popup">
+        <div className="checkout">
           <BuyPopUp
             onClose={closeBuyPopUp}
             nft={nft}
@@ -1759,52 +1025,19 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         </div>
       )}
       {openPlaceBid && nft && (
-        <div className="checkout nft_detail_popup">
+        <div className="checkout">
           <PlaceBidPopUp
             nft={nft}
             bids={bids}
             lastBid={lastBid}
             placeBidState={placeBidState}
             submit={_placeBid}
-            onClose={closePlaceBidPopUp}
-          />
-        </div>
-      )}
-      {openMakeOffer && nft && (
-        <div className="checkout nft_detail_popup">
-          <MakeOfferPopUp
-            nft={nft}
-            makeOfferState={makeOfferState}
-            submit={_makeOffer}
-            onClose={closeMakeOfferPopUp}
-            totalQuantity={1}
-          />
-        </div>
-      )}
-      {openAcceptOffer && acceptOfferState.selectedOffer && nft && (
-        <div className="checkout nft_detail_popup">
-          <AcceptOfferPopUp
-            nft={nft}
-            onClose={closeAcceptOfferPopUp}
-            submit={_acceptOffer}
-            acceptOfferState={acceptOfferState}
-            multiple={false}
-          />
-        </div>
-      )}
-      {openCancelOffer && cancelOfferState.selectedOffer && nft && (
-        <div className="checkout nft_detail_popup">
-          <CancelOfferPopUp
-            nft={nft}
-            onClose={closeCancelOfferPopUp}
-            submit={_cancelOffer}
-            cancelOfferState={cancelOfferState}
-            multiple={false}
+            onClose={closePlaceBidPopup}
           />
         </div>
       )}
       {openCancelListing && nft && (
-        <div className="checkout nft_detail_popup">
+        <div className="checkout">
           <CancelListingPopUp
             onClose={closeCancelListingPopUp}
             nft={nft}
@@ -1813,8 +1046,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           />
         </div>
       )}
-      {openTerminateAuction && nft && (
-        <div className="checkout nft_detail_popup">
+      {openTeminateAuction && nft && (
+        <div className="checkout">
           <TerminateAuctionPopup
             onClose={closeTerminateAuctionPopUp}
             nft={nft}
