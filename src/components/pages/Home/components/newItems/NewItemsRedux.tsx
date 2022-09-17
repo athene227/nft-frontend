@@ -1,18 +1,21 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { memo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Slider from 'react-slick';
-import styled from 'styled-components';
-import { navigate } from '@reach/router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+import { navigate } from '@reach/router';
+import React, { memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Slider from 'react-slick';
 import Clock from 'src/components/components/Clock/Clock';
-import { newItemsSettings } from './newItemsSettings';
-import * as selectors from 'src/store/selectors';
-import { fetchNewNfts } from 'src/store/actions/thunks';
-import { getImage } from 'src/services/ipfs';
-import { INft } from 'src/types/nfts.types';
 import UserAvatar from 'src/components/components/UserAvatar';
+import { MARKET_TYPE, STATUS } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
+import { fetchNewNfts } from 'src/store/actions/thunks';
+import * as selectors from 'src/store/selectors';
+import { INft } from 'src/types/nfts.types';
+import styled from 'styled-components';
+
+import { newItemsSettings } from './newItemsSettings';
 
 const Outer = styled.div`
   display: flex;
@@ -27,6 +30,9 @@ const Outer = styled.div`
 const NewItemsRedux = () => {
   const dispatch = useDispatch();
   const nftsState = useSelector(selectors.newNftsState);
+  const web3State = useSelector(selectors.web3State);
+  const { accounts } = web3State.web3.data;
+  const userAddress = accounts[0];
 
   useEffect(() => {
     dispatch(fetchNewNfts());
@@ -43,6 +49,19 @@ const NewItemsRedux = () => {
   const navigateToUser = (publicAddress: string) => {
     navigate(`/author/${publicAddress}`);
   };
+
+  const getBuyOrPlaceBid = (nft: INft) => {
+    if (nft.status === STATUS.ON_SELL) {
+      if (nft.marketType === MARKET_TYPE.SIMPLE) {
+        return 'Buy Now';
+      } else if (nft.marketType === MARKET_TYPE.AUCTION) {
+        return 'Place a bid';
+      }
+    } else {
+      return <br />;
+    }
+  };
+
   return (
     <div className="nft">
       <Slider {...newItemsSettings}>
@@ -77,7 +96,8 @@ const NewItemsRedux = () => {
                       <Outer>
                         <span>
                           <img
-                            src={getImage(nft.imageUrl)}
+                            onClick={() => navigateToDetails(nft)}
+                            src={getImage(nft.previewImageUrl || nft.imageUrl)}
                             className="lazy nft__item_preview"
                             alt=""
                           />
@@ -98,7 +118,9 @@ const NewItemsRedux = () => {
                         <div className="col-3">
                           <div
                             className={`author_list_pp ${
-                              nft.deadline ? 're_pulse_bottom' : 'pulse_bottom'
+                              nft.expirationDate
+                                ? 're_pulse_bottom'
+                                : 'pulse_bottom'
                             }`}
                           >
                             <span>
@@ -121,21 +143,18 @@ const NewItemsRedux = () => {
                       <div
                         className={`col-12 pb-1 mt-3 pr-1 d-flex justify-content-between action_row_custom`}
                       >
-                        <div
-                          className={`nft__item_action btn-grad mb-2 btn_grad_custom`}
-                        >
-                          <span>
-                            {nft.marketType === 'SIMPLE'
-                              ? 'Buy Now'
-                              : 'Place Bid'}
-                          </span>
-                        </div>
+                        {nft.ownerAddress !== userAddress && (
+                          <div
+                            className={`nft__item_action btn-grad mb-2 btn_grad_custom`}
+                          >
+                            <span>{getBuyOrPlaceBid(nft)}</span>
+                          </div>
+                        )}
                         <div className={`nft__item_price`}>
                           {nft.marketType === 'SIMPLE'
                             ? nft.price
-                            : nft.minimumBid}
+                            : nft.minimumBid}{' '}
                           <img
-                            className={`icon_margin`}
                             src="./img/items/PulseChain-Logo-Shape.png"
                             alt=""
                           ></img>{' '}

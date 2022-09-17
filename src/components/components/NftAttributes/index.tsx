@@ -1,6 +1,7 @@
 import React from 'react';
 import { ATTRIBUTE_TYPE } from 'src/enums';
 import { INft, INftAttribute } from 'src/types/nfts.types';
+
 import BoostNumberAttribute from './BoostNumberAttribute';
 import BoostPercentageAttribute from './BoostPercentageAttribute';
 import DateAttribute from './DateAttribute';
@@ -57,7 +58,7 @@ export const renderAttributes = (nft: INft) => {
           <NftAttribute key={index} {...attr} />
         ))}
       </div>
-      <div className="spa cer-10" />
+      <div className="spacer-10" />
       {rankings.length > 0 && <h6>Rankings</h6>}
       <div className="nft-attr-container">
         {rankings.map((attr, index) => (

@@ -30,6 +30,9 @@ export enum PROCESS_TRAKING_ACTION {
   BUY_SIMPLE_SINGLE = 'BUY_SIMPLE_SINGLE',
   BUY_SIMPLE_MULTIPLE = 'BUY_SIMPLE_MULTIPLE',
   BID = 'BID',
+  OFFER = 'OFFER',
+  ACCEPTOFFER = 'ACCEPTOFFER',
+  CANCEL_OFFER = 'CANCEL_OFFER',
   TERMINATE_AUCTION_NOT_SOLD = 'TERMINATE_AUCTION_NOT_SOLD',
   TERMINATE_AUCTION_SOLD = 'TERMINATE_AUCTION_SOLD'
 }
@@ -56,14 +59,17 @@ export enum IMAGES_NAMES {
 export enum NETWORKS {
   ETH_MAIN_NET = 1,
   RINKEBY = 4,
+  GOERLI = 5,
   PULSE_CHAIN = 941
 }
 
-export const SELECTED_NETWORK = NETWORKS.RINKEBY;
+// export const SELECTED_NETWORK = NETWORKS.RINKEBY;
+export const SELECTED_NETWORK = NETWORKS.GOERLI;
 
 export enum ERRORS {
   NOT_CONNECTED_TO_WALLET = 'You are not connected',
-  WRONG_NETWORK = 'You are not on the right network. Please switch to Rinkeby.',
+  // WRONG_NETWORK = 'You are not on the right network. Please switch to Rinkeby.',
+  WRONG_NETWORK = 'You are not on the right network. Please switch to Goerli.',
   MISSING_IMAGE = 'Please upload an image.',
   NOT_ENOUGH_BALANCE = 'Oups. Seems like your balance is too low.',
   SET_QUANTITY = 'Please set a quantity.',
@@ -78,11 +84,13 @@ export enum ERRORS {
   AUCTION_HASNT_ENDED = 'The auction has not ended!',
   NO_NFTS_TO_BUY = 'There are no NFTs on sale.',
   ALREADY_LISTED = 'You already listed this NFT. Cancel it or wait for users to buy it.',
-  CANT_LIST_NFT_YOU_DONT_HAVE = "You can't list Nft you don't have."
+  CANT_LIST_NFT_YOU_DONT_HAVE = "You can't list Nft you don't have.",
+  CANT_BUY_FROM_YOURSELF = "You can't buy Nft from yourself."
 }
 
 export enum INPUT_ERROS {
   tooShort = 'The input is too short.',
+  higherThanZero = 'The number should be higher than zero.',
   tooLong = 'The input is too long.',
   requiredField = 'Required Field',
   numberIsHigher = 'The number is higher than it should be.',
@@ -138,13 +146,16 @@ export enum SortOrder {
 
 export enum MARKET_CONTRACT_EVENTS {
   Mint = 'Mint',
-  SimpleMarketItemCreated = 'SimpleMarketItemCreated',
+  SimpleItemCreated = 'SimpleItemCreated',
   AuctionMarketItemCreated = 'AuctionMarketItemCreated',
-  BuySimpleEvent = 'BuySimpleEvent',
-  BidCreated = 'BidCreated',
-  CancelSimpleEvent = 'CancelSimpleEvent',
-  CancelAuctionEvent = 'CancelAuctionEvent',
-  TerminateAuctionEvent = 'TerminateAuctionEvent'
+  SimpleItemSoldEvent = 'SimpleItemSold',
+  AuctionBidCreated = 'AuctionBidCreated',
+  SimpleItemCancelled = 'SimpleItemCancelled',
+  AuctionCancelled = 'AuctionCancelled',
+  AuctionTerminated = 'AuctionTerminated',
+  OfferCreated = 'OfferCreated',
+  OfferAccepted = 'OfferAccepted',
+  OfferCancelled = 'OfferCancelled'
 }
 
 export enum ATTRIBUTE_TYPE {

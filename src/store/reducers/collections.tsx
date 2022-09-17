@@ -2,12 +2,13 @@ import { ICollection } from 'src/collections.types';
 import { gatewayUrl } from 'src/services/ipfs';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
-  initEntityState,
+  entityLoadingFailed,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  entityLoadingFailed
+  initEntityState
 } from '../utils';
 
 export interface ICollectionsState {
@@ -93,7 +94,10 @@ const states = (state = defaultState, action: any) => {
         myCollections: entityLoadingStarted(state.myCollections, action.payload)
       };
     case getType(actions.createCollection.success):
-      console.log('action.payload', action.payload);
+      console.log(
+        '🚀 ~ file: collections.tsx ~ line 97 ~ states ~ action.payload',
+        action.payload
+      );
       const data = [...state.myCollections.data, action.payload.data];
       return {
         ...state,
@@ -106,12 +110,12 @@ const states = (state = defaultState, action: any) => {
         myCollections: entityLoadingFailed(state.myCollections, error)
       };
 
-    case getType(actions.getColletions.request):
+    case getType(actions.getCollections.request):
       return {
         ...state,
         collections: entityLoadingStarted(state.collections, action.payload)
       };
-    case getType(actions.getColletions.success):
+    case getType(actions.getCollections.success):
       return {
         ...state,
         collections: entityLoadingSucceeded(
@@ -122,7 +126,7 @@ const states = (state = defaultState, action: any) => {
           }))
         )
       };
-    case getType(actions.getColletions.failure):
+    case getType(actions.getCollections.failure):
       error = getErrorMessage(action.payload);
       return {
         ...state,

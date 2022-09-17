@@ -1,32 +1,30 @@
 /* eslint-disable react/jsx-no-bind */
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LanguageIcon from '@mui/icons-material/Language';
+import { InputAdornment, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Form, Formik, FormikProps } from 'formik';
+import { Switch } from 'formik-material-ui';
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
+import { ApiService } from 'src/core/axios';
 import { ERRORS } from 'src/enums';
+import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
+import ipfs, { getImage } from 'src/services/ipfs';
+import notification from 'src/services/notification';
+import { setUserProfile } from 'src/store/actions/thunks/users';
+import { IUserProfile } from 'src/types/users.types';
+import { getErrorMessage } from 'src/utils';
+import * as Yup from 'yup';
 
 // import ColumnNewReduxProfile from '../components/ColumnNewReduxProfile';
 // import ColumnNewRedux from '../components/ColumnNewRedux';
 import * as selectors from '../../../store/selectors';
-import Loader from 'src/components/components/Loader';
-import notification from 'src/services/notification';
-
-import { Form, Formik, FormikProps } from 'formik';
-import { Switch } from 'formik-material-ui';
-import Input from '../../components/FormControls/Input';
-import * as Yup from 'yup';
-import { ALERT_TYPE, INPUT_ERROS } from 'src/enums';
-import { getErrorMessage, getProfileImage } from 'src/utils';
 import Alert from '../../components/Alert';
-import { ApiService } from 'src/core/axios';
-import { setUserProfile } from 'src/store/actions/thunks/users';
-import ipfs, { getImage } from 'src/services/ipfs';
-import { TextField, InputAdornment } from '@mui/material';
-
-import LanguageIcon from '@mui/icons-material/Language';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { styled } from '@mui/material/styles';
+import Input from '../../components/FormControls/Input';
 import EditIcon from './EditIcon';
 import { socialLinks } from './socialLinks';
-import { IUser, IUserProfile } from 'src/types/users.types';
 const SocialLinkField = styled(TextField)({
   '& label': {
     display: 'none'
@@ -137,7 +135,10 @@ const Profile = function () {
       setSubmitUserState({ error: null, loading: false });
       notification.success('Successfully changed the detailes');
     } catch (error) {
-      console.log('errorin listONSellContract', getErrorMessage(error));
+      console.log(
+        '🚀 ~ file: Profile.tsx ~ line 141 ~ listONSellContract ~ getErrorMessage(error)',
+        getErrorMessage(error)
+      );
       setSubmitUserState({ error: getErrorMessage(error), loading: false });
       notification.error(getErrorMessage(error));
     }
@@ -164,7 +165,10 @@ const Profile = function () {
     const [toggle, setToggle] = useState(false);
     const handleToggle = () => {
       toggle ? setToggle(false) : setToggle(true);
-      console.log('toggle State: ', toggle);
+      console.log(
+        '🚀 ~ file: Profile.tsx ~ line 171 ~ handleToggle ~ toggle',
+        toggle
+      );
     };
 
     return (

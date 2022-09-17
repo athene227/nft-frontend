@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
-  initEntityState,
+  entityLoadingFailed,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  entityLoadingFailed
+  initEntityState
 } from '../utils';
 
 export interface IWeb3State {
@@ -15,6 +17,12 @@ export interface IWeb3State {
   networkId: null | number;
   accounts: string[];
   balance: null | number;
+  mockERC20Contract: any;
+  nft721Contract: any;
+  nft1155Contract: any;
+  nftMarketSimpleContract: any;
+  nftMarketAuctionContract: any;
+  nftMarketOffersContract: any;
 }
 
 const initialValue: IWeb3State = {
@@ -24,7 +32,13 @@ const initialValue: IWeb3State = {
   escrowContract: null,
   accounts: [],
   networkId: null,
-  balance: null
+  balance: null,
+  mockERC20Contract: null,
+  nft721Contract: null,
+  nft1155Contract: null,
+  nftMarketSimpleContract: null,
+  nftMarketAuctionContract: null,
+  nftMarketOffersContract: null
 };
 
 export const defaultState = {

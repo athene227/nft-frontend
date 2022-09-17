@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Row, Col, OverlayTrigger, Popover } from 'react-bootstrap';
-import { SiEthereum } from 'react-icons/si';
-import { BiPulse } from 'react-icons/bi';
-import { Select, MenuItem, TextField, SelectChangeEvent } from '@mui/material';
 import SellIcon from '@mui/icons-material/Sell';
+import { MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import React, { useState } from 'react';
+import { Col, OverlayTrigger, Popover, Row } from 'react-bootstrap';
+import { BiPulse } from 'react-icons/bi';
+import { SiEthereum } from 'react-icons/si';
 
 interface PricePopoverProps {
   data: { max: number; min: number; unit: string };
@@ -18,8 +19,20 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
     { name: 'Ethereum', icon: <SiEthereum className="m-1" />, unit: 'ETH' }
   ];
   const [pricePopShow, setPricePopShow] = useState(false);
-  const [networkIndex, setNetworkIndex] = useState(0);
+  const [networkIndex, setNetworkIndex] = useState('0');
   const [wrongPriceRange, setWrongPriceRange] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleChange = (event: SelectChangeEvent<typeof networkIndex>) => {
+    setNetworkIndex(event.target.value);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const getPriceFilterText = () => {
     if (!data) return 'Price Range';
@@ -73,6 +86,9 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
         <Row>
           <Col sm={12} className="mb-3">
             <Select
+              open={open}
+              onClose={handleClose}
+              onOpen={handleOpen}
               className={`price-network-select price__select`}
               value={networkIndex.toString()}
               onChange={(e: SelectChangeEvent) =>
@@ -97,6 +113,7 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
               variant="outlined"
               type="number"
               size="small"
+              InputProps={{ inputProps: { min: 0 } }}
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
             />
@@ -111,6 +128,7 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
               variant="outlined"
               type="number"
               size="small"
+              InputProps={{ inputProps: { min: 0 } }}
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
             />
@@ -146,7 +164,7 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
       trigger="click"
       placement="bottom"
       overlay={PriceFilterPopover}
-      rootClose
+      // rootClose
     >
       <button
         className={`filter-button filter__button`}
@@ -154,7 +172,12 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
         onClick={() => setPricePopShow(!pricePopShow)}
       >
         <SellIcon size={30} className={`m-2 button__icon`} />
-        <span>{getPriceFilterText()}</span>
+        <span>
+          {getPriceFilterText()}
+          <i
+            className={`mt-3 pull-right fa fa-angle-down font-weight-bold`}
+          ></i>
+        </span>
       </button>
     </OverlayTrigger>
   );

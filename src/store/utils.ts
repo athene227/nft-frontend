@@ -1,7 +1,7 @@
 import { FilterOperator, NftStatus } from 'src/enums';
 import { INftFilterQuery } from 'src/types/nfts.types';
+
 import { IFilterState } from './reducers/filters';
-import { INftState } from './reducers/nfts';
 import { ISortState } from './reducers/sort';
 
 export const initEntityState = (initialValue: any, loading = false) => ({

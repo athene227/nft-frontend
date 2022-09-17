@@ -58,13 +58,13 @@ export const createCollection =
   };
 
 export const getCollections = () => async (dispatch: any, getState: any) => {
-  dispatch(actions.getColletions.request(Canceler.cancel));
+  dispatch(actions.getCollections.request(Canceler.cancel));
   try {
     const { data } = await ApiService.getCollections();
 
     // console.log('getMyCreatedNft data', data);
-    dispatch(actions.getColletions.success(data));
+    dispatch(actions.getCollections.success(data));
   } catch (err) {
-    dispatch(actions.getColletions.failure(err));
+    dispatch(actions.getCollections.failure(err));
   }
 };

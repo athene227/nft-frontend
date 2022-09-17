@@ -95,6 +95,25 @@
           "internalType": "uint256",
           "name": "listingId",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newDeadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "AuctionExtended",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "listingId",
+          "type": "uint256"
         }
       ],
       "name": "AuctionItemCreated",
@@ -448,7 +467,7 @@
     "5": {
       "events": {},
       "links": {},
-      "address": "0x2a71648810D92AeD530335F5FdF37575f4466893"
+      "address": "0xec9Ef721700d44bBC803528Ed8014b5154e57D2b"
     }
   }
 }

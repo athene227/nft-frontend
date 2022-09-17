@@ -1,10 +1,8 @@
-import React, { memo, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
-import Loader from 'src/components/components/Loader';
 // import { createGlobalStyle } from 'styled-components';
-import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
+import React, { memo, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
   COIN,
@@ -13,9 +11,11 @@ import {
   MARKET_CONTRACT_EVENTS
 } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
-import Alert from './Alert';
-import * as selectors from '../../store/selectors';
 import { getErrorMessage } from 'src/utils';
+import * as Yup from 'yup';
+
+import * as selectors from '../../store/selectors';
+import Alert from './Alert';
 import TransactionHash from './TransactionHash';
 
 interface IProps {
@@ -27,6 +27,7 @@ interface IProps {
 
 const SellPopUp = (props: IProps) => {
   const { nft, onClose, submit, sellState } = props;
+  console.log('🚀 ~ file: SellPopUp.tsx ~ line 30 ~ SellPopUp ~ nft', nft);
   const [balance, setBalance] = useState(0);
   const [balanceState, setBalanceState] = React.useState<{
     loader: boolean;
@@ -36,10 +37,26 @@ const SellPopUp = (props: IProps) => {
   const { web3, accounts } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
   const listingTransactionHash = nftEvents.find(
-    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
-      eventName === MARKET_CONTRACT_EVENTS.SimpleMarketItemCreated &&
-      tokenId === nft.tokenId
+    ({
+      eventName,
+      tokenId,
+      nftAddress,
+      ownerAddress
+    }: {
+      eventName: string;
+      tokenId: string;
+      nftAddress: string;
+      ownerAddress: string;
+    }) =>
+      eventName === MARKET_CONTRACT_EVENTS.SimpleItemCreated &&
+      tokenId === nft.tokenId &&
+      nftAddress === nft.nftAddress &&
+      ownerAddress === nft.ownerAddress
   )?.transactionHash;
+  console.log(
+    '🚀 ~ file: SellPopUp.tsx ~ line 55 ~ SellPopUp ~ listingTransactionHash',
+    listingTransactionHash
+  );
 
   const getMyBalance = async () => {
     try {
@@ -158,7 +175,7 @@ const SellPopUp = (props: IProps) => {
           )}
         </div>
 
-        {listingTransactionHash && (
+        {listingTransactionHash && !sellState.loader && (
           <TransactionHash hash={listingTransactionHash} />
         )}
         {sellState.loader ? (

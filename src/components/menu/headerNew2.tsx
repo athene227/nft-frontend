@@ -1,16 +1,23 @@
+import { Link, navigate } from '@reach/router';
+import jwtDecode from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import Blockies from 'react-blockies';
+import useOnclickOutside from 'react-cool-onclickoutside';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useDispatch, useSelector } from 'react-redux';
 import Breakpoint, {
   BreakpointProvider,
   setDefaultBreakpoints
 } from 'react-socks';
-import jwtDecode from 'jwt-decode';
-import Blockies from 'react-blockies';
-import { Link, navigate } from '@reach/router';
-import Web3 from 'web3';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import useOnclickOutside from 'react-cool-onclickoutside';
-
+// contracts
+import NFT from 'src/abis/NFT.json';
+import NFTMarket from 'src/abis/NFTMarket.json';
+import { ApiService } from 'src/core/axios';
+import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
+import notification from 'src/services/notification';
+import { setUserProfile } from 'src/store/actions/thunks/users';
+import { setupWeb3 } from 'src/store/actions/thunks/web3';
 import * as selectors from 'src/store/selectors';
 import { IUser } from 'src/types/users.types';
 import {
@@ -19,15 +26,8 @@ import {
   getNetworkId,
   shortAddress
 } from 'src/utils';
-import { getImage } from 'src/services/ipfs';
-import { COIN, ERRORS, SELECTED_NETWORK } from 'src/enums';
-import { ApiService } from 'src/core/axios';
-import { setupWeb3 } from 'src/store/actions/thunks/web3';
-// contracts
-import NFT from 'src/abis/NFT.json';
-import NFTMarket from 'src/abis/NFTMarket.json';
-import { setUserProfile } from 'src/store/actions/thunks/users';
-import notification from 'src/services/notification';
+import Web3 from 'web3';
+
 import GlobalSearchBar from '../components/GlobalSearchBar';
 import UserAvatar from '../components/UserAvatar';
 

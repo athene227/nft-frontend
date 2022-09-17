@@ -4,6 +4,7 @@ import {
   getSimpleMarketItem,
   getUserNftQuantityFromNftContract
 } from 'src/utils';
+
 import * as selectors from '../../store/selectors';
 
 const OwnerAndQuantity = (props: {
@@ -38,7 +39,10 @@ const OwnerAndQuantity = (props: {
       nftMarketContract,
       listingId: Number(listingId)
     });
-    console.log('marketItem', marketItem);
+    console.log(
+      '🚀 ~ file: OwnerAndQuantity.tsx ~ line 42 ~ getNftQuantityOwnInMarketContract ~ marketItem',
+      marketItem
+    );
     setMarketItem(marketItem);
   };
   const _getUserNftQuantity = async () => {
@@ -48,7 +52,10 @@ const OwnerAndQuantity = (props: {
       userAddress,
       tokenId
     });
-    console.log('balance from nft contract', _nftBalance);
+    console.log(
+      '🚀 ~ file: OwnerAndQuantity.tsx ~ line 52 ~ getUserNftQuantity ~ _nftBalance',
+      _nftBalance
+    );
     setNftBalance(_nftBalance);
   };
 
