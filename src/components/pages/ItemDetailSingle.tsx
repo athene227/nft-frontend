@@ -1126,7 +1126,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
     let res: string;
     switch (action) {
       case PROCESS_TRAKING_ACTION.CREATE_AUCTION:
-        res = 'created an auction';
+        res = 'minted a single NFT';
         break;
       case PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD:
         res = 'terminated an auction';
@@ -1243,43 +1243,51 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       nft.status === STATUS.ON_SELL &&
       nft.marketType === MARKET_TYPE.AUCTION
     ) {
+      console.log(
+        '🚀 ~ file: ItemDetailSingle.tsx ~ line 1246 ~ renderBids ~ bidsState.data[nft.listingId]',
+        bidsState.data[nft.listingId]
+      );
       return (
         <div className="tab-1 onStep fadeIn">
           {bidsState.data[nft.listingId] &&
-            bidsState.data[nft.listingId].map((bid, index) => (
-              <div className="p_list" key={index}>
-                <div
-                  className="author_list_pp"
-                  onClick={() => navigateToUserPage(bid?.buyerAddress)}
-                >
-                  <span>
-                    <UserAvatar
-                      className="lazy"
-                      image={bid?.buyer[0]?.profileImage}
-                      userAddress={bid?.buyerAddress}
-                      blockSize={5}
-                      size={50}
-                    />
-                    <i className="fa fa-check"></i>
-                  </span>
-                </div>
-                <div className="p_list_info">
-                  Bid{' '}
-                  <b>
-                    {bid?.price} {nft?.priceToken[0]?.name || COIN}
-                  </b>
-                  <span>
-                    by{' '}
-                    <b>
-                      {bid?.buyer[0]?.username
-                        ? `@${bid?.buyer[0]?.username}`
-                        : bid?.buyerAddress}
-                    </b>{' '}
-                    at {formatDate(bid.createdAt)}
-                  </span>
-                </div>
-              </div>
-            ))}
+            bidsState.data[nft.listingId].map(
+              (bid, index) =>
+                bid &&
+                bid?.buyer[0] && (
+                  <div className="p_list" key={index}>
+                    <div
+                      className="author_list_pp"
+                      onClick={() => navigateToUserPage(bid?.buyerAddress)}
+                    >
+                      <span>
+                        <UserAvatar
+                          className="lazy"
+                          image={bid?.buyer[0]?.profileImage}
+                          userAddress={bid?.buyerAddress}
+                          blockSize={5}
+                          size={50}
+                        />
+                        <i className="fa fa-check"></i>
+                      </span>
+                    </div>
+                    <div className="p_list_info">
+                      Bid{' '}
+                      <b>
+                        {bid?.price} {nft?.priceToken[0]?.name || COIN}
+                      </b>
+                      <span>
+                        by{' '}
+                        <b>
+                          {bid?.buyer[0]?.username
+                            ? `@${bid?.buyer[0]?.username}`
+                            : bid?.buyerAddress}
+                        </b>{' '}
+                        at {formatDate(bid.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                )
+            )}
         </div>
       );
     }

@@ -99,8 +99,20 @@ const BuyPopUp = (props: IProps) => {
       setDataState({ loader: !isUpdate, error: null });
 
       const _eth_balance = await _getMyBalance();
+      console.log(
+        '🚀 ~ file: PlaceBidPopUp.tsx ~ line 102 ~ const_getData= ~ _eth_balance',
+        _eth_balance
+      );
       const _marketItem = await _getAuctionMarketItem();
+      console.log(
+        '🚀 ~ file: PlaceBidPopUp.tsx ~ line 104 ~ const_getData= ~ _marketItem',
+        _marketItem
+      );
       const _auctionBids = await _getAuctionBids();
+      console.log(
+        '🚀 ~ file: PlaceBidPopUp.tsx ~ line 106 ~ const_getData= ~ _auctionBids',
+        _auctionBids
+      );
       setBalance(_eth_balance);
       setAuctionMarketItem(_marketItem);
       let _highestBidAmount = Number(_marketItem.startPrice);

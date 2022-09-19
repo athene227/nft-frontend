@@ -98,8 +98,6 @@ const App = () => {
     const SERVER_URL = process.env.REACT_APP_BACKEND_API;
     const eventSource = new EventSource(`${SERVER_URL}/v1/events`);
     eventSource.onmessage = (e) => {
-      console.log('🚀 ~ file: app.tsx ~ line 91 ~ useEffect ~ e', e);
-
       if (e.data.includes('eventName')) {
         const res = JSON.parse(e.data);
         console.log(
@@ -231,7 +229,7 @@ const App = () => {
             {/* <CreateSingle path="/createSingle" /> */}
             {/* <CreateMultiple path="/createMultiple" /> */}
             <CreateItem path="/createItem" />
-            <CreateItemNew path="/createItemLatest"/>
+            <CreateItemNew path="/createItemLatest" />
             <Listing path="/listing/:tokenId/:nftAddress" />
             <Profile path="/profile" />
             <MyProfile path="/myProfile" />

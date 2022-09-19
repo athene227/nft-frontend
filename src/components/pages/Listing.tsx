@@ -125,7 +125,6 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         royalty: nft.royalty,
         tokenId: nft.tokenId,
         attributes: nft.attributes,
-        priceTokenId: '',
         category: nft.category,
         networkId,
         marketType,
@@ -192,7 +191,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           tokenId,
           priceInWei,
           quantity: SINGLE,
-          deadline: 1680000000
+          deadline: ts1
         });
         //* create new row on the db
       } else if (marketType === MARKET_TYPE.AUCTION) {
@@ -279,6 +278,7 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
           submit={_submit}
           submitSaleState={submitSaleState}
           setPriceInput={(val: string) => setPriceInput(val)}
+          setExpirationDateInput={(val: string) => setExpirationDateInput(val)}
         />
       );
     } else if (marketType === MARKET_TYPE.AUCTION) {

@@ -702,7 +702,7 @@ const CreateItemNew = () => {
                 <div className="col-12">
                   <h1 className="text-center create-single-head">
                     Create New Item
-                    <br /> on PulseChaind
+                    <br /> on PulseChain
                   </h1>
                 </div>
               </div>
