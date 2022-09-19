@@ -1,22 +1,32 @@
+import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React from 'react';
-import { Field, Form, Formik, FormikProps, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
 import Loader from 'src/components/components/Loader';
+import { ALERT_TYPE, COIN, INPUT_ERROS } from 'src/enums';
 import { INft } from 'src/types/nfts.types';
+import * as Yup from 'yup';
+import moment from 'moment';
+
 import Alert from './Alert';
 // import { sellNft } from 'src/store/actions/thunks/nfts';
 
 interface IProps {
   nft: INft;
-  submit: (values: any, resetForm: Function) => void;
+  submit: (values: any, resetForm: () => void) => void;
   setPriceInput: (val: string) => void;
   setAmountInput?: (val: string) => void;
   submitSaleState: { error: null | string; loading: boolean };
+  setExpirationDateInput: (val: string) => void;
 }
 
 export default function RegularSaleForm(props: IProps) {
-  const { nft, submit, submitSaleState, setPriceInput, setAmountInput } = props;
+  const {
+    nft,
+    submit,
+    submitSaleState,
+    setPriceInput,
+    setAmountInput,
+    setExpirationDateInput
+  } = props;
 
   const SignupSchema = Yup.object().shape({
     price: Yup.number()
@@ -26,6 +36,9 @@ export default function RegularSaleForm(props: IProps) {
     numberOfCopies: Yup.number()
       .typeError('you must specify a number')
       .moreThan(0, INPUT_ERROS.tooShort)
+      .required(INPUT_ERROS.requiredField),
+    expirationDate: Yup.date()
+      .min(moment(new Date()).add(1, 'minutes'), INPUT_ERROS.oneHourMinimun)
       .required(INPUT_ERROS.requiredField)
   });
 
@@ -36,6 +49,17 @@ export default function RegularSaleForm(props: IProps) {
     };
     return result;
   };
+
+  const royaltiesComponent = (props: any) => (
+    <select id="pet-select" {...props}>
+      <option value={0}>0</option>
+      <option value={5}>5</option>
+      <option value={10}>10</option>
+      <option value={15}>15</option>
+      <option value={20}>20</option>
+      <option value={25}>25</option>
+    </select>
+  );
 
   const displayBuyForm = ({
     handleSubmit,
@@ -48,6 +72,10 @@ export default function RegularSaleForm(props: IProps) {
     handleChange,
     getFieldProps
   }: FormikProps<any>) => {
+    const onChangExpirationDate = (e: any) => {
+      setFieldValue('expirationDate', e.target.value);
+      setExpirationDateInput && setExpirationDateInput(e.target.value);
+    };
     const onChangePrice = (e: any) => {
       setFieldValue('price', e.target.value);
       setPriceInput && setPriceInput(e.target.value);
@@ -90,6 +118,38 @@ export default function RegularSaleForm(props: IProps) {
               <ErrorMessage name="numberOfCopies">
                 {(msg) => <div className="error-form">{msg}</div>}
               </ErrorMessage>
+              <div className="spacer-10"></div>
+            </div>
+          )}
+          <div>
+            <h5>Expiration date</h5>
+            <Field
+              type="datetime-local"
+              name="expirationDate"
+              id="bid_expiration_date"
+              className="form-control"
+              onChange={onChangExpirationDate}
+              min={moment().add(1, 'hours')}
+            />
+            <ErrorMessage name="expirationDate">
+              {(msg) => <div className="error-form">{msg}</div>}
+            </ErrorMessage>
+            <div className="spacer-10"></div>
+          </div>
+
+          {!nft?.isListedOnce && (
+            <div>
+              <h5>Royalties</h5>
+              <Field
+                name="royalties"
+                as={royaltiesComponent}
+                placeholder="First Name"
+                className="form-control"
+              />
+              <ErrorMessage name="royalties">
+                {(msg) => <div className="error-form">{msg}</div>}
+              </ErrorMessage>
+
               <div className="spacer-10"></div>
             </div>
           )}

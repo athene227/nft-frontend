@@ -1,12 +1,13 @@
 import { INft } from 'src/types/nfts.types';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
-  initEntityState,
+  entityLoadingFailed,
   entityLoadingStarted,
   entityLoadingSucceeded,
-  entityLoadingFailed
+  initEntityState
 } from '../utils';
 
 export interface IListedNfts {
@@ -147,6 +148,10 @@ const states = (
         )
       };
     case getType(actions.fetchNftMultipleDetails.success):
+      console.log(
+        '🚀 ~ file: nfts.tsx ~ line 151 ~ action.payload',
+        action.payload
+      );
       return {
         ...state,
         nftCollectibleDetails: entityLoadingSucceeded(

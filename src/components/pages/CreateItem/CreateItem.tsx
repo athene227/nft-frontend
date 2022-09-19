@@ -437,7 +437,7 @@ const CreateItem = () => {
       await ApiService.createProcessTracking({
         ...nftToCreate,
         userAddress,
-        tokenId,
+        tokenId: tokenId(),
         action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
@@ -713,7 +713,7 @@ const CreateItem = () => {
                 <div className="col-12">
                   <h1 className="text-center create-single-head">
                     Create New Item
-                    <br /> on PulseChaind
+                    <br /> on PulseChain
                   </h1>
                 </div>
               </div>

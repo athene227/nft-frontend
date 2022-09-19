@@ -1,28 +1,17 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import SEO from '@americanexpress/react-seo';
+import { HomePageSeo } from 'src/config/seo';
+
 import HotCollections from './components/hotCollections/HotCollections';
-import Sellnfts from './components/sellNfts/Sellnfts';
-import LiveAuctions from './components/liveAuctions/LiveAuctions';
-import TopSellersBuyers from './components/topSellersBuyers/TopSellersBuyers';
-import NewItems from './components/newItems/NewItems';
 import Landing from './components/landing/Landing';
-import {
-  fetchNewNfts,
-  fetchHotAuctions
-} from '../../../store/actions/thunks/nfts';
-import { fetchHotCollections } from '../../../store/actions/thunks/hotCollections';
+import LiveAuctions from './components/liveAuctions/LiveAuctions';
+import NewItems from './components/newItems/NewItems';
+import Sellnfts from './components/sellNfts/Sellnfts';
+import TopSellersBuyers from './components/topSellersBuyers/TopSellersBuyers';
 
 const Home = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchNewNfts());
-    //dispatch(fetchHotAuctions());
-    dispatch(fetchHotCollections());
-  }, []);
-
   return (
-    <div className="">
+    <div>
+      <SEO {...HomePageSeo} />
       <Landing />
       <NewItems />
       <TopSellersBuyers />

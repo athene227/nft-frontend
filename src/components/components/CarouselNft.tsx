@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import Slider from 'react-slick';
-import { carouselNft } from './constants';
-import { INft } from 'src/types/nfts.types';
-import NftCard from './NftCard';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+import React, { useState } from 'react';
+import Slider from 'react-slick';
+import { INft } from 'src/types/nfts.types';
+
+import { carouselNft } from './constants';
+import NftCard from './NftCard';
 
 interface CarouselNftProps {
   data: INft[];

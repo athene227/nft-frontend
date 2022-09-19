@@ -3,6 +3,7 @@ import { INft } from 'src/types/nfts.types';
 import { IUser } from 'src/types/users.types';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
+
 import * as actions from '../actions';
 import {
   entityLoadingFailed,

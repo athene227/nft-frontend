@@ -10,4 +10,4 @@ while (n > 0) {
   i = i - 1;
 }
 
-console.log('p', p.slice(0, 5));
+console.log('🚀 ~ file: test.js ~ line 14 ~ p.slice(0, 5)', p.slice(0, 5));

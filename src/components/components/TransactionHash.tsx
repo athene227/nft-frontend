@@ -14,7 +14,7 @@ const TransactionHash = (props: IProps) => {
         className="transaction-hash"
         target="_blank"
         rel="noreferrer"
-        href={`https://rinkeby.etherscan.io/tx/${hash}`}
+        href={`https://goerli.etherscan.io/tx/${hash}`}
       >
         {hash}
       </a>

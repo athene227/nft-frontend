@@ -1,10 +1,12 @@
-import React, { memo, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
+import React, { memo, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Loader from 'src/components/components/Loader';
 import { ALERT_TYPE, COIN, ERRORS, MARKET_CONTRACT_EVENTS } from 'src/enums';
+import { getImage } from 'src/services/ipfs';
 import { INft } from 'src/types/nfts.types';
 import { getErrorMessage } from 'src/utils';
-import Loader from 'src/components/components/Loader';
+
 import * as selectors from '../../../store/selectors';
 import Alert from '../Alert';
 import TransactionHash from '../TransactionHash';
@@ -27,19 +29,14 @@ const TerminateAuctionPopUp = (props: IProps) => {
   const { web3, accounts } = web3State.web3.data;
   const nftEvents = useSelector(selectors.nftEvents);
   const terminateTransactionHash = nftEvents.find(
-    ({
-      eventName,
-      tokenId,
-      listingId
-    }: {
-      eventName: string;
-      tokenId: string;
-      listingId: string;
-    }) =>
-      eventName === MARKET_CONTRACT_EVENTS.TerminateAuctionEvent &&
-      tokenId === nft.tokenId &&
-      listingId === nft.listingId
+    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
+      eventName === MARKET_CONTRACT_EVENTS.AuctionTerminated &&
+      tokenId === nft.tokenId
   )?.transactionHash;
+  console.log(
+    '🚀 ~ file: TerminateAuctionPopup.tsx ~ line 36 ~ TerminateAuctionPopUp ~ terminateTransactionHash',
+    terminateTransactionHash
+  );
 
   const getMyBalance = async () => {
     try {
@@ -67,43 +64,91 @@ const TerminateAuctionPopUp = (props: IProps) => {
   const displayCancelListingForm = () => {
     return (
       <Form>
-        <div className="heading">
-          <h3>Terminate Auction</h3>
+        <div className="modal-header">
+          <h5 className="modal-title">Terminate Auction</h5>
+          <button
+            className="btn-close"
+            onClick={() => onClose(terminateTransactionHash !== undefined)}
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <p>
-          You are about to terminate Auction item:{' '}
-          <span className="bold">{`${nft?.name} `}</span>
-        </p>
-        <div className="spacer-20"></div>
-        <div className="heading mt-3">
-          <p>Your balance</p>
-          {balanceState.loader ? (
-            <Loader size={20} />
-          ) : (
-            <div className="subtotal">
-              {Number(balance).toFixed(8)} {COIN}
-            </div>
-          )}
-        </div>
-        {terminateTransactionHash && (
-          <TransactionHash hash={terminateTransactionHash} />
-        )}
-        {terminateAuctionState.loader ? (
-          <Loader />
-        ) : (
-          terminateTransactionHash === undefined && (
-            <input
-              type="submit"
-              id="submit"
-              className="btn-main"
-              value="Teminate Auction"
-            />
-          )
-        )}
+        <div className="modal-content">
+          <div className="row">
+            <div className="col-md-7">
+              <div className="form-header">
+                <p>
+                  You are about to terminate Auction item:{' '}
+                  <span className="bold">{`${nft?.name} `}</span>
+                </p>
+              </div>
+              <div className="total-pay">
+                <div className="heading mt-3">
+                  <p>Your balance</p>
+                  {balanceState.loader ? (
+                    <Loader size={20} />
+                  ) : (
+                    <div className="subtotal">
+                      {Number(balance).toFixed(8)} {COIN}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="detail_button">
+                {terminateAuctionState.loader ? (
+                  <Loader />
+                ) : (
+                  terminateTransactionHash === undefined && (
+                    <input
+                      type="submit"
+                      id="submit"
+                      className="btn-main"
+                      value="Teminate Auction"
+                    />
+                  )
+                )}
+              </div>
+              {terminateTransactionHash && !terminateAuctionState.loader && (
+                <TransactionHash hash={terminateTransactionHash} />
+              )}
 
-        {terminateAuctionState.error && (
-          <Alert text={terminateAuctionState.error} type={ALERT_TYPE.DANGER} />
-        )}
+              {terminateAuctionState.error && (
+                <Alert
+                  text={terminateAuctionState.error}
+                  type={ALERT_TYPE.DANGER}
+                />
+              )}
+            </div>
+            <div className="col-md-5">
+              <div className="buy-popup-image">
+                <div className="buy-popup-img">
+                  <img
+                    className="img-fluid"
+                    src={getImage(nft?.imageUrl)}
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+                <div className="buy-popup-imgdesc">
+                  <h2>{nft?.name}</h2>
+                  <p>{nft?.description}</p>
+                  <div className="buy-popup-price">
+                    {nft.price > 0 && (
+                      <p className="item_detail_price">
+                        <i>
+                          <img src="./../../img/icon/price-pulse.png" />
+                        </i>{' '}
+                        <strong>
+                          {nft?.price} {COIN}
+                        </strong>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Form>
     );
   };
@@ -126,7 +171,7 @@ const TerminateAuctionPopUp = (props: IProps) => {
   };
 
   return (
-    <div className="maincheckout">
+    <div className="maincheckout modal-style-1">
       <button
         className="btn-close"
         onClick={() => onClose(terminateTransactionHash !== undefined)}

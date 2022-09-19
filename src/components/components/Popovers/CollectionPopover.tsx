@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Row, Col, OverlayTrigger, Popover, Form } from 'react-bootstrap';
+import BackupTableIcon from '@mui/icons-material/BackupTable';
+import CheckIcon from '@mui/icons-material/Check';
 import {
+  Avatar,
+  Checkbox,
   List,
   ListItem,
   ListItemAvatar,
-  Checkbox,
   ListItemButton,
-  Avatar,
   ListItemText
 } from '@mui/material';
+import React, { useState } from 'react';
+import { Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { ICollection } from 'src/collections.types';
 
-import CheckIcon from '@mui/icons-material/Check';
-import BackupTableIcon from '@mui/icons-material/BackupTable';
 interface CollectionPopoverProps {
   collectionList: ICollection[];
   data: any[];
@@ -89,7 +89,7 @@ const CollectionPopover = ({
             {/* <TextField
               className={`input-search ${classes.text__custom_field}`}
               label="Search collection..."
-              variant="filled" 
+              variant="filled"
               id="outlined-start-adornment"
               sx={{ m: 1, width: '25ch' }}
               value={collectionSearch}
@@ -213,7 +213,12 @@ const CollectionPopover = ({
         onClick={() => setCollectionPopShow(!collectionPopShow)}
       >
         <BackupTableIcon size={30} className={`m-2 button__icon`} />
-        <span>{getCollectionFilterText()}</span>
+        <span>
+          {getCollectionFilterText()}{' '}
+          <i
+            className={`mt-3 pull-right fa fa-angle-down font-weight-bold`}
+          ></i>
+        </span>
       </button>
     </OverlayTrigger>
   );

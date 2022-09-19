@@ -1,8 +1,6 @@
 import React from 'react';
-import { numFormatter, numberWithCommas } from 'src/utils';
-import { getImage } from 'src/services/ipfs';
-import { IUser } from 'src/types/users.types';
 import UserAvatar from 'src/components/components/UserAvatar';
+import { numberWithCommas, numFormatter } from 'src/utils';
 
 interface IProps {
   user: any;

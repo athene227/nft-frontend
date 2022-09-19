@@ -1,24 +1,22 @@
 import { createSelector, createStructuredSelector } from 'reselect';
+import { MARKET_TYPE } from 'src/enums';
+import { INft } from 'src/types/nfts.types';
 
+import { IBids } from '../reducers/bids';
+import { ICollectionsState } from '../reducers/collections';
+import { IHotAuctions } from '../reducers/hotAuction';
+import { IHotCollections } from '../reducers/hotCollections';
 import {
   IListedNfts,
-  IUserNfts,
-  InftDetail,
   InftCollectibleDetail,
+  InftDetail,
   InftShowcase,
-  IsellNft
+  IsellNft,
+  IUserNfts
 } from '../reducers/nfts';
+import { ISearchState } from '../reducers/search';
 import { IUserState } from '../reducers/users';
 import { IWeb3State } from '../reducers/web3Reducer';
-import { ICollectionsState } from '../reducers/collections';
-import {
-  IHotCollections,
-  IHotCollectionsState
-} from '../reducers/hotCollections';
-import { ISearchState } from '../reducers/search';
-import { IBids } from '../reducers/bids';
-import { INft } from 'src/types/nfts.types';
-import { IHotAuctions } from '../reducers/hotAuction';
 
 //Store Selectors
 export const listedNftsState = (state: any) => ({
@@ -42,7 +40,7 @@ export const hotAuctionState = (state: any) =>
 export const authorsState = (state: any) => state.authors.authorList;
 export const authorRankingsState = (state: any) => state.authors.authorRanking;
 
-// timor additons
+// timor additions
 export const counterState = (state: any) => state.counter;
 export const web3State = (state: any) => state.web3 as IWeb3State;
 export const userState = (state: any) => state.users as IUserState;
@@ -64,8 +62,10 @@ export const auctionedNfts = createSelector(listedNftsState, (nfts) => {
   if (!nfts.data) {
     return [];
   }
-  const acutioned = nfts.data.filter((nft) => !!nft.deadline);
-  return acutioned;
+  const auctioned = nfts.data.filter(
+    (nft) => nft.marketType == MARKET_TYPE.AUCTION
+  );
+  return auctioned;
 });
 
 export const nftFilter = createStructuredSelector({
