@@ -2,9 +2,8 @@
 import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Loader from 'src/components/components/Loader';
 import ERC20Abi from 'src/abis/new/MockERC20.json';
-import { IPriceToken } from 'src/types/priceTokens.types';
+import Loader from 'src/components/components/Loader';
 import {
   ALERT_TYPE,
   COIN,
@@ -19,6 +18,7 @@ import {
   IAuctionMarketItem,
   INft
 } from 'src/types/nfts.types';
+import { IPriceToken } from 'src/types/priceTokens.types';
 import {
   getAuctionBids,
   getAuctionMarketItem,

@@ -22,6 +22,7 @@ import { Switch } from 'formik-material-ui';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
+import Table from 'react-bootstrap/Table';
 import DatePicker from 'react-datepicker';
 import { BsQuestion } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,11 +58,10 @@ import * as Yup from 'yup';
 
 import BidIcon from '../../../../assets/images/bid-icon.svg';
 import CollectionImg from '../../../../assets/images/collection-img.png';
-import { ApiService } from '../../../../core/axios';
 import { ReactComponent as CrossIcon } from '../../../../assets/images/icon/cross-icon.svg';
-import { ReactComponent as IconLock } from '../../../../assets/images/icon/icon-lock.svg';
 import { ReactComponent as IconExc } from '../../../../assets/images/icon/icon-exc.svg';
-import Table from 'react-bootstrap/Table';
+import { ReactComponent as IconLock } from '../../../../assets/images/icon/icon-lock.svg';
+import { ApiService } from '../../../../core/axios';
 
 interface IProps {
   onChangeImage: (e: any) => void;
@@ -752,9 +752,7 @@ export default function CreateForm(props: IProps) {
                   {/* <div className="spacer-50"></div> */}
                 </div>
                 <div className="form-cfield">
-                  <h5 className="form-label label-sub">
-                    External link
-                  </h5>
+                  <h5 className="form-label label-sub">External link</h5>
                   <p className="sublabel">
                     NFTonPulse will include a link to this URL on this item's
                     detail page, so that users can click to learn more about it.
@@ -1347,9 +1345,9 @@ export default function CreateForm(props: IProps) {
                   <div className="row align-items-center">
                     <div className="col-md-8">
                       <h5>
-                      <i>
-                      <IconLock/>
-                      </i>
+                        <i>
+                          <IconLock />
+                        </i>
                         Unlockable Content
                       </h5>
                       <p className="sublabel">
@@ -1375,7 +1373,9 @@ export default function CreateForm(props: IProps) {
                       name="description"
                       id="item_Description"
                       className={`form-control input__holder__single textarea`}
-                      placeholder={'Enter content(assess key, code to redeem, link to a file, etc.)'}
+                      placeholder={
+                        'Enter content(assess key, code to redeem, link to a file, etc.)'
+                      }
                       onChange={onChangeDescription}
                       as="textarea"
                     />
@@ -1389,7 +1389,7 @@ export default function CreateForm(props: IProps) {
                     <div className="col-md-8">
                       <h5>
                         <i>
-                          <IconExc/>
+                          <IconExc />
                         </i>
                         Explicit & Sensitive Content
                       </h5>

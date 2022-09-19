@@ -13,7 +13,9 @@ export default function PreviewNftImage(props: IProps) {
     console.log('Remove Triggered');
   };
 
-  const removeImageUrl = () => {''};
+  const removeImageUrl = () => {
+    ('');
+  };
 
   return (
     <div className="upload-image-preview">

@@ -1,9 +1,9 @@
 import { navigate } from '@reach/router';
+import moment from 'moment';
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
 import { ApiService } from 'src/core/axios';
-import moment from 'moment';
 import {
   ALERT_TYPE,
   COIN,
@@ -22,10 +22,10 @@ import {
   buySimple,
   cancelSimpleListing,
   createSimpleMarketItem,
+  formatDate,
   getErrorMessage,
   getMyBalance,
   getMyTokenBalance,
-  formatDate,
   getNetworkId,
   getPriceAfterPercent,
   getSimpleMarketItem,
@@ -36,18 +36,18 @@ import {
 
 import { clearEvents } from '../../store/actions';
 import { fetchNftMultipleDetails } from '../../store/actions/thunks/nfts';
-import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import * as selectors from '../../store/selectors';
+import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
 import Alert from '../components/Alert';
 import BuyPopUp from '../components/BuyPopUp';
 import CancelListingPopUp from '../components/CancelListingPopUp';
+import CancelOfferPopUp from '../components/CancelOfferPopUp';
 import Footer from '../components/footer';
 import MakeOfferPopUp from '../components/MakeOfferPopUp';
 import { renderAttributes } from '../components/NftAttributes';
 import OwnerAndQuantity from '../components/OwnerAndQuantity';
 import SellPopUp from '../components/SellPopUp';
 import UserAvatar from '../components/UserAvatar';
-import CancelOfferPopUp from '../components/CancelOfferPopUp';
 
 enum TAB_TYPE {
   OWNERS = 'OWNERS',
