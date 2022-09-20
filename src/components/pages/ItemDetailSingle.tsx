@@ -1244,15 +1244,16 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       nft.marketType === MARKET_TYPE.AUCTION
     ) {
       console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 1246 ~ renderBids ~ bidsState.data[nft.listingId]',
-        bidsState.data[nft.listingId]
+        '🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀',
+        bids
       );
       return (
         <div className="tab-1 onStep fadeIn">
-          {bidsState.data[nft.listingId] &&
-            bidsState.data[nft.listingId].map(
+          {bids &&
+            bids.map(
               (bid, index) =>
                 bid &&
+                bid.buyer &&
                 bid?.buyer[0] && (
                   <div className="p_list" key={index}>
                     <div
