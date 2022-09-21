@@ -477,20 +477,12 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       });
 
       //* interaction with the nft market contract
-      const res = await buySimple({
+      await buySimple({
         nftMarketSimpleContract,
         userAddress,
         listingId: Number(nft.listingId),
         quantity: SINGLE,
         value
-      });
-
-      await ApiService.createdNft({
-        transactionHash: res.transactionHash,
-        data: {
-          ...nftItem,
-          status: STATUS.NOT_LISTED
-        }
       });
 
       //* turn off loader
@@ -920,9 +912,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       };
 
       if (nft.marketType === MARKET_TYPE.SIMPLE) {
-        //* mongo - before cancelling
-        // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
-
         const simpleMarketItem: ISimpleMarketItem =
           await nftMarketSimpleContract.methods
             .simpleListingIdToMarketItem(Number(nft.listingId))
@@ -952,9 +941,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           listingId: Number(nft.listingId)
         });
       } else if (nft.marketType === MARKET_TYPE.AUCTION) {
-        //* mongo - before cancelling
-        // const nftResult = await ApiService.createdNft({ ...nftItem, progressStatus: STATUS.BEFORE_CANCELING, });
-
         const auctionMarketItem: IAuctionMarketItem =
           await nftMarketAuctionContract.methods
             .auctionListingIdToMarketItem(Number(nft.listingId))
@@ -1089,19 +1075,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         listingId: Number(nft.listingId)
       });
 
-      const res = await ApiService.createdNft({
-        transactionHash: nft.transactionHash,
-        data: {
-          ...nftItem,
-          listingId: nft.listingId,
-          status: STATUS.NOT_LISTED
-        }
-      });
-      console.log(
-        '🚀 ~ file: ItemDetailSingle.tsx ~ line 693 ~ const_terminateAuction= ~ res',
-        res
-      );
-
       setTerminateAuctionState({ loader: false, error: null });
     } catch (error) {
       console.log(
@@ -1125,7 +1098,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
   const _convertActionToText = (action: string) => {
     let res: string;
     switch (action) {
-      case PROCESS_TRAKING_ACTION.CREATE_AUCTION:
+      case PROCESS_TRAKING_ACTION.CREATE_SINGLE:
         res = 'minted a single NFT';
         break;
       case PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD:
@@ -1136,9 +1109,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         break;
       case PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE:
         res = 'bought a simple item';
-        break;
-      case PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE:
-        res = 'minted a single NFT';
         break;
       case PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE:
         res = 'listed a simple item';

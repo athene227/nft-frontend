@@ -198,7 +198,7 @@ const CreateItemNew = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE,
+      action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -231,7 +231,7 @@ const CreateItemNew = () => {
       await ApiService.createProcessTracking({
         ...nftToCreate,
         userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE,
+        action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
@@ -346,7 +346,7 @@ const CreateItemNew = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
+      action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -377,7 +377,7 @@ const CreateItemNew = () => {
       await ApiService.createProcessTracking({
         ...nftToCreate,
         userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
+        action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
@@ -470,7 +470,7 @@ const CreateItemNew = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
+      action: PROCESS_TRAKING_ACTION.CREATE_MULTIPLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -503,7 +503,7 @@ const CreateItemNew = () => {
       await ApiService.createProcessTracking({
         ...nftToCreate,
         userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
+        action: PROCESS_TRAKING_ACTION.CREATE_MULTIPLE,
         processStatus: PROCESS_TRAKING_STATUS.AFTER
       });
 
