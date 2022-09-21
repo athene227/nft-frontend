@@ -197,7 +197,7 @@ const CreateItem = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE,
+      action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -215,26 +215,26 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          tokenURI: metaDataUrl() as string,
-          priceTokenId: undefined,
-          status: STATUS.NOT_LISTED,
-          totalAmount: SINGLE,
-          leftAmount: SINGLE,
-          listedAmount: 0
-        }
-      });
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     tokenURI: metaDataUrl() as string,
+      //     priceTokenId: undefined,
+      //     status: STATUS.NOT_LISTED,
+      //     totalAmount: SINGLE,
+      //     leftAmount: SINGLE,
+      //     listedAmount: 0
+      //   }
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        tokenId,
-        userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_SINGLE,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   tokenId,
+      //   userAddress,
+      //   action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
       // update item create progress to listing item
       updateItemCreateProgress({
@@ -273,42 +273,35 @@ const CreateItem = () => {
 
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
-      const SellerNFTBalance = await nft721Contract.methods
-        .balanceOf(userAddress)
-        .call();
+      // const SellerNFTBalance = await nft721Contract.methods
+      //   .balanceOf(userAddress)
+      //   .call();
 
-      console.log(
-        '🚀 ~ file: CreateItem.tsx ~ line 276 ~ CreateItem ~ listingId, transactionHash, SellerNFTBalance',
-        listingId,
-        transactionHash,
-        SellerNFTBalance
-      );
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     tokenId: itemCreateProgressRef.current.tokenId,
+      //     listingId,
+      //     price: data.price,
+      //     priceTokenId: undefined,
+      //     tokenURI: metaDataUrl() as string,
+      //     status: STATUS.ON_SELL,
+      //     totalAmount: SINGLE,
+      //     leftAmount: 0,
+      //     listedAmount: SINGLE
+      //   }
+      // });
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          tokenId: itemCreateProgressRef.current.tokenId,
-          listingId,
-          price: data.price,
-          priceTokenId: undefined,
-          tokenURI: metaDataUrl() as string,
-          status: STATUS.ON_SELL,
-          totalAmount: SINGLE,
-          leftAmount: 0,
-          listedAmount: SINGLE
-        }
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   userAddress,
+      //   tokenId: itemCreateProgressRef.current.tokenId,
+      //   action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        userAddress,
-        tokenId: itemCreateProgressRef.current.tokenId,
-        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
-      // update item create progress to finished
+      //* update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
         listingId,
@@ -349,7 +342,7 @@ const CreateItem = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
+      action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -367,23 +360,23 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          tokenId,
-          tokenURI: metaDataUrl() as string,
-          status: STATUS.NOT_LISTED
-        }
-      });
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     tokenId,
+      //     tokenURI: metaDataUrl() as string,
+      //     status: STATUS.NOT_LISTED
+      //   }
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        tokenId,
-        userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_AUCTION,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   tokenId,
+      //   userAddress,
+      //   action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
       // update item create progress to listing item
       updateItemCreateProgress({
@@ -423,24 +416,24 @@ const CreateItem = () => {
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          listingId,
-          tokenId: tokenId() as string,
-          tokenURI: metaDataUrl(),
-          status: STATUS.ON_SELL
-        }
-      });
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     listingId,
+      //     tokenId: tokenId() as string,
+      //     tokenURI: metaDataUrl(),
+      //     status: STATUS.ON_SELL
+      //   }
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        userAddress,
-        tokenId: tokenId(),
-        action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   userAddress,
+      //   tokenId: tokenId(),
+      //   action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
       // update item create progress to finished
       updateItemCreateProgress({
@@ -474,7 +467,7 @@ const CreateItem = () => {
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
-      action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
+      action: PROCESS_TRAKING_ACTION.CREATE_MULTIPLE,
       processStatus: PROCESS_TRAKING_STATUS.BEFORE
     });
 
@@ -492,25 +485,25 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          priceTokenId: undefined,
-          tokenURI: metaDataUrl() as string,
-          status: STATUS.NOT_LISTED,
-          totalAmount: Number(data.supply),
-          leftAmount: Number(data.supply),
-          listedAmount: 0
-        }
-      });
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     priceTokenId: undefined,
+      //     tokenURI: metaDataUrl() as string,
+      //     status: STATUS.NOT_LISTED,
+      //     totalAmount: Number(data.supply),
+      //     leftAmount: Number(data.supply),
+      //     listedAmount: 0
+      //   }
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        userAddress,
-        action: PROCESS_TRAKING_ACTION.CREATE_SIMPLE_MULTIPLE,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   userAddress,
+      //   action: PROCESS_TRAKING_ACTION.CREATE_MULTIPLE,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
       // update item create progress to listing item
       updateItemCreateProgress({
@@ -547,37 +540,33 @@ const CreateItem = () => {
         quantity: Number(data.supply),
         deadline: ts1
       });
-      console.log(
-        '🚀 ~ file: CreateMultiple.tsx ~ line 308 ~ CreateSingle ~ res',
-        res
-      );
 
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
 
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...nftToCreate,
-          tokenId: itemCreateProgressRef.current.tokenId,
-          listingId,
-          // price: priceInWei,
-          priceTokenId: undefined,
-          tokenURI: metaDataUrl() as string,
-          status: STATUS.ON_SELL,
-          totalAmount: Number(data.supply),
-          leftAmount: 0,
-          listedAmount: Number(data.supply)
-        }
-      });
+      // await ApiService.createdNft({
+      //   transactionHash,
+      //   data: {
+      //     ...nftToCreate,
+      //     tokenId: itemCreateProgressRef.current.tokenId,
+      //     listingId,
+      //     // price: priceInWei,
+      //     priceTokenId: undefined,
+      //     tokenURI: metaDataUrl() as string,
+      //     status: STATUS.ON_SELL,
+      //     totalAmount: Number(data.supply),
+      //     leftAmount: 0,
+      //     listedAmount: Number(data.supply)
+      //   }
+      // });
 
-      await ApiService.createProcessTracking({
-        ...nftToCreate,
-        tokenId: tokenId() as string,
-        userAddress,
-        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
+      // await ApiService.createProcessTracking({
+      //   ...nftToCreate,
+      //   tokenId: tokenId() as string,
+      //   userAddress,
+      //   action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
+      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
+      // });
 
       // update item create progress to finished
       updateItemCreateProgress({
@@ -646,14 +635,22 @@ const CreateItem = () => {
         });
       }
 
+      const isMultiple = data.supply > 1 ? true : false;
       if (!metaDataUrl() && imageUrl()) {
         //* uploading METADATA to ipfs
         const jsonUri = await getUri({
           name: data.name,
           description: data.description,
+          creatorAddress: userAddress,
           imageUrl: imageUrl() as string,
           previewImageUrl: previewImageUrl() as string,
-          attributes: data.attributes
+          attributes: data.attributes,
+          category: data.category,
+          collectionId: data.collectionId,
+          explicit: data.explicit,
+          externalLink: data.externalLink,
+          supply: data.supply,
+          royalty: data.royalties
         });
 
         // update item create progress to metadata
@@ -663,7 +660,6 @@ const CreateItem = () => {
         });
       }
 
-      const isMultiple = data.supply > 1 ? true : false;
       if (isMultiple) {
         const NFT_NETWORK_DATA = await getNetworkData(web3, NFT1155);
         await createMultiple(NFT_NETWORK_DATA, data);

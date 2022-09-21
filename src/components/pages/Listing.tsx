@@ -234,31 +234,6 @@ const Createpage = (props: { tokenId: string; nftAddress: string }) => {
         '🚀 ~ file: Listing.tsx ~ line 206 ~ const_submit= ~ marketitem',
         marketitem
       );
-      //* create new row on the db
-      const res = await ApiService.createdNft({
-        transactionHash: marketitem.transactionHash,
-        data: {
-          ...itemToCreate,
-          listingId: marketitem.returnValues.listingId,
-          status: STATUS.ON_SELL
-        }
-      });
-      console.log(
-        '🚀 ~ file: Listing.tsx ~ line 225 ~ const_submit= ~ res',
-        res
-      );
-
-      //* create tracking before listing
-      await ApiService.createProcessTracking({
-        ...itemToCreate,
-        userAddress,
-        tokenId,
-        action:
-          marketType === MARKET_TYPE.SIMPLE
-            ? PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE
-            : PROCESS_TRAKING_ACTION.LIST_AUCTION,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
 
       setSubmitSaleState({ error: null, loading: false });
       navigate('/myProfile');

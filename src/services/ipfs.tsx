@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import axios, { AxiosRequestConfig } from 'axios';
 import moment from 'moment';
 import { ApiService } from 'src/core/axios';
@@ -37,17 +38,22 @@ export const getImageUri = async (file: File) => {
 export const getUri = async (data: {
   name: string;
   description: string;
+  creatorAddress: string;
   imageUrl: string;
   previewImageUrl: string;
   attributes: any[];
+  category: string;
+  collectionId: string;
+  explicit: boolean;
+  externalLink: string;
+  royalty: string;
+  supply: number;
 }) => {
-  const { name, description, imageUrl, attributes } = data;
   const createdAt = moment.now(),
-    metaName = name + createdAt;
-  const metaData = { name, description, imageUrl, attributes, createdAt };
+    metaName = data.name + createdAt;
   const options = {
     pinataMetadata: { name: metaName },
-    pinataContent: metaData
+    pinataContent: { ...data, createdAt }
   };
 
   console.log('🚀 ~ file: ipfs.tsx ~ line 96 ~ options', options);

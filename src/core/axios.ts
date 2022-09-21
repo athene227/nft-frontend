@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { ICollection } from 'src/collections.types';
 import { API_ERRORS } from 'src/enums';

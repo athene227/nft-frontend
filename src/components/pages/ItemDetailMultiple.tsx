@@ -446,7 +446,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         .setApprovalForAll(nftMarketSimpleContract._address, true)
         .send({ from: userAddress });
       console.log('##################Approved');
-      const res = await createSimpleMarketItem({
+      await createSimpleMarketItem({
         nftMarketSimpleContract,
         userAddress,
         nftAddress: chosenCollectibleToSell.nftAddress,
@@ -456,31 +456,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         deadline: 1680000000
       });
       console.log('##################CreateSimpleMarketItem');
-
-      const listingId = res.returnValues.listingId;
-      const transactionHash = res.transactionHash;
-      const totalAmount = await nft1155Contract.methods
-        .balanceOf(userAddress, chosenCollectibleToSell.tokenId)
-        .call();
-      console.log('##################BalanceOf');
-
-      //* get the market item so we can save in the db how much listed nft the user have
-      const simpleMarketItem = await getSimpleMarketItem({
-        nftMarketSimpleContract,
-        listingId: Number(listingId)
-      });
-
-      await ApiService.createdNft({
-        transactionHash,
-        data: {
-          ...itemToMongo,
-          status: STATUS.ON_SELL,
-          totalAmount,
-          leftAmount:
-            Number(totalAmount) - Number(simpleMarketItem.remainingQuantity),
-          listedAmount: simpleMarketItem.remainingQuantity
-        }
-      });
 
       setSellState({ loader: false, error: null });
     } catch (error) {
