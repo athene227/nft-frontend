@@ -3,23 +3,6 @@
 import moment from 'moment';
 import { ApiService } from 'src/core/axios';
 
-// 'https://ipfs.nftonpulse.io/ipfs/'
-// const pinata = axios.create({ baseURL: 'https://api.pinata.cloud/pinning' });
-// pinata.interceptors.request.use((config: AxiosRequestConfig) => {
-//   config.headers = {
-//     ...config.headers,
-//     pinata_api_key: process.env.REACT_APP_PINATA_APIKEY as string,
-//     pinata_secret_api_key: process.env.REACT_APP_PINATA_SECRET_API_KEY as string
-//   };
-//   return config;
-// });
-
-// interface PinataResponse {
-//   data: {
-//     IpfsHash: string;
-//   };
-// }
-
 export const gatewayUrl = 'https://ipfs.nftonpulse.io/ipfs/';
 
 export const getImage = (image: string | undefined | null) => {

@@ -32,39 +32,21 @@ import Footer from '../components/components/footer';
 import { dark, light } from '../styles/theme/themeVariables';
 import HeaderNew from './menu/headerNew';
 import ScrollToTopBtn from './menu/ScrollToTop';
-import Accordion from './pages/accordion';
-import Activity from './pages/activity';
-import Alerts from './pages/alerts';
-import Auction from './pages/Auction';
 import Author from './pages/Author';
 import Collection from './pages/Collection';
-import Contact from './pages/contact';
 // import CreateMultiple from './pages/CreateMultiple';
 // import CreateOption from './pages/CreateOption/CreateOption';
 // import CreateSingle from './pages/CreateSingle/CreateSingle';
 import CreateItem from './pages/CreateItem/CreateItem';
 import CreateItemNew from './pages/CreateItem/CreateItemLatest';
-import ElegantIcons from './pages/elegantIcons';
-import EtlineIcons from './pages/etlineIcons';
 import Explore from './pages/Explore/explore';
-import FontAwesomeIcons from './pages/fontAwesomeIcons';
-import Helpcenter from './pages/helpcenter';
 import Home from './pages/Home/home';
 import ItemDetailMultiple from './pages/ItemDetailMultiple';
 import ItemDetailSingle from './pages/ItemDetailSingle';
 import Listing from './pages/Listing';
 import MyProfile from './pages/MyProfile';
-import News from './pages/news';
-import Price from './pages/price';
 import Profile from './pages/Profile/Profile';
-import Progressbar from './pages/progressbar';
-// import Ranking from './pages/Ranking';
-import RankingRedux from './pages/RankingRedux';
-import Register from './pages/register';
 import Search from './pages/SearchPage';
-import Tabs from './pages/tabs';
-import Wallet from './pages/wallet';
-import Works from './pages/works';
 
 export const ScrollTop = ({ children, location }) => {
   React.useEffect(() => window.scrollTo(0, 0), [location]);
@@ -239,24 +221,6 @@ const App = () => {
             {/* <Home1 path="/home1" />
             <Home2 path="/home2" /> */}
             <Explore path="/explore" />
-            {/* <Explore path="/explore/:category" /> */}
-            <Helpcenter path="/helpcenter" />
-            <RankingRedux path="/Ranking" />
-            <Wallet path="/wallet" />
-            <Register path="/register" />
-            <Price path="/price" />
-            <Works path="/works" />
-            <News path="/news" />
-            <Auction path="/Auction" />
-            <Activity path="/activity" />
-            <Contact path="/contact" />
-            <ElegantIcons path="/elegantIcons" />
-            <EtlineIcons path="/etlineIcons" />
-            <FontAwesomeIcons path="/fontAwesomeIcons" />
-            <Accordion path="/accordion" />
-            <Alerts path="/alerts" />
-            <Progressbar path="/progressbar" />
-            <Tabs path="/tabs" />
           </ScrollTop>
         </PosedRouter>
         <ScrollToTopBtn />
