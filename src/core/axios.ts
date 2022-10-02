@@ -90,6 +90,8 @@ const END_POINTS = {
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
   // OFFERS
   OFFERS: `${SERVER_URL}/${API_VERSION}/offers`,
+  // LAZYMINT
+  LAZYMINT: `${SERVER_URL}/${API_VERSION}/lazyMint`,
   // COLLECTIONS
   COLLECTIONS: `${SERVER_URL}/${API_VERSION}/collections`,
   SEARCH: `${SERVER_URL}/${API_VERSION}/search`
@@ -279,6 +281,7 @@ export class ApiService {
     });
   };
 
+  //* fetchBids
   static fetchBids = async (params: {
     listingId: string;
     nftAddress: string;
@@ -287,6 +290,22 @@ export class ApiService {
       url: END_POINTS.BIDS,
       method: 'get',
       params
+    });
+  };
+
+  //* fetch LazyMint TokenId
+  static fetchLazyMintTokenId = async () => {
+    return Axios.request<any>({
+      url: END_POINTS.LAZYMINT,
+      method: 'get'
+    });
+  };
+
+  //* increase LazyMint TokenId
+  static increaseLazyMintTokenId = async () => {
+    Axios.request({
+      url: END_POINTS.LAZYMINT,
+      method: 'post'
     });
   };
 

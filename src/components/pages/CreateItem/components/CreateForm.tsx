@@ -71,6 +71,7 @@ interface IProps {
   setSupply: (e: any) => void;
   setExternalLink: (e: any) => void;
   setExplicit: (e: any) => void;
+  setLazyMint: (e: any) => void;
   submitCreateState: { error: null | string; loading: boolean };
   marketType: MARKET_TYPE;
   multiple: boolean;
@@ -98,6 +99,7 @@ export default function CreateForm(props: IProps) {
     setSupply,
     setExternalLink,
     setExplicit,
+    setLazyMint,
     multiple,
     name,
     description,
@@ -384,6 +386,11 @@ export default function CreateForm(props: IProps) {
       setFieldValue('explicit', e.target.checked);
       setExplicit && setExplicit(e.target.checked);
     };
+
+    const onChangeLazyMint = (e: any) => {
+      setFieldValue('lazyMint', e.target.checked);
+      setLazyMint && setLazyMint(e.target.checked);
+    };
     // const onChangeRoyalties = (e: any) => {
     //     setFieldValue('royalties', e.target.value);
     //     setRoyaltiesInput && setRoyaltiesInput(e.target.value)
@@ -605,8 +612,8 @@ export default function CreateForm(props: IProps) {
                 <div className="form-cfield">
                   <h5 className="form-label d-none">Description</h5>
                   <p className="sublabel d-none">
-                    The description will be included on the item's detail page
-                    underneath its image.
+                    The description will be included on the item{`'`}s detail
+                    page underneath its image.
                   </p>
                   <div className="input-container input-icon-container">
                     <Field
@@ -630,9 +637,9 @@ export default function CreateForm(props: IProps) {
                     <BsQuestion className="cursor-pointer help-icon" />
                   </h5>
                   <p className="sublabel">
-                    NFTonPulse will include a link to this URL on this item's
-                    detail page, so that users can click to learn more about it.
-                    You are welcome to link to your own webpage with more
+                    NFTonPulse will include a link to this URL on this item{`'`}
+                    s detail page, so that users can click to learn more about
+                    it. You are welcome to link to your own webpage with more
                     details.
                   </p>
                   <Field
@@ -1009,6 +1016,37 @@ export default function CreateForm(props: IProps) {
                     {(msg) => <div className="error-form">{msg}</div>}
                   </ErrorMessage>
                 </div>
+                {supply == 1 && marketType === MARKET_TYPE.SIMPLE && (
+                  <div className="form-cfield form-ccfield sensative-content">
+                    <div className="row align-items-center">
+                      <div className="col-md-8">
+                        <h5>
+                          <i
+                            className="fa fa-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+                          Lazy Mint
+                        </h5>
+                        <p className="sublabel">
+                          Mint nft when someone buy this item&nbsp;&nbsp;
+                          <i
+                            className="fa fa-info-circle"
+                            aria-hidden="true"
+                          ></i>
+                        </p>
+                      </div>
+                      <div className="col-md-4 text-right">
+                        <Field
+                          type="checkbox"
+                          name="lazyMint"
+                          component={Switch}
+                          size="large"
+                          onChange={onChangeLazyMint}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="spacer-20"></div>
                 {submitCreateState.loading ? (
                   <Loader />

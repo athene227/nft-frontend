@@ -453,6 +453,26 @@ export const getUserListedTokens = async (data: {
   return userListedTokens;
 };
 
+// export const sendEth = async (data: {
+//   from: string;
+//   to: string;
+//   value: number;
+//   web3: Web3;
+// }) => {
+//   const { from, to, value, web3 } = data;
+//   const nonce = await web3.eth.getTransactionCount(from, 'latest');
+
+//   const transaction = {
+//     to,
+//     value,
+//     gas: 30000,
+//     maxFeePerGas: 1000000108,
+//     nonce
+//   };
+
+//   const signedTx = await web3.eth.accounts.signTransaction(transaction, )
+// };
+
 /* 
   According to Opensea metadata standard, if value is number and display_type is not defined,
   then the property goes to the ranking section.

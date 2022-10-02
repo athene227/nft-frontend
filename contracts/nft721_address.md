@@ -1,0 +1,1 @@
+This file contains the latest test deployment addresses in the Goerli network<br/>ERC-721: [https://goerli.etherscan.io/address/0x4Dd73649EA4d54281aE562Dc4f48D772f4A918CF](https://goerli.etherscan.io/address/0x4Dd73649EA4d54281aE562Dc4f48D772f4A918CF)<br/>

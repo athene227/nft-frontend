@@ -174,13 +174,15 @@ export enum ITEM_CREATE_STATUS {
   IPFS_FILE = 0,
   IPFS_METADATA = 1,
   CREATE_NFT = 2,
-  LIST_ITEM = 3,
-  FINISHED = 4
+  LAZY_MINT_NFT = 3,
+  LIST_ITEM = 4,
+  FINISHED = 5
 }
 
 export enum ITEM_CREATE_STATUS_LABEL {
   IPFS_FILE = 'Upload image file to ipfs',
   IPFS_METADATA = 'Upload metadata to ipfs',
   CREATE_NFT = 'Mint NFT',
-  LIST_ITEM = 'List item on the market'
+  LIST_ITEM = 'List item on the market',
+  LAZY_MINT_NFT = 'Lazy mint NFT'
 }

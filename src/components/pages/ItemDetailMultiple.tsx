@@ -732,15 +732,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         .acceptOffer(Number(offer.offerId), Number(acceptedAmount))
         .send({ from: userAddress });
 
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
       // //* turn off loader
       setAcceptOfferState({ loader: false, error: null, selectedOffer: offer });
     } catch (error) {
@@ -790,14 +781,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       await nftMarketOffersContract.methods
         .cancelOffer(Number(offer.offerId))
         .send({ from: userAddress });
-
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
 
       //* turn off loader
       setCancelOfferState({ loader: false, error: null, selectedOffer: offer });
@@ -1056,14 +1039,6 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
           offerDeadline
         )
         .send({ from: userAddress });
-      //* create tracking after make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
       //* turn off loader
       setMakeOfferState({ loader: false, error: null });
     } catch (error) {
@@ -1276,6 +1251,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
             submit={__buy}
             placeBidState={buyState}
             multiple={true}
+            isLazyMint={false}
           />
         </div>
       )}

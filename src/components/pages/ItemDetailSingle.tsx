@@ -10,7 +10,6 @@ import {
   ALERT_TYPE,
   COIN,
   ERRORS,
-  MARKET_CONTRACT_EVENTS,
   MARKET_TYPE,
   PROCESS_TRAKING_ACTION,
   PROCESS_TRAKING_STATUS,
@@ -22,6 +21,11 @@ import notification from 'src/services/notification';
 import { clearEvents } from 'src/store/actions';
 import { fetchBids } from 'src/store/actions/thunks/bids';
 import { IBid } from 'src/types/bids.types';
+// import { ethers } from 'ethers';
+
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import {
   IAuctionBidItem,
   IAuctionMarketItem,
@@ -41,7 +45,7 @@ import {
   getMyTokenBalance,
   getNetworkId,
   getPriceAfterPercent,
-  getProfileImage,
+  shortAddress,
   placeBid,
   terminateAuction
 } from 'src/utils';
@@ -61,6 +65,7 @@ import PlaceBidPopUp from '../components/PlaceBidPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';
 import UserAvatar from '../components/UserAvatar';
 import BanrLayer from './../pages/Home/components/landing/bannerLayer';
+import LazyMinter from '../../LazyMinter';
 
 enum TAB_TYPE {
   BIDS = 'BIDS',
@@ -403,6 +408,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       if (!nft) {
         return;
       }
+      const isLazyMint = nft?.lazyMint;
       if (!web3) {
         notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
         return;
@@ -426,69 +432,83 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       const value =
         Number(weiPrice) + getPriceAfterPercent(Number(weiPrice), 1);
       const myBalance = await getMyBalance(userAddress, web3);
-      //* getting the market item from the contract
-      const simpleMarketItem: ISimpleMarketItem =
-        await nftMarketSimpleContract.methods
-          .simpleListingIdToMarketItem(Number(nft.listingId))
-          .call();
-
-      const priceFromContractPlusCommission =
-        Number(simpleMarketItem.price) +
-        getPriceAfterPercent(Number(simpleMarketItem.price), 1);
       //* check if balance is ok, if not ==> show error
       if (Number(myBalance) < Number(value)) {
         notification.error(ERRORS.NOT_ENOUGH_BALANCE);
         throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
       }
-      //* check if value to send to the contract is ok, if not ==> show error
-      if (priceFromContractPlusCommission < Number(value)) {
-        notification.error(ERRORS.NOT_THE_RIGHT_PRICE);
-        throw new Error(ERRORS.NOT_THE_RIGHT_PRICE);
+
+      if (!isLazyMint) {
+        //* getting the market item from the contract
+        const simpleMarketItem: ISimpleMarketItem =
+          await nftMarketSimpleContract.methods
+            .simpleListingIdToMarketItem(Number(nft.listingId))
+            .call();
+
+        const priceFromContractPlusCommission =
+          Number(simpleMarketItem.price) +
+          getPriceAfterPercent(Number(simpleMarketItem.price), 1);
+        //* check if value to send to the contract is ok, if not ==> show error
+        if (priceFromContractPlusCommission < Number(value)) {
+          notification.error(ERRORS.NOT_THE_RIGHT_PRICE);
+          throw new Error(ERRORS.NOT_THE_RIGHT_PRICE);
+        }
+
+        //* mongo
+        // const { _id, ...restNft } = nft;
+        const nftItem = {
+          tokenId: nft.tokenId,
+          name: nft.name,
+          description: nft.description,
+          imageUrl: nft.imageUrl,
+          nftAddress: nft.nftAddress,
+          creatorAddress: nft.creatorAddress,
+          networkId: nft.networkId,
+          royalty: nft.royalty,
+          collectionId: nft.collectionId,
+          attributes: nft.attributes,
+          category: nft.category,
+          listingId: '',
+          isListedOnce: true,
+          multiple: false,
+          status: STATUS.NOT_LISTED,
+          marketType: MARKET_TYPE.SIMPLE
+        };
+
+        //* create tracking before buying
+        await ApiService.createProcessTracking({
+          ...nftItem,
+          userAddress,
+          ownerAddress: nft.ownerAddress,
+          action: PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE,
+          processStatus: PROCESS_TRAKING_STATUS.BEFORE
+        });
+
+        //* interaction with the nft market contract
+        await buySimple({
+          nftMarketSimpleContract,
+          userAddress,
+          listingId: Number(nft.listingId),
+          quantity: SINGLE,
+          value
+        });
+        //* turn off loader
+        setBuyState({ loader: false, error: null });
+      } else {
+        const voucher = {
+          tokenId: Number(nft?.tokenId),
+          minPrice: value,
+          royalty: Number(nft?.royalty),
+          creator: String(nft?.creatorAddress),
+          uri: String(nft?.tokenUri),
+          signature: String(nft?.signature)
+        };
+        await nft721Contract.methods
+          .redeem(userAddress, voucher)
+          .send({ value, from: userAddress });
+        //* turn off loader
+        setBuyState({ loader: false, error: null });
       }
-
-      //* mongo
-      // const { _id, ...restNft } = nft;
-      const nftItem = {
-        tokenId: nft.tokenId,
-        name: nft.name,
-        description: nft.description,
-        imageUrl: nft.imageUrl,
-        nftAddress: nft.nftAddress,
-        creatorAddress: nft.creatorAddress,
-        networkId: nft.networkId,
-        royalty: nft.royalty,
-        collectionId: nft.collectionId,
-        attributes: nft.attributes,
-        category: nft.category,
-        listingId: '',
-        isListedOnce: true,
-        multiple: false,
-        status: STATUS.NOT_LISTED,
-        marketType: MARKET_TYPE.SIMPLE
-      };
-
-      //* create tracking before buying
-      await ApiService.createProcessTracking({
-        ...nftItem,
-        userAddress,
-        ownerAddress: nft.ownerAddress,
-        action: PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE,
-        processStatus: PROCESS_TRAKING_STATUS.BEFORE
-      });
-
-      //* interaction with the nft market contract
-      await buySimple({
-        nftMarketSimpleContract,
-        userAddress,
-        listingId: Number(nft.listingId),
-        quantity: SINGLE,
-        value
-      });
-
-      //* turn off loader
-      setBuyState({ loader: false, error: null });
-      //* close popup
-      // setOpenBuy(false);
     } catch (error) {
       setBuyState({ loader: false, error: getErrorMessage(error) });
       console.log(
@@ -705,15 +725,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           offerDeadline
         )
         .send({ from: userAddress });
-
-      //* create tracking after make offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: data.price,
-        action: PROCESS_TRAKING_ACTION.OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
       //* turn off loader
       setMakeOfferState({ loader: false, error: null });
     } catch (error) {
@@ -792,15 +803,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         .acceptOffer(Number(offer.offerId), Number(acceptedAmount))
         .send({ from: userAddress });
 
-      //* create tracking before accept offer
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress: offer.offererAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
-
       //* turn off loader
       setAcceptOfferState({ loader: false, error: null, selectedOffer: offer });
     } catch (error) {
@@ -850,14 +852,6 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       await nftMarketOffersContract.methods
         .cancelOffer(Number(offer.offerId))
         .send({ from: userAddress });
-
-      await ApiService.createProcessTracking({
-        ...offerTrackingItem,
-        userAddress,
-        price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.CANCEL_OFFER,
-        processStatus: PROCESS_TRAKING_STATUS.AFTER
-      });
 
       //* turn off loader
       setCancelOfferState({ loader: false, error: null, selectedOffer: offer });
@@ -1192,7 +1186,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
               Place Bid
             </button>
           )}
-        {nft.ownerAddress !== userAddress && (
+        {nft.ownerAddress !== userAddress && !nft.lazyMint && (
           <button className="btn-main lead mb-5" onClick={openMakeOfferPopUp}>
             Make Offer
           </button>
@@ -1402,12 +1396,19 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
                       <b>
                         {item?.user[0]?.username
                           ? `@${item.user[0].username}`
-                          : userAddress}
+                          : shortAddress(userAddress, 4)}
                       </b>
                     </span>
                   </div>
                   <p className="ml-2">
                     {`${_convertActionToText(item?.action)}`}
+                    {item?.price &&
+                      ` at ${item?.price}${
+                        item?.priceToken[0] ? item?.priceToken[0]?.name : 'ETH'
+                      }`}
+                  </p>
+                  <p className="ml-2">
+                    {item?.updatedAt.substring(0, 19).replace('T', ' ')}
                   </p>
                 </div>
               );
@@ -1732,6 +1733,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
             onClose={closeBuyPopUp}
             nft={nft}
             submit={_buy}
+            isLazyMint={nft?.lazyMint}
             placeBidState={buyState}
             multiple={false}
           />
