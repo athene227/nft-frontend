@@ -14,6 +14,7 @@ import TransactionHash from '../TransactionHash';
 import ProcessStep from './ProcessStep';
 interface IProps {
   progress: MarketItemCreateProgress;
+  lazyMint: boolean;
   events: any[];
   onClose: () => void;
   onRetry: () => void;
@@ -21,7 +22,7 @@ interface IProps {
 }
 
 const CreateItemProgressPopUp = (props: IProps) => {
-  const { progress, events, onClose, onRetry, onReset } = props;
+  const { progress, events, onClose, onRetry, onReset, lazyMint } = props;
   const {
     status,
     imageUrl,
@@ -44,7 +45,7 @@ const CreateItemProgressPopUp = (props: IProps) => {
 
   const OperationFailed = () => (
     <div className="operation-failed-wrapper mb-2">
-      <div className="mr-2">Operation couldn't be completed</div>
+      <div className="mr-2">Operation couldn{`'`}t be completed</div>
       <input
         type="button"
         className="btn-main btn_gradient"
@@ -78,33 +79,49 @@ const CreateItemProgressPopUp = (props: IProps) => {
               {status === ITEM_CREATE_STATUS.IPFS_METADATA && error && (
                 <OperationFailed />
               )}
-              <ProcessStep
-                progress={progress}
-                value={ITEM_CREATE_STATUS.CREATE_NFT}
-                text={ITEM_CREATE_STATUS_LABEL.CREATE_NFT}
-              />
-              {status === ITEM_CREATE_STATUS.CREATE_NFT && error && (
-                <OperationFailed />
+              {lazyMint && (
+                <>
+                  <ProcessStep
+                    progress={progress}
+                    value={ITEM_CREATE_STATUS.LAZY_MINT_NFT}
+                    text={ITEM_CREATE_STATUS_LABEL.LAZY_MINT_NFT}
+                  />
+                  {status === ITEM_CREATE_STATUS.LAZY_MINT_NFT && error && (
+                    <OperationFailed />
+                  )}
+                </>
               )}
-              {tokenTransactionHash && (
-                <TransactionHash
-                  title="Transaction Hash"
-                  hash={tokenTransactionHash}
-                />
-              )}
-              <ProcessStep
-                progress={progress}
-                value={ITEM_CREATE_STATUS.LIST_ITEM}
-                text={ITEM_CREATE_STATUS_LABEL.LIST_ITEM}
-              />
-              {status === ITEM_CREATE_STATUS.LIST_ITEM && error && (
-                <OperationFailed />
-              )}
-              {listingTransactionHash && (
-                <TransactionHash
-                  title="Transaction Hash"
-                  hash={listingTransactionHash}
-                />
+              {!lazyMint && (
+                <>
+                  <ProcessStep
+                    progress={progress}
+                    value={ITEM_CREATE_STATUS.CREATE_NFT}
+                    text={ITEM_CREATE_STATUS_LABEL.CREATE_NFT}
+                  />
+                  {status === ITEM_CREATE_STATUS.CREATE_NFT && error && (
+                    <OperationFailed />
+                  )}
+                  {tokenTransactionHash && (
+                    <TransactionHash
+                      title="Transaction Hash"
+                      hash={tokenTransactionHash}
+                    />
+                  )}
+                  <ProcessStep
+                    progress={progress}
+                    value={ITEM_CREATE_STATUS.LIST_ITEM}
+                    text={ITEM_CREATE_STATUS_LABEL.LIST_ITEM}
+                  />
+                  {status === ITEM_CREATE_STATUS.LIST_ITEM && error && (
+                    <OperationFailed />
+                  )}
+                  {listingTransactionHash && (
+                    <TransactionHash
+                      title="Transaction Hash"
+                      hash={listingTransactionHash}
+                    />
+                  )}
+                </>
               )}
             </div>
             <div className="col-md-12">

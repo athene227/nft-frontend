@@ -25,12 +25,13 @@ interface IProps {
   nft: INft;
   placeBidState: { error: null | string; loader: boolean };
   multiple: boolean;
+  isLazyMint: boolean;
   onClose: (shouldRefresh: boolean) => void;
   submit: (values: any, resetForm: any) => void;
 }
 
 const BuyPopUp = (props: IProps) => {
-  const { nft, onClose, submit, placeBidState, multiple } = props;
+  const { nft, onClose, submit, placeBidState, multiple, isLazyMint } = props;
   const [userBalance, setUserBalance] = useState(0);
   const [dataState, setDataState] = React.useState<{
     loader: boolean;
@@ -51,9 +52,20 @@ const BuyPopUp = (props: IProps) => {
   const nftEvents = useSelector(selectors.nftEvents);
   const userAddress = accounts[0];
   const buyTransactionHash = nftEvents.find(
-    ({ eventName, tokenId }: { eventName: string; tokenId: string }) =>
-      eventName === MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent &&
-      tokenId === nft.tokenId
+    ({
+      eventName,
+      tokenId,
+      nftAddress
+    }: {
+      eventName: string;
+      tokenId: string;
+      nftAddress: string;
+    }) =>
+      (isLazyMint
+        ? eventName === MARKET_CONTRACT_EVENTS.Mint
+        : eventName === MARKET_CONTRACT_EVENTS.SimpleItemSoldEvent) &&
+      tokenId === nft.tokenId &&
+      nftAddress === nft.nftAddress
   )?.transactionHash;
 
   const _getMyBalance = async () => {
@@ -75,9 +87,11 @@ const BuyPopUp = (props: IProps) => {
       if (!nft) return;
       setDataState({ loader: true, error: null });
       const _eth_balance = await _getMyBalance();
-      const _marketItem = await _getSimpleMarketItem();
       setUserBalance(_eth_balance);
-      setSimpleMarketItem(_marketItem);
+      if (!isLazyMint) {
+        const _marketItem = await _getSimpleMarketItem();
+        setSimpleMarketItem(_marketItem);
+      }
       setDataState({ loader: false, error: null });
     } catch (error) {
       console.log('error in getData in buy popup');
@@ -95,7 +109,7 @@ const BuyPopUp = (props: IProps) => {
         amount: Yup.number()
           .typeError('you must specify a number')
           .moreThan(0, INPUT_ERROS.tooShort)
-          .lessThan(Number(marketItem.remainingQuantity) + 1)
+          .lessThan(Number(marketItem?.remainingQuantity) + 1)
           .required(INPUT_ERROS.requiredField)
       };
     } else {
@@ -131,15 +145,23 @@ const BuyPopUp = (props: IProps) => {
     const getComission = (): number => {
       if (!nft) return 0;
       if (isNaN(values.amount)) return 0;
-      return (
-        (Number(values.amount) * Number(nft.price) * COMISSION_PERCENTAGE) / 100
+      return parseFloat(
+        (
+          (Number(values.amount) * Number(nft.price) * COMISSION_PERCENTAGE) /
+          100
+        ).toFixed(8)
       );
     };
 
     const getTotal = (): number => {
       if (!nft) return 0;
       if (isNaN(values.amount)) return 0;
-      return Number(values.amount) * Number(nft.price) + getComission();
+      return parseFloat(
+        (
+          Number(values.amount) * Number(nft.price) +
+          Number(getComission())
+        ).toFixed(7)
+      );
     };
     console.log('buyTransactionHash in buy pop up', buyTransactionHash);
 
@@ -174,7 +196,9 @@ const BuyPopUp = (props: IProps) => {
                   </p>
                 </div>
                 <div className="buy-detail-table">
-                  {multiple && <p>available: {marketItem.remainingQuantity}</p>}
+                  {multiple && (
+                    <p>available: {marketItem?.remainingQuantity}</p>
+                  )}
                   {multiple ? (
                     <div className="detailcheckout mt-4">
                       <div className="listcheckout">

@@ -26,9 +26,11 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "et-line": "^1.0.1",
+    "ethers": "^5.7.1",
     "font-awesome": "^4.7.0",
     "formik": "^2.2.9",
     "formik-material-ui": "^4.0.0-alpha.2",
+    "hardhat": "^2.11.2",
     "ipfs-http-client": "^55.0.0",
     "jwt-decode": "^3.1.2",
     "less-plugin-npm-import": "^2.1.0",
@@ -114,6 +116,7 @@
     ]
   },
   "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.1.1",
     "@types/americanexpress__react-seo": "^1.4.0",
     "@types/node": "^18.0.0",
     "@types/reach__router": "^1.3.9",

@@ -25,6 +25,7 @@ import notification from 'src/services/notification';
 import { clearEvents } from 'src/store/actions';
 import * as selectors from 'src/store/selectors';
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
+import { ethers } from 'ethers';
 import {
   createAuctionMarketItem,
   createSimpleMarketItem,
@@ -32,8 +33,10 @@ import {
   generatePreviewImage,
   getErrorMessage,
   getNetworkData,
-  getNetworkId
+  getNetworkId,
+  getPriceAfterPercent
 } from 'src/utils';
+import LazyMinter from '../../../LazyMinter';
 
 import CreateForm from './components/CreateForm';
 import CreateSingleWrapper from './createSingle.styled';
@@ -61,6 +64,7 @@ const CreateItem = () => {
   const [supply, setSupply] = useState(1);
   const [externalLink, setExternalLink] = useState('');
   const [explicit, setExplicit] = useState(false);
+  const [lazyMint, setLazyMint] = useState(false);
 
   const web3State = useSelector(selectors.web3State);
   const {
@@ -135,6 +139,7 @@ const CreateItem = () => {
     previewImageUrl: string
   ) => {
     console.log('------------------------------+++++++++++', data);
+    const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
     // nft mongo item
     const nftToCreate: any = {
       name: data.name,
@@ -152,19 +157,22 @@ const CreateItem = () => {
       marketType: marketType,
       listedAt: new Date(),
       isListedOnce: true,
-      totalAmount: data.supply,
+      totalAmount: Number(data.supply),
       leftAmount: 0,
-      listedAmount: data.supply,
+      listedAmount: Number(data.supply),
       multiple: data.supply == 1 ? false : true,
       networkId,
       category: data.category,
       externalLink: data.externalLink,
       explicit: data.explicit,
       supply: data.supply,
+      lazyMint: data.lazyMint,
+      tokenUri: metaDataUrl() as string,
       expirationDate: new Date(data.expirationDate), //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
       // auction fields
       minimumBid: marketType == MARKET_TYPE.AUCTION ? data.minimumBid : '',
-      priceTokenId: marketType == MARKET_TYPE.AUCTION ? data.priceTokenId : ''
+      priceTokenId:
+        marketType == MARKET_TYPE.AUCTION ? data.priceTokenId : undefined
     };
 
     const _attributes = data.attributes.map((item: any) => {
@@ -544,30 +552,6 @@ const CreateItem = () => {
       const listingId = res.returnValues.listingId;
       const transactionHash = res.transactionHash;
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     tokenId: itemCreateProgressRef.current.tokenId,
-      //     listingId,
-      //     // price: priceInWei,
-      //     priceTokenId: undefined,
-      //     tokenURI: metaDataUrl() as string,
-      //     status: STATUS.ON_SELL,
-      //     totalAmount: Number(data.supply),
-      //     leftAmount: 0,
-      //     listedAmount: Number(data.supply)
-      //   }
-      // });
-
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   tokenId: tokenId() as string,
-      //   userAddress,
-      //   action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
-
       // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
@@ -576,6 +560,207 @@ const CreateItem = () => {
         multiple: true,
         nftAddress: NFT_NETWORK_DATA.address
       });
+    }
+  };
+
+  const lazyMintNFT = async (NFT_NETWORK_DATA: any, data: any) => {
+    const tokenId = () => itemCreateProgressRef.current.tokenId;
+    const imageUrl = () => itemCreateProgressRef.current.imageUrl;
+    const previewImageUrl = () => itemCreateProgressRef.current.previewImageUrl;
+    // const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
+
+    const nftToCreate: any = getItem(
+      NFT_NETWORK_DATA,
+      data,
+      imageUrl() as string,
+      previewImageUrl() as string
+    );
+    if (!tokenId()) {
+      //* fetch Token Id
+      const lazyMintTokenId: any = await ApiService.fetchLazyMintTokenId();
+      console.log(
+        '🚀🚀🚀🚀🚀 ~ file: CreateItem.tsx ~ line 574 ~ lazyMintNFT ~ lazyMintTokenId',
+        lazyMintTokenId.data
+      );
+      const ltokenId = String(lazyMintTokenId.data.tokenId);
+      console.log(
+        '🚀 ~ file: CreateItem.tsx ~ line 580 ~ lazyMintNFT ~ ltokenId',
+        ltokenId
+      );
+
+      //* create tracking before listing
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
+        tokenId: ltokenId,
+        userAddress,
+        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
+      });
+
+      const price = Number(nftToCreate.price);
+      const weiPrice = web3.utils.toWei(price.toString(), 'ether');
+      const value =
+        Number(weiPrice) + getPriceAfterPercent(Number(weiPrice), 1);
+
+      // A Web3Provider wraps a standard Web3 provider, which is
+      // what MetaMask injects as window.ethereum into each page
+      const accounts = await window.ethereum.enable();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(
+        '🚀 ~ file: CreateItem.tsx ~ line 608 ~ lazyMintNFT ~ provider',
+        provider
+      );
+      // await provider.send('eth_requestAccounts', []);
+      console.log(
+        '🚀 ~ file: CreateItem.tsx ~ line 614 ~ lazyMintNFT ~ accounts',
+        accounts
+      );
+
+      const signer = provider.getSigner();
+      const lazyMinterClass = new LazyMinter({
+        contractAddress: nft721Contract._address,
+        chainId: networkId,
+        signer
+      });
+      console.log('2----------------------------------------------------');
+
+      const voucher = await lazyMinterClass.createVoucher(
+        Number(ltokenId),
+        String(nftToCreate?.tokenUri),
+        value,
+        Number(nftToCreate.royalty)
+      );
+
+      const signature = voucher?.signature;
+      console.log(
+        '🚀 ~ file: CreateItem.tsx ~ line 628 ~ lazyMintNFT ~ signature',
+        signature
+      );
+
+      await ApiService.createdNft({
+        transactionHash: undefined,
+        data: {
+          ...nftToCreate,
+          signature,
+          tokenId: ltokenId,
+          imageUrl: imageUrl() as string,
+          previewImageUrl: previewImageUrl() as string,
+          priceTokenId: undefined
+        }
+      });
+
+      //* Increase Token Id
+      await ApiService.increaseLazyMintTokenId();
+
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
+        userAddress,
+        tokenId: ltokenId,
+        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
+        processStatus: PROCESS_TRAKING_STATUS.AFTER
+      });
+
+      // update item create progress to finished
+      updateItemCreateProgress({
+        status: ITEM_CREATE_STATUS.FINISHED,
+        tokenId: ltokenId,
+        multiple: false,
+        nftAddress: NFT_NETWORK_DATA.address
+      });
+
+      // const fromAddress = (await web3.eth.getAccounts())[0];
+      // const voucher = {
+      //   tokenId: Number(ltokenId),
+      //   minPrice: value,
+      //   royalty: Number(nftToCreate.royalty),
+      //   creator: String(nftToCreate?.creatorAddress),
+      //   uri: String(nftToCreate?.tokenUri)
+      // };
+      // const originalMessage = JSON.stringify({
+      //   domain: {
+      //     // Defining the chain aka goerli testnet or Ethereum Main Net
+      //     chainId: networkId,
+      //     // Give a user friendly name to the specific contract you are signing for.
+      //     name: 'HowToPulse-Voucher',
+      //     // If name isn't enough add verifying contract to make sure you are establishing contracts with the proper entity
+      //     verifyingContract: nft721Contract._address,
+      //     // Just let's you know the latest version. Definitely make sure the field name is correct.
+      //     version: '1'
+      //   },
+
+      //   // Defining the message signing data content.
+      //   message: voucher,
+      //   // Refers to the keys of the *types* object below.
+      //   primaryType: 'NFTVoucher',
+      //   voucher,
+      //   types: {
+      //     // // TODO: Clarify if EIP712Domain refers to the domain the contract is hosted on
+      //     NFTVoucher: [
+      //       { name: 'tokenId', type: 'uint256' },
+      //       { name: 'minPrice', type: 'uint256' },
+      //       { name: 'royalty', type: 'uint96' },
+      //       { name: 'creator', type: 'address' },
+      //       { name: 'uri', type: 'string' }
+      //     ]
+      //   }
+      // });
+      // const params = [fromAddress, originalMessage];
+      // const method = 'eth_signTypedData_v4';
+
+      // await web3.currentProvider.sendAsync(
+      //   {
+      //     method,
+      //     params,
+      //     fromAddress
+      //   },
+      //   (err: any, result: any) => {
+      //     if (err) {
+      //       console.log(err);
+      //     } else if (result.error) {
+      //       console.log(result.error);
+      //     } else {
+      //       const signature = result.result;
+      //       console.log(
+      //         '🚀 ~ file: CreateItem.tsx ~ line 671 ~ lazyMintNFT ~ signature',
+      //         signature
+      //       );
+
+      //       const createLazyMintNFT = async () => {
+      //         await ApiService.createdNft({
+      //           transactionHash: undefined,
+      //           data: {
+      //             ...nftToCreate,
+      //             signature,
+      //             tokenId: ltokenId,
+      //             imageUrl: imageUrl() as string,
+      //             previewImageUrl: previewImageUrl() as string,
+      //             priceTokenId: undefined
+      //           }
+      //         });
+
+      //         //* Increase Token Id
+      //         await ApiService.increaseLazyMintTokenId();
+
+      //         await ApiService.createProcessTracking({
+      //           ...nftToCreate,
+      //           userAddress,
+      //           tokenId: ltokenId,
+      //           action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
+      //           processStatus: PROCESS_TRAKING_STATUS.AFTER
+      //         });
+
+      //         // update item create progress to finished
+      //         updateItemCreateProgress({
+      //           status: ITEM_CREATE_STATUS.FINISHED,
+      //           tokenId: ltokenId,
+      //           multiple: false,
+      //           nftAddress: NFT_NETWORK_DATA.address
+      //         });
+      //       };
+      //       createLazyMintNFT();
+      //     }
+      //   }
+      // );
     }
   };
 
@@ -655,12 +840,19 @@ const CreateItem = () => {
 
         // update item create progress to metadata
         updateItemCreateProgress({
-          status: ITEM_CREATE_STATUS.CREATE_NFT,
+          status:
+            !isMultiple && marketType === MARKET_TYPE.SIMPLE && data.lazyMint
+              ? ITEM_CREATE_STATUS.LAZY_MINT_NFT
+              : ITEM_CREATE_STATUS.CREATE_NFT,
           metaDataUrl: jsonUri
         });
       }
 
-      if (isMultiple) {
+      if (!isMultiple && marketType === MARKET_TYPE.SIMPLE && data.lazyMint) {
+        //* LazyMint
+        const NFT_NETWORK_DATA = await getNetworkData(web3, NFT721);
+        await lazyMintNFT(NFT_NETWORK_DATA, data);
+      } else if (isMultiple) {
         const NFT_NETWORK_DATA = await getNetworkData(web3, NFT1155);
         await createMultiple(NFT_NETWORK_DATA, data);
       } else {
@@ -750,6 +942,7 @@ const CreateItem = () => {
               setSupply={setSupply}
               supply={supply}
               setExplicit={setExplicit}
+              setLazyMint={setLazyMint}
             />
             {/* </div> */}
 
@@ -763,6 +956,7 @@ const CreateItem = () => {
                 <CreateItemProgressPopup
                   progress={itemCreateProgress}
                   events={eventList}
+                  lazyMint={lazyMint}
                   onRetry={() =>
                     submitForm(submitData.current, () => null, true)
                   }

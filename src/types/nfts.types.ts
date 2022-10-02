@@ -59,11 +59,14 @@ export interface INft {
   users: IUser[];
   creator: IUser[];
   owner: IUser[];
+  lazyMint: boolean;
   networkId: number;
   nftCollection: ICollection[];
   bids?: [];
   totalBid?: number;
+  tokenUri: string;
   transactionHash: string;
+  signature: string;
 }
 
 export interface ISimpleMarketItem {

@@ -1,6 +1,7 @@
 import { ICollection } from 'src/collections.types';
 
 import { IUser } from './users.types';
+import { IPriceToken } from './priceTokens.types';
 
 export interface IProcessTracking {
   action: string;
@@ -17,6 +18,8 @@ export interface IProcessTracking {
   minimumBid: string;
   startingDate: Date;
   collectionId: string;
+  priceTokenId: string;
+  priceToken: IPriceToken[];
   user: IUser[];
   owner: IUser[];
   creator: IUser[];
