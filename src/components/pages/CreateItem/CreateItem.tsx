@@ -1,22 +1,22 @@
-/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ethers } from 'ethers';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import NFT721 from 'src/abis/new/NFT721.json';
-// import NFT from 'src/abis/NFT.json';
 import NFT1155 from 'src/abis/new/NFT1155.json';
-// import NFT from 'src/abis/NFT.json';
-import NFT from 'src/abis/NFT.json';
 import { initialItemCreateStatus } from 'src/components/components/constants';
 import CreateItemProgressPopup from 'src/components/components/Popups/CreateItemProgressPopup';
+import { serviceFee } from 'src/config';
 import { ApiService } from 'src/core/axios';
 import {
+  COLLECTION_TYPE,
   ERRORS,
   ITEM_CREATE_STATUS,
   MARKET_TYPE,
   PROCESS_TRAKING_ACTION,
   PROCESS_TRAKING_STATUS,
+  ROYALTIES_TYPE,
   SELECTED_NETWORK,
   STATUS
 } from 'src/enums';
@@ -25,7 +25,6 @@ import notification from 'src/services/notification';
 import { clearEvents } from 'src/store/actions';
 import * as selectors from 'src/store/selectors';
 import { MarketItemCreateProgress } from 'src/types/nfts.types';
-import { ethers } from 'ethers';
 import {
   createAuctionMarketItem,
   createSimpleMarketItem,
@@ -36,12 +35,12 @@ import {
   getNetworkId,
   getPriceAfterPercent
 } from 'src/utils';
-import LazyMinter from '../../../LazyMinter';
 
+import LazyMinter from '../../../LazyMinter';
 import CreateForm from './components/CreateForm';
 import CreateSingleWrapper from './createSingle.styled';
 
-const CreateItem = () => {
+const CreateItemNew = () => {
   const dispatch = useDispatch();
   const [nftState, setCreateNftState] = useState<{
     loading: boolean;
@@ -50,21 +49,26 @@ const CreateItem = () => {
     loading: false,
     error: null
   });
+
+  const [lazyMint, setLazyMint] = useState(false);
   const [image, setImage] = useState('');
   const [imgFile, setImgFile] = useState(null);
-
   const [name, setNameInput] = useState('');
   const [description, setDescriptionInput] = useState('');
   const [price, setPriceInput] = useState(0);
+  const [minimumBid, setMinimumBidInput] = useState(0);
   const [tokentype, setTokenType] = useState('MTK');
-  // const [, setNumberOfCopiesInput] = useState(0);
-  const [, setRoyaltiesInput] = useState(0);
   const [expirationDateInput, setExpirationDateInput] = useState('');
   const [marketType, setMarketType] = useState<MARKET_TYPE>(MARKET_TYPE.SIMPLE);
+  const [collectionsType, setcollectionsType] = useState<COLLECTION_TYPE>(
+    COLLECTION_TYPE.Other
+  );
+  const [royaltiesType, setRoyaltiesType] = useState<ROYALTIES_TYPE>(
+    ROYALTIES_TYPE.PERCENT5
+  );
   const [supply, setSupply] = useState(1);
   const [externalLink, setExternalLink] = useState('');
-  const [explicit, setExplicit] = useState(false);
-  const [lazyMint, setLazyMint] = useState(false);
+  const [enableListing, setEnableListing] = useState(true);
 
   const web3State = useSelector(selectors.web3State);
   const {
@@ -106,15 +110,16 @@ const CreateItem = () => {
     setNameInput('');
     setDescriptionInput('');
     setPriceInput(0);
-    // setNumberOfCopiesInput(0);
-    setRoyaltiesInput(0);
+    setMinimumBidInput(0);
     setExpirationDateInput('');
     setMarketType(MARKET_TYPE.SIMPLE);
+    setRoyaltiesType(ROYALTIES_TYPE.PERCENT5);
+    setcollectionsType(COLLECTION_TYPE.Other);
     setImage('');
     setOpenProgressPopup(false);
     setSupply(1);
     setExternalLink('');
-    setExplicit(false);
+    setEnableListing(true);
     resetFormRef.current && resetFormRef.current();
   };
 
@@ -138,7 +143,6 @@ const CreateItem = () => {
     imageUrl: string,
     previewImageUrl: string
   ) => {
-    console.log('------------------------------+++++++++++', data);
     const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
     // nft mongo item
     const nftToCreate: any = {
@@ -168,17 +172,23 @@ const CreateItem = () => {
       supply: data.supply,
       lazyMint: data.lazyMint,
       tokenUri: metaDataUrl() as string,
-      expirationDate: new Date(data.expirationDate), //Sat May 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
+      startingDate: data.startingDate,
+      expirationDate: data.endDate, //Sat Dec 14 2022 21:30:00 GMT+0300 (Israel Daylight Time)
       // auction fields
-      minimumBid: marketType == MARKET_TYPE.AUCTION ? data.minimumBid : '',
-      priceTokenId:
-        marketType == MARKET_TYPE.AUCTION ? data.priceTokenId : undefined
+      minimumBid: marketType == MARKET_TYPE.AUCTION ? data.minimumBid : 0,
+      priceTokenType:
+        marketType == MARKET_TYPE.AUCTION ? data.pricetokentype : '',
+      enableListing: data.enableListing,
+      unlockableContent: data.unlockableContent
     };
 
     const _attributes = data.attributes.map((item: any) => {
       return { ...item, value: item.value.toString() };
     });
-    nftToCreate.attributes = _attributes;
+    const _attributesStats = data.attributesStats.map((item: any) => {
+      return { ...item, value: item.value.toString() };
+    });
+    nftToCreate.attributes = [..._attributes, ..._attributesStats];
 
     return nftToCreate;
   };
@@ -198,10 +208,12 @@ const CreateItem = () => {
       previewImageUrl() as string
     );
 
-    const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
-    const ts1 = moment(data.expirationDate).unix();
+    console.log('nft to create, ', nftToCreate);
 
-    //* create tracking before creating
+    const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
+    const ts1 = moment(data.endDate).unix();
+
+    // * create tracking before creating
     await ApiService.createProcessTracking({
       ...nftToCreate,
       userAddress,
@@ -223,27 +235,6 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     tokenURI: metaDataUrl() as string,
-      //     priceTokenId: undefined,
-      //     status: STATUS.NOT_LISTED,
-      //     totalAmount: SINGLE,
-      //     leftAmount: SINGLE,
-      //     listedAmount: 0
-      //   }
-      // });
-
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   tokenId,
-      //   userAddress,
-      //   action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
-
       // update item create progress to listing item
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.LIST_ITEM,
@@ -252,68 +243,60 @@ const CreateItem = () => {
       });
     }
 
-    // ADD CHECK - IF THERE IS ENOUGH GAS
-
-    // * create tracking before listing
-    await ApiService.createProcessTracking({
-      ...nftToCreate,
-      userAddress,
-      tokenId: itemCreateProgressRef.current.tokenId,
-      action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
-      processStatus: PROCESS_TRAKING_STATUS.BEFORE
-    });
-
-    if (!listingId()) {
-      //* listing nft on contract
-      await nft721Contract.methods
-        .setApprovalForAll(nftMarketSimpleContract._address, true)
-        .send({ from: userAddress });
-
-      const res = await createSimpleMarketItem({
-        nftMarketSimpleContract,
+    if (data.enableListing == true) {
+      // * create tracking before listing
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
         userAddress,
-        nftAddress: NFT_NETWORK_DATA.address,
-        tokenId: tokenId() as string,
-        priceInWei,
-        quantity: SINGLE,
-        deadline: ts1
+        tokenId: itemCreateProgressRef.current.tokenId,
+        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
-      const listingId = res.returnValues.listingId;
-      const transactionHash = res.transactionHash;
-      // const SellerNFTBalance = await nft721Contract.methods
-      //   .balanceOf(userAddress)
-      //   .call();
+      if (!listingId()) {
+        //* listing nft on contract
+        await nft721Contract.methods
+          .setApprovalForAll(nftMarketSimpleContract._address, true)
+          .send({ from: userAddress });
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     tokenId: itemCreateProgressRef.current.tokenId,
-      //     listingId,
-      //     price: data.price,
-      //     priceTokenId: undefined,
-      //     tokenURI: metaDataUrl() as string,
-      //     status: STATUS.ON_SELL,
-      //     totalAmount: SINGLE,
-      //     leftAmount: 0,
-      //     listedAmount: SINGLE
-      //   }
-      // });
+        const res = await createSimpleMarketItem({
+          nftMarketSimpleContract,
+          userAddress,
+          nftAddress: NFT_NETWORK_DATA.address,
+          tokenId: tokenId() as string,
+          priceInWei,
+          quantity: SINGLE,
+          deadline: ts1
+        });
 
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   userAddress,
-      //   tokenId: itemCreateProgressRef.current.tokenId,
-      //   action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
+        const listingId = res.returnValues.listingId;
+        const transactionHash = res.transactionHash;
+        const SellerNFTBalance = await nft721Contract.methods
+          .balanceOf(userAddress)
+          .call();
 
-      //* update item create progress to finished
+        console.log(
+          '🚀 ~ file: CreateItem.tsx ~ line 276 ~ CreateItem ~ listingId, transactionHash, SellerNFTBalance',
+          listingId,
+          transactionHash,
+          SellerNFTBalance
+        );
+
+        // update item create progress to finished
+        updateItemCreateProgress({
+          status: ITEM_CREATE_STATUS.FINISHED,
+          listingId,
+          listingTransactionHash: transactionHash,
+          multiple: false,
+          nftAddress: NFT_NETWORK_DATA.address
+        });
+      }
+    } else {
+      // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
-        listingId,
-        listingTransactionHash: transactionHash,
+        // listingId,
+        // listingTransactionHash: transactionHash,
         multiple: false,
         nftAddress: NFT_NETWORK_DATA.address
       });
@@ -322,7 +305,7 @@ const CreateItem = () => {
 
   const createAuction = async (NFT_NETWORK_DATA: any, data: any) => {
     console.log(
-      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ createAuction ~ data',
+      '🚀 ~ file: CreateItem.tsx ~ line 298 ~ CreateItem ~ data',
       data
     );
 
@@ -340,7 +323,7 @@ const CreateItem = () => {
       previewImageUrl() as string
     );
 
-    const ts1 = moment(data.expirationDate).unix(); //* dates
+    const ts1 = moment(data.endDate).unix(); //* dates
     const startPriceInWei = web3.utils.toWei(
       data.minimumBid.toString(),
       'ether'
@@ -368,24 +351,6 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     tokenId,
-      //     tokenURI: metaDataUrl() as string,
-      //     status: STATUS.NOT_LISTED
-      //   }
-      // });
-
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   tokenId,
-      //   userAddress,
-      //   action: PROCESS_TRAKING_ACTION.CREATE_SINGLE,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
-
       // update item create progress to listing item
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.LIST_ITEM,
@@ -394,60 +359,49 @@ const CreateItem = () => {
       });
     }
 
-    // ADD CHECK - IF THERE IS ENOUGH GAS
-
-    //* create tracking before listing
-    await ApiService.createProcessTracking({
-      ...nftToCreate,
-      userAddress,
-      tokenId: tokenId(),
-      action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
-      processStatus: PROCESS_TRAKING_STATUS.BEFORE
-    });
-
-    if (!listingId()) {
-      await nft721Contract.methods
-        .setApprovalForAll(nftMarketAuctionContract._address, true)
-        .send({ from: userAddress });
-
-      //* listing nft on contract
-      const res = await createAuctionMarketItem({
-        nftMarketAuctionContract,
+    if (data.enableListing == true) {
+      //* create tracking before listing
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
         userAddress,
-        priceTokenAddress: mockERC20Contract._address,
-        nftAddress: NFT_NETWORK_DATA.address,
-        tokenId: tokenId() as string,
-        startPriceInWei,
-        deadline: ts1
+        tokenId: tokenId(),
+        action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
-      const listingId = res.returnValues.listingId;
-      const transactionHash = res.transactionHash;
+      if (!listingId()) {
+        await nft721Contract.methods
+          .setApprovalForAll(nftMarketAuctionContract._address, true)
+          .send({ from: userAddress });
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     listingId,
-      //     tokenId: tokenId() as string,
-      //     tokenURI: metaDataUrl(),
-      //     status: STATUS.ON_SELL
-      //   }
-      // });
+        //* listing nft on contract
+        const res = await createAuctionMarketItem({
+          nftMarketAuctionContract,
+          userAddress,
+          priceTokenAddress: mockERC20Contract._address,
+          nftAddress: NFT_NETWORK_DATA.address,
+          tokenId: tokenId() as string,
+          startPriceInWei,
+          deadline: ts1
+        });
 
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   userAddress,
-      //   tokenId: tokenId(),
-      //   action: PROCESS_TRAKING_ACTION.LIST_AUCTION,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
+        const listingId = res.returnValues.listingId;
+        const transactionHash = res.transactionHash;
 
-      // update item create progress to finished
+        // update item create progress to finished
+        updateItemCreateProgress({
+          status: ITEM_CREATE_STATUS.FINISHED,
+          listingId,
+          listingTransactionHash: transactionHash,
+          multiple: false,
+          nftAddress: NFT_NETWORK_DATA.address
+        });
+      }
+    } else {
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
-        listingId,
-        listingTransactionHash: transactionHash,
+        // listingId,
+        // listingTransactionHash: transactionHash,
         multiple: false,
         nftAddress: NFT_NETWORK_DATA.address
       });
@@ -468,7 +422,7 @@ const CreateItem = () => {
       previewImageUrl() as string
     );
 
-    const ts1 = moment(data.expirationDate).unix();
+    const ts1 = moment(data.endDate).unix();
     const priceInWei = web3.utils.toWei(data.price.toString(), 'ether');
 
     //* create tracking before creating
@@ -493,26 +447,6 @@ const CreateItem = () => {
       const tokenId = res.returnValues.newItemId;
       const transactionHash = res.transactionHash;
 
-      // await ApiService.createdNft({
-      //   transactionHash,
-      //   data: {
-      //     ...nftToCreate,
-      //     priceTokenId: undefined,
-      //     tokenURI: metaDataUrl() as string,
-      //     status: STATUS.NOT_LISTED,
-      //     totalAmount: Number(data.supply),
-      //     leftAmount: Number(data.supply),
-      //     listedAmount: 0
-      //   }
-      // });
-
-      // await ApiService.createProcessTracking({
-      //   ...nftToCreate,
-      //   userAddress,
-      //   action: PROCESS_TRAKING_ACTION.CREATE_MULTIPLE,
-      //   processStatus: PROCESS_TRAKING_STATUS.AFTER
-      // });
-
       // update item create progress to listing item
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.LIST_ITEM,
@@ -521,42 +455,55 @@ const CreateItem = () => {
       });
     }
 
-    // ADD CHECK - IF THERE IS ENOUGH GAS
-
-    //* create tracking before listing
-    await ApiService.createProcessTracking({
-      ...nftToCreate,
-      tokenId: tokenId() as string,
-      userAddress,
-      action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
-      processStatus: PROCESS_TRAKING_STATUS.BEFORE
-    });
-
-    if (!listingId()) {
-      //* list on contract
-
-      await nft1155Contract.methods
-        .setApprovalForAll(nftMarketSimpleContract._address, true)
-        .send({ from: userAddress });
-
-      const res = await createSimpleMarketItem({
-        nftMarketSimpleContract,
-        userAddress,
-        nftAddress: NFT_NETWORK_DATA.address,
+    if (data.enableListing == true) {
+      //* create tracking before listing
+      await ApiService.createProcessTracking({
+        ...nftToCreate,
         tokenId: tokenId() as string,
-        priceInWei,
-        quantity: Number(data.supply),
-        deadline: ts1
+        userAddress,
+        action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_MULTIPLE,
+        processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
-      const listingId = res.returnValues.listingId;
-      const transactionHash = res.transactionHash;
+      if (!listingId()) {
+        //* list on contract
 
+        await nft1155Contract.methods
+          .setApprovalForAll(nftMarketSimpleContract._address, true)
+          .send({ from: userAddress });
+
+        const res = await createSimpleMarketItem({
+          nftMarketSimpleContract,
+          userAddress,
+          nftAddress: NFT_NETWORK_DATA.address,
+          tokenId: tokenId() as string,
+          priceInWei,
+          quantity: Number(data.supply),
+          deadline: ts1
+        });
+        console.log(
+          '🚀 ~ file: CreateMultiple.tsx ~ line 308 ~ CreateSingle ~ res',
+          res
+        );
+
+        const listingId = res.returnValues.listingId;
+        const transactionHash = res.transactionHash;
+
+        // update item create progress to finished
+        updateItemCreateProgress({
+          status: ITEM_CREATE_STATUS.FINISHED,
+          listingId,
+          listingTransactionHash: transactionHash,
+          multiple: true,
+          nftAddress: NFT_NETWORK_DATA.address
+        });
+      }
+    } else {
       // update item create progress to finished
       updateItemCreateProgress({
         status: ITEM_CREATE_STATUS.FINISHED,
-        listingId,
-        listingTransactionHash: transactionHash,
+        // listingId,
+        // listingTransactionHash: transactionHash,
         multiple: true,
         nftAddress: NFT_NETWORK_DATA.address
       });
@@ -598,9 +545,8 @@ const CreateItem = () => {
       });
 
       const price = Number(nftToCreate.price);
-      const weiPrice = web3.utils.toWei(price.toString(), 'ether');
-      const value =
-        Number(weiPrice) + getPriceAfterPercent(Number(weiPrice), 1);
+      const weiPrice = ethers.utils.parseEther(price.toString());
+      const value = weiPrice.add(weiPrice.mul(serviceFee).div(100));
 
       // A Web3Provider wraps a standard Web3 provider, which is
       // what MetaMask injects as window.ethereum into each page
@@ -667,100 +613,6 @@ const CreateItem = () => {
         multiple: false,
         nftAddress: NFT_NETWORK_DATA.address
       });
-
-      // const fromAddress = (await web3.eth.getAccounts())[0];
-      // const voucher = {
-      //   tokenId: Number(ltokenId),
-      //   minPrice: value,
-      //   royalty: Number(nftToCreate.royalty),
-      //   creator: String(nftToCreate?.creatorAddress),
-      //   uri: String(nftToCreate?.tokenUri)
-      // };
-      // const originalMessage = JSON.stringify({
-      //   domain: {
-      //     // Defining the chain aka goerli testnet or Ethereum Main Net
-      //     chainId: networkId,
-      //     // Give a user friendly name to the specific contract you are signing for.
-      //     name: 'HowToPulse-Voucher',
-      //     // If name isn't enough add verifying contract to make sure you are establishing contracts with the proper entity
-      //     verifyingContract: nft721Contract._address,
-      //     // Just let's you know the latest version. Definitely make sure the field name is correct.
-      //     version: '1'
-      //   },
-
-      //   // Defining the message signing data content.
-      //   message: voucher,
-      //   // Refers to the keys of the *types* object below.
-      //   primaryType: 'NFTVoucher',
-      //   voucher,
-      //   types: {
-      //     // // TODO: Clarify if EIP712Domain refers to the domain the contract is hosted on
-      //     NFTVoucher: [
-      //       { name: 'tokenId', type: 'uint256' },
-      //       { name: 'minPrice', type: 'uint256' },
-      //       { name: 'royalty', type: 'uint96' },
-      //       { name: 'creator', type: 'address' },
-      //       { name: 'uri', type: 'string' }
-      //     ]
-      //   }
-      // });
-      // const params = [fromAddress, originalMessage];
-      // const method = 'eth_signTypedData_v4';
-
-      // await web3.currentProvider.sendAsync(
-      //   {
-      //     method,
-      //     params,
-      //     fromAddress
-      //   },
-      //   (err: any, result: any) => {
-      //     if (err) {
-      //       console.log(err);
-      //     } else if (result.error) {
-      //       console.log(result.error);
-      //     } else {
-      //       const signature = result.result;
-      //       console.log(
-      //         '🚀 ~ file: CreateItem.tsx ~ line 671 ~ lazyMintNFT ~ signature',
-      //         signature
-      //       );
-
-      //       const createLazyMintNFT = async () => {
-      //         await ApiService.createdNft({
-      //           transactionHash: undefined,
-      //           data: {
-      //             ...nftToCreate,
-      //             signature,
-      //             tokenId: ltokenId,
-      //             imageUrl: imageUrl() as string,
-      //             previewImageUrl: previewImageUrl() as string,
-      //             priceTokenId: undefined
-      //           }
-      //         });
-
-      //         //* Increase Token Id
-      //         await ApiService.increaseLazyMintTokenId();
-
-      //         await ApiService.createProcessTracking({
-      //           ...nftToCreate,
-      //           userAddress,
-      //           tokenId: ltokenId,
-      //           action: PROCESS_TRAKING_ACTION.LIST_SIMPLE_SINGLE,
-      //           processStatus: PROCESS_TRAKING_STATUS.AFTER
-      //         });
-
-      //         // update item create progress to finished
-      //         updateItemCreateProgress({
-      //           status: ITEM_CREATE_STATUS.FINISHED,
-      //           tokenId: ltokenId,
-      //           multiple: false,
-      //           nftAddress: NFT_NETWORK_DATA.address
-      //         });
-      //       };
-      //       createLazyMintNFT();
-      //     }
-      //   }
-      // );
     }
   };
 
@@ -770,15 +622,11 @@ const CreateItem = () => {
     resetForm: () => void,
     isRetry = false
   ) => {
-    console.log(
-      '🚀 ~ file: CreateItem.tsx ~ line 591 ~ CreateItem ~ data',
-      data
-    );
     if (!web3) {
       notification.error(ERRORS.NOT_CONNECTED_TO_WALLET);
       return;
     }
-    // initialize popup status and event list
+
     setOpenProgressPopup(true);
     if (!isRetry) {
       submitData.current = data;
@@ -788,9 +636,8 @@ const CreateItem = () => {
     }
     updateItemCreateProgress({ error: null });
     try {
-      //* set loader
       setCreateNftState({ loading: true, error: null });
-      //* getting network id *//
+
       const networkId = await getNetworkId(web3);
       if (networkId !== SELECTED_NETWORK) {
         notification.error(ERRORS.WRONG_NETWORK);
@@ -805,7 +652,6 @@ const CreateItem = () => {
       const previewImageUrl = () =>
         itemCreateProgressRef.current.previewImageUrl;
       const metaDataUrl = () => itemCreateProgressRef.current.metaDataUrl;
-      // const NFT_NETWORK_DATA = await getNetworkData(web3, NFT);
 
       if (!imageUrl()) {
         //* uploading image to ipfs
@@ -862,7 +708,6 @@ const CreateItem = () => {
         if (marketType === MARKET_TYPE.SIMPLE) {
           await createSimple(NFT_NETWORK_DATA, data);
         } else {
-          // marketType === MARKET_TYPE.AUCTION
           await createAuction(NFT_NETWORK_DATA, data);
         }
       }
@@ -870,7 +715,7 @@ const CreateItem = () => {
       //* turn off loader
       setCreateNftState({ loading: false, error: null });
     } catch (error) {
-      console.error('error in CreateItem', getErrorMessage(error));
+      console.error('error in CreateItem', error);
       setCreateNftState({ loading: false, error: getErrorMessage(error) });
       updateItemCreateProgress({ error });
     }
@@ -878,98 +723,70 @@ const CreateItem = () => {
 
   const onTab = (tab: MARKET_TYPE) => {
     setMarketType(tab);
+  };
 
-    // reset fields
-    //   setExpirationDateInput('');
-    //   setPriceInput('');
+  const onTabChange = (tab: ROYALTIES_TYPE) => {
+    setRoyaltiesType(tab);
+  };
+
+  const onTabCategories = (tab: COLLECTION_TYPE) => {
+    setcollectionsType(tab);
   };
 
   return (
     <CreateSingleWrapper>
-      <div>
-        {/* <GlobalStyles /> */}
-        <div
-          className="jumbotron breadcumb no-bg main-jumbo"
-          style={{
-            backgroundImage: `url(${'./img/snake.svg'})`,
-            height: 'fit-content'
-          }}
-        >
-          <section className="section-single-head">
-            <div className="container">
-              <div className="row m-10-hor">
-                <div className="col-12">
-                  <h1 className="text-center create-single-head">
-                    Create New Item
-                    <br /> on PulseChain
-                  </h1>
-                </div>
-              </div>
+      <div className="createNft">
+        <h1 className="createNft__h1">Create NFT</h1>
+        <section className="createNft__container">
+          <CreateForm
+            multiple={false}
+            submit={submitForm}
+            submitCreateState={nftState}
+            onChangeImage={onChangeImage}
+            setNameInput={setNameInput}
+            setDescriptionInput={setDescriptionInput}
+            setPriceInput={setPriceInput}
+            setTokenType={setTokenType}
+            setExpirationDateInput={setExpirationDateInput}
+            setExternalLink={setExternalLink}
+            externalLink={externalLink}
+            marketType={marketType}
+            royaltiesType={royaltiesType}
+            collectionsType={collectionsType}
+            name={name}
+            description={description}
+            price={price}
+            minimumBid={minimumBid}
+            setMinimumBidInput={setMinimumBidInput}
+            image={image}
+            expirationDateInput={expirationDateInput}
+            tokentype={tokentype}
+            onTab={onTab}
+            onTabChange={onTabChange}
+            onTabCategories={onTabCategories}
+            setSupply={setSupply}
+            supply={supply}
+            enableListing={enableListing}
+            setEnableListing={setEnableListing}
+            setLazyMint={setLazyMint}
+          />
+
+          {openProgressPopup && (
+            <div className="modal-style-primary checkout">
+              <CreateItemProgressPopup
+                progress={itemCreateProgress}
+                events={eventList}
+                lazyMint={lazyMint}
+                onRetry={() => submitForm(submitData.current, () => null, true)}
+                onClose={() => setOpenProgressPopup(false)}
+                onReset={resetPage}
+              />
             </div>
-          </section>
-          <section className="container create-single-section">
-            {/* <div className="row"> */}
-            {/* <div className="col-lg-7 mb-5" style={{ margin: 'auto' }}> */}
-            {/* <div className="marketplace-tabs-main">
-                <p>
-                  <span className="span-red" style={{ fontSize: '20px' }}>
-                    *
-                  </span>{' '}
-                  Required fields
-                </p>
-              </div> */}
-
-            <CreateForm
-              multiple={false}
-              submit={submitForm}
-              submitCreateState={nftState}
-              onChangeImage={onChangeImage}
-              setNameInput={setNameInput}
-              setDescriptionInput={setDescriptionInput}
-              setPriceInput={setPriceInput}
-              setTokenType={setTokenType}
-              setRoyaltiesInput={setRoyaltiesInput}
-              setExpirationDateInput={setExpirationDateInput}
-              setExternalLink={setExternalLink}
-              marketType={marketType}
-              name={name}
-              description={description}
-              price={price}
-              image={image}
-              expirationDateInput={expirationDateInput}
-              tokentype={tokentype}
-              onTab={onTab}
-              setSupply={setSupply}
-              supply={supply}
-              setExplicit={setExplicit}
-              setLazyMint={setLazyMint}
-            />
-            {/* </div> */}
-
-            {/* <div className="col-lg-3 col-sm-6 col-xs-12">
-              <h5>Preview item</h5>
-
-            </div> */}
-            {/* </div> */}
-            {openProgressPopup && (
-              <div className="checkout">
-                <CreateItemProgressPopup
-                  progress={itemCreateProgress}
-                  events={eventList}
-                  lazyMint={lazyMint}
-                  onRetry={() =>
-                    submitForm(submitData.current, () => null, true)
-                  }
-                  onClose={() => setOpenProgressPopup(false)}
-                  onReset={resetPage}
-                />
-              </div>
-            )}
-          </section>
-        </div>
+          )}
+        </section>
       </div>
     </CreateSingleWrapper>
   );
 };
 
-export default CreateItem;
+export default CreateItemNew;

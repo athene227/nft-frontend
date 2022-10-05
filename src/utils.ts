@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ethers } from 'ethers';
 import moment from 'moment';
 import ERC20Abi from 'src/abis/new/MockERC20.json';
 import Web3 from 'web3';
@@ -346,7 +347,7 @@ export const approveContract = async (data: {
   mockERC20Contract: any;
   spender: string;
   owner: string;
-  amount: number;
+  amount: number | string;
 }) => {
   const { mockERC20Contract, spender, owner, amount } = data;
   const res = await mockERC20Contract.methods
@@ -374,7 +375,7 @@ export const buySimple = async (data: {
   userAddress: string;
   listingId: number;
   quantity: number;
-  value: number;
+  value: number | string;
 }) => {
   const { nftMarketSimpleContract, userAddress, listingId, quantity, value } =
     data;

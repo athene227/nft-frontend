@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import classes from './Clock.module.scss';
 
-interface IProps {
-  className?: string;
-  deadline: Date;
-  onTimeout?: () => void;
-}
+// interface IProps {
+//   className?: string;
+//   deadline: Date;
+//   onTimeout?: () => void;
+// }
 
-const Clock = (props: IProps) => {
+const Clock = (props) => {
   const initialTime = {
     days: 0,
     hours: 0,
@@ -22,7 +22,7 @@ const Clock = (props: IProps) => {
   useEffect(() => {
     getTimeUntil(deadline);
     interval = setInterval(() => getTimeUntil(deadline), 1000);
-  }, []);
+  }, [time]);
 
   const leading0 = (num: number) => {
     return num < 10 ? '0' + num : num;
@@ -30,6 +30,7 @@ const Clock = (props: IProps) => {
 
   const getTimeUntil = (deadline: Date) => {
     const time = Date.parse(deadline) - Date.parse(new Date());
+
     if (time < 0) {
       setTime({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       if (!notifiedTimeout) {
@@ -48,10 +49,14 @@ const Clock = (props: IProps) => {
 
   return (
     <div className={`${classes.clock} ${className}`}>
-      <div className={`${classes.clock_days}`}>{leading0(time.days)}d</div>
-      <div className={`${classes.clock_hours}`}>{leading0(time.hours)}h</div>
-      <div className={`${classes.clock_minutes}`}>
-        {leading0(time.minutes)}m
+      <div className={`nft__clock_days ${classes.clock_days}`}>
+        {leading0(time.days)}d :
+      </div>
+      <div className={`nft__clock_hours ${classes.clock_hours}`}>
+        {leading0(time.hours)}h :
+      </div>
+      <div className={`nft__clock_minutes${classes.clock_minutes}`}>
+        {leading0(time.minutes)}m :
       </div>
       <div className={`${classes.clock_seconds}`}>
         {leading0(time.seconds)}s

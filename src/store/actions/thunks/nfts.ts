@@ -116,15 +116,15 @@ export const fetchNftMultipleDetails =
   };
 
 //* transfer to backend
-export const createNft = (payload: any) => async (dispatch: any) => {
-  dispatch(actions.updateNft.request(Canceler.cancel));
-  try {
-    const { data } = await ApiService.createdNft(payload);
-    dispatch(actions.updateNft.success(data));
-  } catch (err) {
-    dispatch(actions.updateNft.failure(err));
-  }
-};
+// export const createNft = (payload: any) => async (dispatch: any) => {
+//   dispatch(actions.updateNft.request(Canceler.cancel));
+//   try {
+//     const { data } = await ApiService.createdNft(payload);
+//     dispatch(actions.updateNft.success(data));
+//   } catch (err) {
+//     dispatch(actions.updateNft.failure(err));
+//   }
+// };
 
 export const fetchCountForCategories = () => async (dispatch: any) => {
   dispatch(actions.fetchCountForCategories.request(Canceler.cancel));

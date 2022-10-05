@@ -7,6 +7,7 @@ import bgDark from '../../assets/images/bg-radius.png';
 import bgLight from '../../assets/images/bg-radius-light.png';
 
 const bgPrimaryColor = '#ffffff';
+const bodyBg = '#0B1C3D';
 const white = '#ffffff';
 const black = '#111';
 const gray = '#bbb';
@@ -102,6 +103,7 @@ const light = {
     btn_border: btnBorder,
     color_placeholder: colorPlaceholder,
     background: backgroundLight,
+    bodybg: backgroundLight,
     // 'background_light': backgroundLight,
     'search-grad1': searchGrad1,
     'search-grad2': searchGrad2,
@@ -209,6 +211,7 @@ const dark = {
     btn_border: btnBorder,
     color_placeholder: colorPlaceholder,
     background: background,
+    bodybg: bodyBg,
     // 'background_light': backgroundLight,
     'search-grad1': searchGrad1,
     'search-grad2': searchGrad2,
@@ -218,7 +221,7 @@ const dark = {
     'text-heading-light': textHeadingDark,
     navBg: 'rgba(0,0,0,0)',
     navColor: white,
-    navsticky: navstickyDark,
+    navsticky: bodyBg,
     navWhitebs: '0 4px 20px 0 rgba(10, 10, 10, 0.8)',
     bannerLayer: 'none',
     textHeading: textHeadingDark,
@@ -253,7 +256,7 @@ const dark = {
     'scrollbar-trackbg': 'rgb(255, 255, 255, 0.1)',
     'scrollbar-thumbbg': '#00b2fe',
     'top-collection-image': 'none',
-    footerBg: 'rgba(255, 255, 255, 0.025)',
+    footerBg: colorBgSecondaryDark,
     // Create Option Page
     // 'create-single-bg': gradient2,
     'hot-collection-bg': hotCollectionBg,

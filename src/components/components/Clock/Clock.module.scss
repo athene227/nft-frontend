@@ -1,7 +1,8 @@
 .clock{
     display: flex;
     gap: 5px;
-    background:-webkit-linear-gradient(180deg, #FE00C7 0%, #0084FE 100%);
+    // background:-webkit-linear-gradient(180deg, #FE00C7 0%, #0084FE 100%);
+    background: -webkit-linear-gradient(360deg, #FE00C7 0%, #0084FE 100%);
           -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
   }

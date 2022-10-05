@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SEO, { SEOProps } from '@americanexpress/react-seo';
 import { navigate } from '@reach/router';
+// import { ethers } from 'ethers';
+import * as dotenv from 'dotenv';
+import { ethers } from 'ethers';
 import moment from 'moment';
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
+import { serviceFee } from 'src/config';
 import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
@@ -21,9 +25,6 @@ import notification from 'src/services/notification';
 import { clearEvents } from 'src/store/actions';
 import { fetchBids } from 'src/store/actions/thunks/bids';
 import { IBid } from 'src/types/bids.types';
-// import { ethers } from 'ethers';
-
-import * as dotenv from 'dotenv';
 dotenv.config();
 
 import {
@@ -45,11 +46,12 @@ import {
   getMyTokenBalance,
   getNetworkId,
   getPriceAfterPercent,
-  shortAddress,
   placeBid,
+  shortAddress,
   terminateAuction
 } from 'src/utils';
 
+import LazyMinter from '../../LazyMinter';
 import { fetchNftDetail } from '../../store/actions/thunks/nfts';
 import * as selectors from '../../store/selectors';
 import AcceptOfferPopUp from '../components/AcceptOfferPopUp';
@@ -65,7 +67,6 @@ import PlaceBidPopUp from '../components/PlaceBidPopUp';
 import TerminateAuctionPopup from '../components/Popups/TerminateAuctionPopup';
 import UserAvatar from '../components/UserAvatar';
 import BanrLayer from './../pages/Home/components/landing/bannerLayer';
-import LazyMinter from '../../LazyMinter';
 
 enum TAB_TYPE {
   BIDS = 'BIDS',
@@ -428,9 +429,8 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       }
 
       const price = Number(nft.price);
-      const weiPrice = web3.utils.toWei(price.toString(), 'ether');
-      const value =
-        Number(weiPrice) + getPriceAfterPercent(Number(weiPrice), 1);
+      const weiPrice = ethers.utils.parseEther(price.toString());
+      const value = weiPrice.add(weiPrice.mul(serviceFee).div(100));
       const myBalance = await getMyBalance(userAddress, web3);
       //* check if balance is ok, if not ==> show error
       if (Number(myBalance) < Number(value)) {
@@ -490,7 +490,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
           userAddress,
           listingId: Number(nft.listingId),
           quantity: SINGLE,
-          value
+          value: value.toString()
         });
         //* turn off loader
         setBuyState({ loader: false, error: null });
@@ -772,7 +772,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
         ...offerTrackingItem,
         userAddress: offer.offererAddress,
         price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
+        action: PROCESS_TRAKING_ACTION.ACCEPT_OFFER,
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
@@ -1098,7 +1098,7 @@ const ItemDetailSingle = (props: { tokenId: string; nftAddress: string }) => {
       case PROCESS_TRAKING_ACTION.TERMINATE_AUCTION_SOLD:
         res = 'terminated an auction';
         break;
-      case PROCESS_TRAKING_ACTION.ACCEPTOFFER:
+      case PROCESS_TRAKING_ACTION.ACCEPT_OFFER:
         res = 'offer accepted';
         break;
       case PROCESS_TRAKING_ACTION.BUY_SIMPLE_SINGLE:

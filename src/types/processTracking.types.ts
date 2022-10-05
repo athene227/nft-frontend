@@ -1,7 +1,7 @@
 import { ICollection } from 'src/collections.types';
 
-import { IUser } from './users.types';
 import { IPriceToken } from './priceTokens.types';
+import { IUser } from './users.types';
 
 export interface IProcessTracking {
   action: string;

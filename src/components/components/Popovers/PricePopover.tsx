@@ -73,7 +73,7 @@ const PricePopover = ({ data, onUpdate }: PricePopoverProps) => {
   const PriceFilterPopover = (
     <Popover
       id="popover-price-filter"
-      className="popover-price-filter"
+      className="popover-price-filter popover__nft_style"
       style={{
         border: '1px solid',
         borderImageSlice: '1',

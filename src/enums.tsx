@@ -7,6 +7,30 @@ export enum MARKET_TYPE {
   MORE = 'MORE'
 }
 
+export enum ROYALTIES_TYPE {
+  PERCENT5 = 'PERCENT5',
+  PERCENT10 = 'PERCENT10',
+  PERCENT15 = 'PERCENT15',
+  PERCENT20 = 'PERCENT20',
+  PERCENT25 = 'PERCENT25',
+  CUSTOM = 'CUSTOM'
+}
+
+export enum COLLECTION_TYPE {
+  NULL = 'NULL',
+  Art = 'Art',
+  Collectibles = 'Collectibles',
+  DomainNames = 'Domain Names',
+  Music = 'Music',
+  Photography = 'Photography',
+  Sports = 'Sports',
+  TradingCards = 'Trading Cards',
+  Utility = 'Utility',
+  VirtualWorlds = 'Virtual Worlds',
+  Gaming = 'Gaming',
+  Other = 'Other'
+}
+
 export enum ITEM_TYPE {
   single_items = 'single_items',
   bundles = 'bundles'
@@ -30,7 +54,7 @@ export enum PROCESS_TRAKING_ACTION {
   BUY_SIMPLE_MULTIPLE = 'BUY_SIMPLE_MULTIPLE',
   BID = 'BID',
   OFFER = 'OFFER',
-  ACCEPTOFFER = 'ACCEPTOFFER',
+  ACCEPT_OFFER = 'ACCEPT_OFFER',
   CANCEL_OFFER = 'CANCEL_OFFER',
   TERMINATE_AUCTION_NOT_SOLD = 'TERMINATE_AUCTION_NOT_SOLD',
   TERMINATE_AUCTION_SOLD = 'TERMINATE_AUCTION_SOLD'
@@ -95,7 +119,8 @@ export enum INPUT_ERROS {
   numberIsHigher = 'The number is higher than it should be.',
   numberIsLower = 'The number is lower than it should be.',
   oneHourMinimun = 'The expiration date should be higher than one hour from now.',
-  notValidUrl = 'Please Input Valid Url'
+  notValidUrl = 'Please Input Valid Url',
+  notDecimal = 'The input cannot be decimal.'
 }
 
 export enum API_ERRORS {

@@ -66,7 +66,7 @@ const CollectionPopover = ({
   const CollectionFilterPopover = (
     <Popover
       id="popover-collection-filter"
-      className={`popover-collection-filter popover__collection`}
+      className={`popover-collection-filter popover__collection popover__nft_style`}
       style={{
         border: '1px solid',
         borderImageSlice: '1',
@@ -86,24 +86,6 @@ const CollectionPopover = ({
                 setCollectionSearch(e.target.value);
               }}
             />
-            {/* <TextField
-              className={`input-search ${classes.text__custom_field}`}
-              label="Search collection..."
-              variant="filled"
-              id="outlined-start-adornment"
-              sx={{ m: 1, width: '25ch' }}
-              value={collectionSearch}
-              onChange={(e) => {
-                setCollectionSearch(e.target.value);
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AiOutlineSearch />
-                  </InputAdornment>
-                ),
-              }}
-            /> */}
           </Col>
           <Col xs={12}>
             <List
@@ -129,7 +111,6 @@ const CollectionPopover = ({
                       className={`list__item__custom`}
                       key={index}
                       classes={{ selected: 'active' }}
-                      // style={{ color: 'rgba(255, 255, 255, 0.5)' }}
                       style={{}}
                       secondaryAction={
                         <Checkbox

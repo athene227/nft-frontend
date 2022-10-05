@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { memo, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
-import * as selectors from 'src/store/selectors';
-import * as actions from 'src/store/actions/thunks';
-import { clearNfts, clearFilter } from 'src/store/actions';
+import { clearFilter, clearNfts } from 'src/store/actions';
 import { setCurrentPage } from 'src/store/actions';
+import * as actions from 'src/store/actions/thunks';
+import * as selectors from 'src/store/selectors';
+
 import ExploreItemCard from './ExploreItemCard';
 
 const ExploreItemRedux = () => {

@@ -1,7 +1,9 @@
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { MARKET_TYPE } from 'src/enums';
 import { getImage } from 'src/services/ipfs';
 
+import price from '../pages/price';
 import Clock from './Clock/Clock';
 
 interface IProps {
@@ -15,12 +17,12 @@ interface IProps {
     leftAmount?: number;
     collection?: string;
   };
+  selectCollection?: string;
   marketType?: MARKET_TYPE;
   tokentype: string;
   isPreview?: boolean;
   timer?: boolean;
   multiple: boolean;
-  expirationDateInput?: string;
 }
 
 export default function PreviewNft(props: IProps) {
@@ -28,12 +30,15 @@ export default function PreviewNft(props: IProps) {
     imageUrl,
     userImage,
     nft,
+    starttime,
+    endtime,
+    dateRange,
     marketType,
     tokentype,
     isPreview,
     timer,
-    expirationDateInput,
-    multiple
+    multiple,
+    selectCollection
   } = props;
 
   const getNumberOfCopies = () => {
@@ -47,75 +52,94 @@ export default function PreviewNft(props: IProps) {
     }
   };
 
-  return (
-    <div className="nft__item m-0">
-      {/* {timer && marketType === MARKET_TYPE.AUCTION && ( */}
+  const auctionExpiryDate = moment(dateRange[0].endDate).format(
+    'MMM, DD, YYYY hh:mm'
+  );
 
-      {/* )} */}
-      {/* <div className="author_list_pp">
-        <span>
-          <img className="lazy" src={getImage(userImage)} alt="" />
-          <i className="fa fa-check"></i>
-        </span>
-      </div> */}
-      <div className="nft__item_wrap">
-        <span>
-          <img
-            src={getImage(imageUrl)}
-            id="get_file_2"
-            className="lazy nft__item_preview"
-            alt=""
-          />
-        </span>
-        <div className="de_countdown">
-          <Clock deadline={expirationDateInput || 'December, 30, 2021'} />
-        </div>
-      </div>
-      <div className="nft__item_info">
-        <div className="col-12 d-flex justify-content-between mb-0 pl-0">
-          <span>
-            <h4>{nft?.name || '-- -- -- -- --'}</h4>
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="d-flex justify-content-between align-items-center">
-                <p className="nft-collection-name">
-                  <img
-                    className={''}
-                    src="./img/collectionIcon.png"
-                    alt=""
-                  ></img>
-                  {nft?.collection || '-- -- -- -- -- --'}
-                </p>
+  console.log('Auction Expiray Date', auctionExpiryDate);
+  return (
+    <div className="col-lg-5 createNft__preview">
+      <div className="createNft__preview_img">
+        <div className="nft__item m-0">
+          <div className="nft__item_wrap">
+            <span>
+              <img
+                src={getImage(imageUrl)}
+                id="get_file_2"
+                className="lazy nft__item_preview"
+                alt=""
+              />
+            </span>
+            {marketType === MARKET_TYPE.AUCTION && (
+              <div className="de_countdown">
+                <Clock deadline={auctionExpiryDate || 'December, 30, 2022'} />
+              </div>
+            )}
+          </div>
+          <div className="nft__item_info">
+            <div className="col-12 d-flex justify-content-between mb-0 pl-0">
+              <span>
+                <h4>{nft?.name || '-- -- -- -- --'}</h4>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <p className="nft-collection-name">
+                      <img
+                        className={''}
+                        src="./img/collectionIcon.png"
+                        alt=""
+                      ></img>
+                      {selectCollection?.valueOf() || '-- -- -- -- -- --'}
+                    </p>
+                  </div>
+                </div>
+              </span>
+              <div className="nft-supply-details">
+                {nft.totalAmount > 1 && (
+                  <p>
+                    <span>
+                      {nft?.totalAmount}/{nft?.totalAmount}
+                    </span>
+                    Supply
+                  </p>
+                )}
               </div>
             </div>
-          </span>
-          <div className="nft-supply-details">
-            <p>
-              <span>100/100</span>Supply
-            </p>
+            <span className="price-heading">
+              {marketType === MARKET_TYPE.SIMPLE && nft?.price
+                ? 'price'
+                : marketType === MARKET_TYPE.AUCTION && nft?.price
+                ? 'min bid'
+                : '-- -- --'}
+            </span>
+
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="nft__item_price">
+                <div className="author_list_pp pulse_bottom">
+                  <img
+                    className={''}
+                    src="./img/currency-icon.svg"
+                    alt=""
+                  ></img>
+                </div>
+                <div>
+                  {nft?.price || '-- -- --'} {nft?.price ? tokentype : ''}
+                  {<span className="d-none">{getNumberOfCopies()}</span>}
+                </div>
+              </div>
+              {isPreview && (
+                <div className="nft__item_action">
+                  <span>
+                    {marketType === MARKET_TYPE.SIMPLE && nft?.price
+                      ? 'Buy Now'
+                      : marketType === MARKET_TYPE.AUCTION && nft?.price
+                      ? 'Place a Bid'
+                      : '-- -- -- --'}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="nft__item_price">
-            <div className="author_list_pp pulse_bottom">
-              <img className={''} src="./img/currency-icon.svg" alt=""></img>
-            </div>
-            <div>
-              {nft?.price || 0} {tokentype}
-              {<span className="d-none">{getNumberOfCopies()}</span>}
-            </div>
-          </div>
-          {isPreview && (
-            <div className="nft__item_action">
-              <span>
-                {marketType === MARKET_TYPE.SIMPLE ? 'Buy Now' : 'Place a bid'}
-              </span>
-            </div>
-          )}
-        </div>
-        {/* <div className="nft__item_like">
-          <i className="fa fa-heart"></i>
-          <span>50</span>
-        </div> */}
       </div>
     </div>
   );

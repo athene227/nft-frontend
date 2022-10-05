@@ -34,11 +34,31 @@ export const createCollection =
     name: string;
     description: string;
     imageUrl: string;
+    bannerUrl: string;
     userAddress: string;
     id: string;
+    category: string;
+    link_yoursite: string;
+    link_discord: string;
+    link_medium: string;
+    link_telegram: string;
+    pulseUrl: string;
   }) =>
   async (dispatch: any, getState: any) => {
-    const { name, description, userAddress, imageUrl, id } = payload;
+    const {
+      name,
+      description,
+      userAddress,
+      imageUrl,
+      bannerUrl,
+      id,
+      category,
+      link_yoursite,
+      link_discord,
+      link_medium,
+      link_telegram,
+      pulseUrl
+    } = payload;
 
     dispatch(actions.createCollection.request(Canceler.cancel));
     try {
@@ -47,7 +67,14 @@ export const createCollection =
         name,
         description,
         imageUrl,
-        userAddress
+        bannerUrl,
+        userAddress,
+        category,
+        link_yoursite,
+        link_discord,
+        link_medium,
+        link_telegram,
+        pulseUrl
       });
 
       // console.log('getMyCreatedNft data', data);

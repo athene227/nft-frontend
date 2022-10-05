@@ -1,20 +1,21 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { memo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { categories, status } from './constants/filters';
+import { fetchCountForCategories } from 'src/store/actions/thunks';
+import { getCollections } from 'src/store/actions/thunks/collections';
+
 import {
   filterCategories,
-  filterStatus,
   filterCollections,
   filterPrice,
+  filterStatus,
   setSortOrder
 } from '../../store/actions';
 import * as selectors from '../../store/selectors';
-import { getCollections } from 'src/store/actions/thunks/collections';
-import PricePopover from './Popovers/PricePopover';
+import { categories, status } from './constants/filters';
 import CollectionPopover from './Popovers/CollectionPopover';
+import PricePopover from './Popovers/PricePopover';
 import SortPopover from './Popovers/SortPopover';
-import { fetchCountForCategories } from 'src/store/actions/thunks';
 
 const CheckboxFilter = () => {
   const dispatch = useDispatch();

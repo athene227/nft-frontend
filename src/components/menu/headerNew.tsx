@@ -64,7 +64,7 @@ const NavLink = (props: any) => (
 const Header = function (props) {
   const { themeToggler } = props;
   const currentThemevalue = JSON.parse(localStorage.getItem('current-theme'));
-  console.log('local storage value is', currentThemevalue.name);
+
   const dispatch = useDispatch();
   const [loadingState, setLoadingState] = useState<{
     loading: boolean;
@@ -539,7 +539,7 @@ const Header = function (props) {
     const [checked, setChecked] = useState(
       currentThemevalue.name === 'dark' ? true : false
     );
-    console.log(currentThemevalue.name, 'is the vale of local storage');
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setChecked(event.target.checked);
       if (event.target.checked) {

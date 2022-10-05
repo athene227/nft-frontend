@@ -38,8 +38,9 @@ import Collection from './pages/Collection';
 // import CreateOption from './pages/CreateOption/CreateOption';
 // import CreateSingle from './pages/CreateSingle/CreateSingle';
 import CreateItem from './pages/CreateItem/CreateItem';
-import CreateItemNew from './pages/CreateItem/CreateItemLatest';
 import Explore from './pages/Explore/explore';
+import ExploreNew from './pages/ExploreNew/explore';
+import ExploreCollection from './pages/ExploreNew/exploreCollection';
 import Home from './pages/Home/home';
 import ItemDetailMultiple from './pages/ItemDetailMultiple';
 import ItemDetailSingle from './pages/ItemDetailSingle';
@@ -180,8 +181,6 @@ const App = () => {
     const currentTheme = JSON.parse(localStorage.getItem('current-theme'));
     if (currentTheme) {
       setSelectedTheme(currentTheme);
-      console.log(currentTheme);
-      console.log('state updated>>>>>>>>' + setSelectedTheme);
     }
   }, []);
   return (
@@ -211,7 +210,6 @@ const App = () => {
             {/* <CreateSingle path="/createSingle" /> */}
             {/* <CreateMultiple path="/createMultiple" /> */}
             <CreateItem path="/createItem" />
-            <CreateItemNew path="/createItemLatest" />
             <Listing path="/listing/:tokenId/:nftAddress" />
             <Profile path="/profile" />
             <MyProfile path="/myProfile" />
@@ -221,6 +219,8 @@ const App = () => {
             {/* <Home1 path="/home1" />
             <Home2 path="/home2" /> */}
             <Explore path="/explore" />
+            <ExploreNew path="/exploreNew" />
+            <ExploreCollection path="/exploreCollection" />
           </ScrollTop>
         </PosedRouter>
         <ScrollToTopBtn />

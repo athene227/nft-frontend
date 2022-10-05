@@ -1,6 +1,7 @@
 // Adjusted from https://github.com/BestItPartner/nft_lazy_minting/blob/main/lib/LazyMinter.js
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { ethers } from 'ethers';
 
 // These constants must match the ones used in the smart contract.
 const SIGNING_DOMAIN_NAME = 'HowToPulse-Voucher';
@@ -66,7 +67,12 @@ class LazyMinter {
    *
    * @returns {NFTVoucher}
    */
-  async createVoucher(tokenId, uri, minPrice = 0, royalty = 0) {
+  async createVoucher(
+    tokenId: ethers.BigNumber | number,
+    uri: string,
+    minPrice: ethers.BigNumber | number,
+    royalty: ethers.BigNumber | number
+  ) {
     const signer = await this.createSigner(this.jsonSigner);
     console.log(signer);
     const voucher = {

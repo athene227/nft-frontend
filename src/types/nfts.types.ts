@@ -24,7 +24,6 @@ export interface INft {
   tokenId: string;
   listingId: string;
   name: string;
-  royalty: number;
   description: string;
   imageUrl: string;
   previewImageUrl: string;
@@ -32,7 +31,7 @@ export interface INft {
   marketType: MARKET_TYPE;
   creatorAddress: string;
   collectionId: string;
-  royalties: string;
+  royalty: number;
   ownerAddress: string;
   category: string;
   status: STATUS;
@@ -51,7 +50,7 @@ export interface INft {
   leftAmount: number;
   listedAmount: number;
   amount: number;
-  minimumBid: string;
+  minimumBid: number;
   priceTokenId: string;
   priceToken: IPriceToken[];
   startingDate: Date;

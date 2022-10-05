@@ -20,7 +20,7 @@ const SortPopover = ({ currentOrder, onUpdate }: SortPopoverProps) => {
   const SortingPopover = (
     <Popover
       id="popover-sort"
-      className={`popover-price-filter sort__popover`}
+      className={`popover-price-filter sort__popover popover__nft_style`}
       style={{
         border: '1px solid',
         borderImageSlice: '1',
@@ -46,6 +46,7 @@ const SortPopover = ({ currentOrder, onUpdate }: SortPopoverProps) => {
                 const labelId = `sort-list-secondary-label-${index}`;
                 return (
                   <ListItem
+                    className="form-control-item"
                     style={{}}
                     key={index}
                     secondaryAction={

@@ -1,48 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { createTheme } from '@mui/material';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { withStyles } from '@mui/styles';
+import { SelectChangeEvent } from '@mui/material/Select';
+import { addDays } from 'date-fns';
 import {
   ErrorMessage,
   Field,
-  FieldArray,
   FieldArrayRenderProps,
   Form,
   Formik,
-  FormikProps,
-  useField,
-  useFormikContext
+  FormikProps
 } from 'formik';
 import { Switch } from 'formik-material-ui';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import { BsQuestion } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import AddAttributePopup from 'src/components/components/AddAttributePopup';
-import Alert from 'src/components/components/Alert';
-import { categories } from 'src/components/components/constants/filters';
 import CreateCollectionPopUp from 'src/components/components/CreateCollectionPopUp';
-import Loader from 'src/components/components/Loader';
-import NftAttribute from 'src/components/components/NftAttributes';
+import CreateExpiryPopUp from 'src/components/components/CreateExpiryPopUp';
+import InputField from 'src/components/components/Input/InputField';
 import PreviewNft from 'src/components/components/PreviewNft';
-import PreviewNftImage from 'src/components/components/PreviewNftImage';
 import {
-  ALERT_TYPE,
   ATTRIBUTE_TYPE,
-  COIN,
+  COLLECTION_TYPE,
   ERRORS,
   INPUT_ERROS,
-  MARKET_TYPE
+  MARKET_TYPE,
+  ROYALTIES_TYPE
 } from 'src/enums';
 import ipfs from 'src/services/ipfs';
-import { getImage } from 'src/services/ipfs';
 import notification from 'src/services/notification';
 import {
   createCollection,
@@ -55,78 +38,123 @@ import { getErrorMessage, getProfileImage } from 'src/utils';
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 
-import BidIcon from '../../../../assets/images/bid-icon.svg';
+import { ReactComponent as IconExc } from '../../../../assets/images/icon/icon-exc.svg';
+import { ReactComponent as IconLock } from '../../../../assets/images/icon/icon-lock.svg';
 import { ApiService } from '../../../../core/axios';
+import InputSelect from '../../../components/select/InputSelect';
+import CreateNFTProperty from './form_components/createNFTProperties';
+import CreateNFTStats from './form_components/createNFTStats';
+import InputRadio from './form_components/InputRadio';
+import ListOnMarketPlace from './form_components/listOnMarketPlace';
+import Royalties from './form_components/royalties';
+import UploadNfTImage from './form_components/uploadNFTImage';
 
 interface IProps {
   onChangeImage: (e: any) => void;
   setNameInput: (e: any) => void;
   setDescriptionInput: (e: any) => void;
   setPriceInput: (e: any) => void;
+  setMinimumBidInput: (e: any) => void;
   setTokenType: (e: any) => void;
-  setRoyaltiesInput: (e: any) => void;
   setExpirationDateInput: (e: any) => void;
   submit: (values: any, resetForm: () => void) => void;
   onTab: (marketType: MARKET_TYPE) => void;
+  onTabChange: (royaltiesType: ROYALTIES_TYPE) => void;
+  onTabCategories: (collectionsType: COLLECTION_TYPE) => void;
   setSupply: (e: any) => void;
   setExternalLink: (e: any) => void;
-  setExplicit: (e: any) => void;
+  setEnableListing: (e: any) => void;
   setLazyMint: (e: any) => void;
+  externalLink: string;
   submitCreateState: { error: null | string; loading: boolean };
   marketType: MARKET_TYPE;
+  royaltiesType: ROYALTIES_TYPE;
+  collectionsType: COLLECTION_TYPE;
   multiple: boolean;
   name: string;
   description: string;
   price: number;
+  minimumBid: number;
   image: string;
   expirationDateInput: string;
   tokentype: string;
   supply: number;
+  enableListing: boolean;
 }
 
 export default function CreateForm(props: IProps) {
   const {
     marketType,
+    royaltiesType,
+    collectionsType,
     submit,
     submitCreateState,
     onChangeImage,
     setNameInput,
     setDescriptionInput,
     setPriceInput,
+    setMinimumBidInput,
     setTokenType,
     setExpirationDateInput,
+    setEnableListing,
     onTab,
+    onTabChange,
+    onTabCategories,
     setSupply,
     setExternalLink,
-    setExplicit,
     setLazyMint,
+    externalLink,
     multiple,
     name,
     description,
     price,
+    minimumBid,
     image,
     expirationDateInput,
     tokentype,
-    supply
+    supply,
+    enableListing
   } = props;
+
+  // tooltip configurations
   const [priceTokens, setPriceTokens] = useState<Array<IPriceToken>>([]);
   const [openCreateCollection, setCreateCollection] = useState(false);
+  const [openExpirationDate, setExpirationDate] = useState(false);
   const [createCollectionState, setCreateCollectionState] = useState({
     error: null,
     loading: false
   });
-  const [openAddAttribute, setAddAttributeVisible] = useState(false);
+  const [category, setCategory] = useState<string>(COLLECTION_TYPE.NULL);
   const web3State = useSelector(selectors.web3State);
   const { accounts, web3 } = web3State.web3.data;
   const userAddress = accounts[0];
   const collectionsState = useSelector(selectors.collectionsState);
   const dispatch = useDispatch();
+
   let attrHelper: FieldArrayRenderProps;
+  const setAttrHelper = (arrayHelper: FieldArrayRenderProps) => {
+    attrHelper = arrayHelper;
+  };
+
+  let attrStatsHelper: FieldArrayRenderProps;
+  const setAttrStatsHelper = (arrayHelper: FieldArrayRenderProps) => {
+    attrStatsHelper = arrayHelper;
+  };
 
   const [isSingle, setIsSingle] = useState(true);
-
   const userState = useSelector(selectors.userState);
   const userDetails = userState.user.data;
+
+  const [starttime, selectStartTime] = useState('10:00');
+  const [endtime, selectEndTime] = useState('10:00');
+
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 3 * 30),
+      key: 'selection'
+    }
+  ]);
 
   const getShape = () => {
     const shape: any = {
@@ -141,16 +169,20 @@ export default function CreateForm(props: IProps) {
       collectionId: Yup.string()
         .min(2, INPUT_ERROS.tooShort)
         .max(250, INPUT_ERROS.tooLong),
+      royalties: Yup.number()
+        .integer()
+        .moreThan(-1, INPUT_ERROS.numberIsLower)
+        .lessThan(51, INPUT_ERROS.numberIsHigher),
       supply: Yup.number()
-        .moreThan(0, INPUT_ERROS.numberIsLower)
+        .integer()
+        .moreThan(0, INPUT_ERROS.higherThanZero)
         .required(INPUT_ERROS.requiredField),
-      royalties: Yup.number().typeError('you must specify a number'),
-      category: Yup.string(),
+      // royalties: Yup.number().typeError('you must specify a number'),
       attributes: Yup.array().of(
         Yup.object().shape({
           trait_type: Yup.string().required('Property Name is required.'),
           value: Yup.mixed()
-            .required('Property Value is required.')
+            // .required('Property Value is required.')
             .test({
               name: 'max',
               exclusive: false,
@@ -182,23 +214,62 @@ export default function CreateForm(props: IProps) {
               }
             })
         })
+      ),
+      attributesStats: Yup.array().of(
+        Yup.object().shape({
+          trait_type: Yup.string().required('Property Name is required.'),
+          value: Yup.mixed()
+            .required('Property Value is required.')
+            .test({
+              name: 'max',
+              exclusive: false,
+              test: function (value) {
+                const { display_type, max_value } = this.parent;
+                if (value <= 0) {
+                  return this.createError({
+                    message: 'Value should be more than 0'
+                  });
+                }
+                if (max_value > 1000) {
+                  return this.createError({
+                    message: 'Value should be less than 1000'
+                  });
+                }
+                if (
+                  display_type === ATTRIBUTE_TYPE.RANKING &&
+                  value > max_value
+                ) {
+                  if (max_value) {
+                    return this.createError({
+                      message: 'Value should be less than max.'
+                    });
+                  } else {
+                    return this.createError({
+                      message: 'Max Value is required'
+                    });
+                  }
+                }
+                return true;
+              }
+            })
+        })
       )
     };
-    if (marketType === MARKET_TYPE.SIMPLE) {
+    if (marketType === MARKET_TYPE.SIMPLE && enableListing == true) {
       shape.price = Yup.number()
         .typeError('you must specify a number')
         .moreThan(0, INPUT_ERROS.numberIsLower)
         .required(INPUT_ERROS.requiredField);
     }
-    if (marketType === MARKET_TYPE.AUCTION) {
+    if (marketType === MARKET_TYPE.AUCTION && enableListing == true) {
       shape.minimumBid = Yup.number()
         .moreThan(0, INPUT_ERROS.numberIsLower)
         .required(INPUT_ERROS.requiredField);
     }
 
-    shape.expirationDate = Yup.date()
-      .min(moment(new Date()).add(1, 'minutes'), INPUT_ERROS.oneHourMinimun)
-      .required(INPUT_ERROS.requiredField);
+    // shape.expirationDate = Yup.string()
+    // //   .min(moment(new Date()).add(1, 'minutes'), INPUT_ERROS.oneHourMinimun)
+    //   .required(INPUT_ERROS.requiredField);
     return shape;
   };
 
@@ -224,34 +295,31 @@ export default function CreateForm(props: IProps) {
     getPriceTokens();
   }, []);
 
-  // const getFormData = (data: any) => {
-  //   console.log('data===>', data);
-
-  //   const formData = new FormData();
-
-  //   formData.append("firstName", data.firstName);
-  //   formData.append("lastName", data.lastName);
-  //   formData.append("username", data.username);
-  //   formData.append("address", accounts[0]);
-
-  //   if (data.selectedImage) {
-  //     // formData.append(IMAGES_NAMES.PROFILE_IMAGE, data.selectedImage);
-  //   }
-  //   return formData
-  // }
-  // switch styling
-
-  // switch styling
-
   const submitCollection = async (
     data: {
       name: string;
       description: string;
+      link_yoursite: string;
+      link_discord: string;
+      link_medium: string;
+      link_telegram: string;
+      pulseUrl: string;
       imgFile: File | null;
+      bannerfile: File | null;
     },
     resetForm: () => void
   ) => {
-    const { name, description, imgFile } = data;
+    const {
+      name,
+      description,
+      link_yoursite,
+      link_discord,
+      link_medium,
+      link_telegram,
+      pulseUrl,
+      imgFile,
+      bannerfile
+    } = data;
     setCreateCollectionState({ loading: true, error: null });
     try {
       if (!imgFile) {
@@ -259,15 +327,26 @@ export default function CreateForm(props: IProps) {
       }
       const imageUrl: string = (await ipfs.getImageUri(imgFile)) as string;
 
-      // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+      let bannerUrl = '';
+      if (bannerfile) {
+        bannerUrl = (await ipfs.getImageUri(bannerfile)) as string;
+      }
+
       const id = uuidv4();
       dispatch(
         createCollection({
           id,
           name,
           description,
+          userAddress,
           imageUrl,
-          userAddress
+          bannerUrl,
+          category: collectionsType,
+          link_yoursite,
+          link_discord,
+          link_medium,
+          link_telegram,
+          pulseUrl
         })
       );
       closeCreateCollectionPopup();
@@ -284,24 +363,24 @@ export default function CreateForm(props: IProps) {
     }
   };
 
-  const addAttribute = async (
-    values: { type: ATTRIBUTE_TYPE },
-    resetForm: () => void
-  ) => {
-    const { type } = values;
+  const addAttribute = async () => {
     const newValue: any = { trait_type: '' };
 
-    setAddAttributeVisible(false);
     if (!attrHelper) return;
-    newValue.display_type = type;
-    if (type === ATTRIBUTE_TYPE.RANKING) {
-      newValue.value = 0;
-      newValue.max_value = 1;
-    } else if (type !== ATTRIBUTE_TYPE.STRING) {
-      newValue.value = 0;
-    }
-
+    newValue.display_type = ATTRIBUTE_TYPE.STRING;
     attrHelper.push(newValue);
+  };
+
+  const addAttributeStats = async () => {
+    const newValue: any = { trait_type: '' };
+
+    if (!attrStatsHelper) return;
+    newValue.display_type = ATTRIBUTE_TYPE.RANKING;
+
+    newValue.value = 3;
+    newValue.max_value = 5;
+
+    attrStatsHelper.push(newValue);
   };
 
   const getInitialValue = () => {
@@ -310,15 +389,17 @@ export default function CreateForm(props: IProps) {
       description: '',
       collectionId: '',
       externalLink: '',
-      explicit: false,
-      category: '',
+      unlockableContent: '',
+      explicit: true,
       price: 0,
       supply: 1,
       royalties: 0,
       minimumBid: 0,
       pricetokentype: priceTokens[0]?.name || 'MTK',
       expirationDate: '',
-      attributes: []
+      attributes: [],
+      attributesStats: [],
+      enableListing: true
     };
     return result;
   };
@@ -329,6 +410,10 @@ export default function CreateForm(props: IProps) {
       return;
     }
     setCreateCollection(true);
+  };
+
+  const closeCreateExpiryPopup = () => {
+    setExpirationDate(false);
   };
 
   const closeCreateCollectionPopup = () => {
@@ -346,31 +431,49 @@ export default function CreateForm(props: IProps) {
     handleChange,
     getFieldProps
   }: FormikProps<any>) => {
+    const [royaltiesValue, setRoyaltiesValue] = useState<number>(0);
+
+    useEffect(() => {
+      if (royaltiesType == ROYALTIES_TYPE.PERCENT5) {
+        setFieldValue('royalties', 5);
+      } else if (royaltiesType == ROYALTIES_TYPE.PERCENT10) {
+        setFieldValue('royalties', 10);
+      } else if (royaltiesType == ROYALTIES_TYPE.PERCENT15) {
+        setFieldValue('royalties', 15);
+      } else if (royaltiesType == ROYALTIES_TYPE.PERCENT20) {
+        setFieldValue('royalties', 20);
+      } else {
+        setFieldValue('royalties', 0);
+        setRoyaltiesValue(0);
+      }
+    }, [royaltiesType]);
+
     const onChangeName = (e: any) => {
       setFieldValue('name', e.target.value);
       setNameInput && setNameInput(e.target.value);
     };
+
     const onChangeDescription = (e: any) => {
       setFieldValue('description', e.target.value);
       setDescriptionInput && setDescriptionInput(e.target.value);
     };
-    const onChangePrice = (e: any) => {
-      setFieldValue('price', e.target.value);
-      setPriceInput && setPriceInput(e.target.value);
+
+    const onChangeRoyalties = (e: any) => {
+      setFieldValue('royalties', e.target.value);
+      setRoyaltiesValue(e.target.value);
     };
+
     const onChangePriceTokenType = (e: any) => {
+      console.log(e.target.value);
       setFieldValue('pricetokentype', e.target.value);
       setTokenType && setTokenType(e.target.value);
-    };
-    const onChangeExpirationDateInput = (e: any) => {
-      setFieldValue('expirationDate', e.target.value);
-      setExpirationDateInput && setExpirationDateInput(e.target.value);
     };
 
     const onChangeSupply = (e: any) => {
       setFieldValue('supply', e.target.value);
       if (e.target.value != '1') {
         setIsSingle(false);
+        onTab(MARKET_TYPE.SIMPLE);
       } else {
         setIsSingle(true);
       }
@@ -382,50 +485,31 @@ export default function CreateForm(props: IProps) {
       setExternalLink && setExternalLink(e.target.value);
     };
 
+    const [isUnlocableContent, setIsUnlocableContent] = useState(true);
+
     const onChangeExplicit = (e: any) => {
       setFieldValue('explicit', e.target.checked);
-      setExplicit && setExplicit(e.target.checked);
+    };
+
+    const onChangeUnlockableContent = (e: any) => {
+      setFieldValue('unlockableContent', e.target.value);
+    };
+
+    const switchUnlocableState = () => {
+      if (!isUnlocableContent == false) {
+        setFieldValue('unlockableContent', '');
+      }
+      setIsUnlocableContent(!isUnlocableContent);
+    };
+
+    const switchUnlocableContent = (e: any) => {
+      console.log('unlockCheck', e.target.checked);
+      switchUnlocableState();
     };
 
     const onChangeLazyMint = (e: any) => {
       setFieldValue('lazyMint', e.target.checked);
       setLazyMint && setLazyMint(e.target.checked);
-    };
-    // const onChangeRoyalties = (e: any) => {
-    //     setFieldValue('royalties', e.target.value);
-    //     setRoyaltiesInput && setRoyaltiesInput(e.target.value)
-    // }
-    const collectionsComponent = (props: any) => (
-      // <input className="my-custom-input" type="text" {...props} />
-      <select
-        id="pet-select"
-        {...props}
-        className={`form-control input__holder__single`}
-      >
-        {[
-          <option onClick={openCreateCollectionPopup} key={''} value={''}>
-            Choose Collection
-          </option>,
-          ...collectionsState.myCollections.data.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))
-        ]}
-      </select>
-    );
-
-    const royaltiesComponent = (props: any) => {
-      const list = [0, 5, 10, 15, 20, 25];
-      return (
-        <select id="pet-select" {...props}>
-          {list.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-      );
     };
 
     const pricetokenSelectComponent = (props: any) => {
@@ -441,21 +525,21 @@ export default function CreateForm(props: IProps) {
       );
     };
 
-    const DatePickerField = (props: any) => {
-      const { ...fieldProps } = props;
-      const { setFieldValue } = useFormikContext();
-      const [field] = useField(fieldProps);
-      // opensea uses unix timestamp(seconds)
-      return (
-        <DatePicker
-          {...field}
-          {...props}
-          selected={(field.value && new Date(field.value * 1000)) || null}
-          onChange={(val: Date) => {
-            setFieldValue(field.name, val.getTime() / 1000);
-          }}
-        />
-      );
+    const [selectCollection, setselectCollection] = React.useState('');
+    const [collectionName, setCollectionName] = useState<string>('');
+
+    const handleCollectionSelectChanges = (event: SelectChangeEvent) => {
+      collectionsState.myCollections.data.map((item) => {
+        if (item.id === event.target.value) {
+          setCollectionName(item.name);
+          setCategory(item.category);
+        }
+      });
+      setselectCollection(event.target.value as string);
+      if (event.target.value == 'create_collection') {
+        setselectCollection((event.target.value = ''));
+      }
+      setFieldValue('collectionId', event.target.value);
     };
 
     const getNftAttrValueInput = (attribute: INftAttribute, index: number) => {
@@ -475,33 +559,35 @@ export default function CreateForm(props: IProps) {
             </ErrorMessage>
           </>
         );
-      } else if (attrType === ATTRIBUTE_TYPE.DATE) {
-        element = <DatePickerField name={`attributes.${index}.value`} />;
       } else if (attrType === ATTRIBUTE_TYPE.RANKING) {
         element = (
-          <Row>
-            <Col sm="6">
+          <ul>
+            <li>
               <Field
                 placeholder="Value"
                 type="number"
                 value={attribute.value}
-                name={`attributes.${index}.value`}
+                name={`attributesStats.${index}.value`}
                 className={`form-control input__holder__single`}
               />
-            </Col>
-            <Col sm="6">
+            </li>
+            <li>
+              <span>Of</span>
+            </li>
+            <li>
               <Field
                 placeholder="Max Value"
                 type="number"
                 value={attribute.max_value}
-                name={`attributes.${index}.max_value`}
+                name={`attributesStats.${index}.max_value`}
                 className={`form-control input__holder__single`}
               />
-            </Col>
-            <ErrorMessage name={`attributes.${index}.value`}>
-              {(msg) => <div className="error-form">{msg}</div>}
-            </ErrorMessage>
-          </Row>
+
+              <ErrorMessage name={`attributesStats.${index}.value`}>
+                {(msg) => <div className="error-form">{msg}</div>}
+              </ErrorMessage>
+            </li>
+          </ul>
         );
       } else if (attrType) {
         element = (
@@ -521,607 +607,301 @@ export default function CreateForm(props: IProps) {
       }
       return element;
     };
-
     const [profileImage, setProfileImage] = useState(false);
-    const getImageUrl = () => {
-      return image || './img/collections/coll-item-3.png';
+
+    const imageuploaded = () => {
+      setProfileImage(!profileImage);
     };
+
+    const getImageUrl = () => {
+      if (profileImage) {
+        return image;
+      } else {
+        return './img/collections/coll-item-3.png';
+      }
+    };
+
     return (
       <>
         <div className="row">
-          <div className="col-lg-7 create-single-left  mb-5">
+          <div className="col-lg-7">
             <Form
               onSubmit={handleSubmit}
               autoComplete="off"
               className={'form__holder_single'}
             >
-              <div>
-                <div className="upload-file-field">
-                  <h5>
-                    Upload File {/* <span className="span-red">*</span> */}
-                  </h5>
-                  {/* <p>
-                    File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
-                    OGG, GLB, GLTF. <br />
-                    Max size: 100MB
-                  </p> */}
+              <UploadNfTImage
+                onChangeProfileImage={function (e: any): void {
+                  onChangeImage(e);
+                  if (!profileImage) {
+                    imageuploaded();
+                  }
+                }}
+                submitCreateState={{
+                  error: null,
+                  loading: false
+                }}
+                image={image}
+                profileImage={profileImage}
+                setProfileImage={setProfileImage}
+              />
 
-                  {getImageUrl() != './img/collections/coll-item-3.png' && (
-                    <div className="upload-image-main">
-                      <PreviewNftImage
-                        imageUrl={getImageUrl()}
-                        userImage={getProfileImage(userDetails?.profileImage)}
-                      />
-                    </div>
-                  )}
+              <InputField
+                type="text"
+                label="Name"
+                required="yes"
+                name="name"
+                onChangeInputName={onChangeName}
+                id="item_name"
+                className={`form-control input__holder__single`}
+                placeholder={'e.g. “ Name your NFT”'}
+                value={name}
+              />
 
-                  {profileImage === false &&
-                    getImageUrl() == './img/collections/coll-item-3.png' && (
-                      <div className={`d-create-file upload__file`}>
-                        <div
-                          className="col-lg-6 col-sm-8 col-xs-12"
-                          style={{
-                            margin: 'auto',
-                            marginBottom: '5%'
-                          }}
-                        ></div>
-                        <div className="browse">
-                          <input
-                            type="button"
-                            id="get_file"
-                            className={`btn-main btn_gradient`}
-                            value={
-                              image.length == 0
-                                ? 'Choose File/ Drag Here'
-                                : 'Change File/ Drop Here'
-                            }
-                          />
-                          <input
-                            id="upload_file"
-                            type="file"
-                            multiple
-                            onChange={onChangeImage}
-                          />
-                          <p>PNG, GIF, WEBP, MP4 or MP3. Max 100mb.</p>
-                        </div>
-                      </div>
-                    )}
-                </div>
+              <InputField
+                label="Description"
+                required="yes"
+                sublabel="The description will be included on the item's detail page
+                      underneath its image."
+                type="text"
+                name="description"
+                onChangeInputName={onChangeDescription}
+                id="item_Description"
+                className={`form-control input__holder__single textarea`}
+                placeholder={'e.g. “ Describe your NFT ”'}
+                as="textarea"
+                value={description}
+              />
 
-                <div className="form-cfield">
-                  <h5 className="d-none">
-                    Name <span className="span-red">*</span>
-                  </h5>
-                  <div className="input-container input-icon-container">
-                    <Field
-                      type="text"
-                      name="name"
-                      id="item_name"
-                      className={`form-control input__holder__single`}
-                      placeholder={'e.g. “ Name your NFT”'}
-                      onChange={onChangeName}
-                    />
-                    <BsQuestion className="cursor-pointer input-icon help-icon" />
-                  </div>
-                  <ErrorMessage name="name">
-                    {(msg) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
+              <InputSelect
+                onClick={openCreateCollectionPopup}
+                value={selectCollection}
+                onChange={handleCollectionSelectChanges}
+                collectionData={collectionsState.myCollections.data}
+              />
 
-                  {/* <div className="spacer-50"></div> */}
-                </div>
-                <div className="form-cfield">
-                  <h5 className="form-label d-none">Description</h5>
-                  <p className="sublabel d-none">
-                    The description will be included on the item{`'`}s detail
-                    page underneath its image.
-                  </p>
-                  <div className="input-container input-icon-container">
-                    <Field
-                      type="text"
-                      name="description"
-                      id="item_Description"
-                      className={`form-control input__holder__single`}
-                      placeholder={'e.g. “ Describe your NFT ”'}
-                      onChange={onChangeDescription}
-                      as="textarea"
-                    />
-                    <BsQuestion className="cursor-pointer input-icon help-icon" />
-                  </div>
-                  <ErrorMessage name="description">
-                    {(msg: string) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-                </div>
-                <div className="form-cfield">
-                  <h5 className="form-label label-sub label-icon">
-                    External link
-                    <BsQuestion className="cursor-pointer help-icon" />
-                  </h5>
-                  <p className="sublabel">
-                    NFTonPulse will include a link to this URL on this item{`'`}
-                    s detail page, so that users can click to learn more about
-                    it. You are welcome to link to your own webpage with more
-                    details.
-                  </p>
-                  <Field
-                    type="text"
-                    name="externalLink"
-                    id="item_externalLink"
-                    className={`form-control input__holder__single`}
-                    placeholder={'https://yoursite.io/item/123'}
-                    onChange={onChangeExternalLink}
-                  />
-                  <ErrorMessage name="externalLink">
-                    {(msg: string) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-                </div>
+              <InputField
+                label="External link"
+                sublabel="NFTonPulse will include a link to this URL on this item's
+                    detail page, so that users can click to learn more about it.
+                    You are welcome to link to your own webpage with more
+                    details."
+                type="text"
+                name="externalLink"
+                onChangeInputName={onChangeExternalLink}
+                id="item_externalLink"
+                className={`form-control input__holder__single`}
+                placeholder={'https://yoursite.io/item/123'}
+                value={externalLink}
+              />
+              <CreateNFTProperty
+                addAttribute={addAttribute}
+                values={values}
+                setAttrHelper={setAttrHelper}
+                getNftAttrValueInput={getNftAttrValueInput}
+              ></CreateNFTProperty>
 
-                <div className="form-cfield">
-                  <div>
-                    {collectionsState.myCollections.data.length > 0 && (
-                      <div>
-                        <h5 className="form-label label-icon">
-                          Collection
-                          <BsQuestion className="cursor-pointer help-icon" />
-                        </h5>
-                        <p className="p-info d-none">
-                          This is the collection where your item will appear.
-                        </p>
+              <CreateNFTStats
+                addAttributeStats={addAttributeStats}
+                values={values}
+                setAttrStatsHelper={setAttrStatsHelper}
+                getNftAttrValueInput={getNftAttrValueInput}
+              ></CreateNFTStats>
 
-                        <Field
-                          name="collectionId"
-                          as={collectionsComponent}
-                          placeholder="Select Collection"
-                          className={`form-control input__holder__single`}
-                        />
-                        <ErrorMessage name="collectionId">
-                          {(msg) => <div className="error-form">{msg}</div>}
-                        </ErrorMessage>
-                      </div>
-                    )}
-                  </div>
-                  {/* <div className="spacer-50"></div> */}
-                </div>
-                <div className="form-cfield">
-                  <div className="add-collection-field">
-                    <h5>Add a new Collection</h5>
-                    <button
-                      type="button"
-                      className="create-collection"
-                      onClick={openCreateCollectionPopup}
-                    >
-                      <span>
-                        <strong>
-                          <i>+</i>
-                          Create
-                        </strong>
-                      </span>
-                    </button>
-                    {/* <div>
-                    {collectionsState.myCollections.data.map(item =>
-                        <button className={`create-collection`}
-                        style={{ backgroundColor: selectedCollectionId === item._id ? 'red' : '' }}
-                        onClick={() => selectCollection(item._id)}>
-                        <img src="./img/misc/grey-coll-single.png" alt="" />
-                        <h3>{item.name}</h3>
-                        </button>
-                        )}
-                    </div> */}
-                  </div>
-                </div>
-
-                <div>
-                  <h5 className="form-label label-icon">
-                    Add Properties
-                    <BsQuestion className="cursor-pointer help-icon" />
-                  </h5>
-                  <div className="form-cfield form-ccfield">
-                    <div className="row align-items-center">
-                      <div className="col-md-8">
-                        <p className="sublabel">
-                          Textual traits that show up as rectangles
-                        </p>
-                      </div>
-                      <div className="col-md-4 text-right">
-                        <button
-                          type="button"
-                          className="btn-main btn-add"
-                          onClick={() => setAddAttributeVisible(true)}
-                        >
-                          Add
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="property-fields">
-                      <FieldArray
-                        name="attributes"
-                        render={(arrayHelpers) => {
-                          attrHelper = arrayHelpers;
-                          return (
-                            <div>
-                              {values.attributes.map(
-                                (attribute: INftAttribute, index: number) => (
-                                  <Row key={index} className="mb-2">
-                                    <span className="form-label">
-                                      {attribute.display_type.toUpperCase()}:{' '}
-                                    </span>
-                                    <Col md="5" className="pr-2">
-                                      <Field
-                                        placeholder="Name"
-                                        value={attribute.trait_type}
-                                        name={`attributes.${index}.trait_type`}
-                                        className={`form-control input__holder__single`}
-                                      />
-                                      <ErrorMessage
-                                        name={`attributes.${index}.trait_type`}
-                                      >
-                                        {(msg) => (
-                                          <div className="error-form">
-                                            {msg}
-                                          </div>
-                                        )}
-                                      </ErrorMessage>
-                                    </Col>
-                                    <Col md="5" className="pr-2">
-                                      {getNftAttrValueInput(attribute, index)}
-                                    </Col>
-                                    <Col md="2" lg="1" className="text-center">
-                                      <button
-                                        type="button"
-                                        className="btn-main btn-remove"
-                                        onClick={() =>
-                                          arrayHelpers.remove(index)
-                                        }
-                                      >
-                                        <i className="fa fa-trash"></i>
-                                      </button>
-                                    </Col>
-                                    <Col md="12" className="property-info-box">
-                                      <NftAttribute {...attribute} />
-                                    </Col>
-                                    <div className="spacer-20" />
-                                  </Row>
-                                )
-                              )}
-                            </div>
-                          );
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-cfield">
-                  <h5 className="form-label label-icon">
-                    Category
-                    <BsQuestion className="cursor-pointer help-icon" />
-                  </h5>
-                  <Field
-                    as="select"
-                    name="category"
-                    className={`form-control input__holder__single`}
-                  >
-                    <option key={''} value={''}>
-                      {' '}
-                      Choose Category
-                    </option>
-                    {categories.map((category, index) => (
-                      <option value={category.value} key={index}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage name="category">
-                    {(msg: string) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-                  {/* <div className="spacer-20"></div> */}
-                </div>
-
-                <div className="form-cfield form-ccfield sensative-content">
-                  <div className="row align-items-center">
-                    <div className="col-md-8">
-                      <h5>
-                        <i
-                          className="fa fa-exclamation-triangle"
-                          aria-hidden="true"
-                        ></i>
-                        Explicit & Sensitive Content
-                      </h5>
-                      <p className="sublabel">
-                        Set this item as explicit and sensitive
-                        content&nbsp;&nbsp;
-                        <i className="fa fa-info-circle" aria-hidden="true"></i>
-                      </p>
-                    </div>
-                    <div className="col-md-4 text-right">
-                      <Field
-                        type="checkbox"
-                        name="explicit"
-                        component={Switch}
-                        size="large"
-                        onChange={onChangeExplicit}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="spacer-20"></div>
-                <h2>List on marketplace</h2>
-                <p>Put your new NFT on NFTonPulse marketplace</p>
-                <div className="spacer-20"></div>
-
-                <div className="form-cfield">
-                  <h5>
-                    Supply <span className="span-red d-none">*</span>
-                  </h5>
-                  {/* <p>The number of items that can be minted. No gas cost to you!</p> */}
-                  <Field
-                    type="number"
-                    name="supply"
-                    id="item_supply"
-                    className="form-control input__holder__single"
-                    placeholder="Enter supply"
-                    onChange={onChangeSupply}
-                    onWheel={(e: any) => e.target.blur()}
-                    min="1"
-                    step="1"
-                  />
-                  <ErrorMessage name="supply">
-                    {(msg) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-
-                  <div className="spacer-20"></div>
-                </div>
-
-                <div className="de_tab tab_methods marketplace-tabs">
-                  <ul className={'de_nav dynamic-tab-buttons'}>
-                    <li
-                      id="btn1"
-                      className={
-                        marketType === MARKET_TYPE.SIMPLE ? 'active' : ''
-                      }
-                      onClick={() => onTab(MARKET_TYPE.SIMPLE)}
-                    >
-                      <span className={`bg__market`}>
-                        <strong>
-                          <i>
-                            <img src="./img/tab-img1.png" />
-                          </i>
-                          Fixed price
-                        </strong>
-                      </span>
-                    </li>
-                    <li
-                      id="btn2"
-                      className={
-                        isSingle
-                          ? marketType === MARKET_TYPE.AUCTION
-                            ? 'active'
-                            : ''
-                          : 'li-disable'
-                      }
-                      onClick={() => onTab(MARKET_TYPE.AUCTION)}
-                    >
-                      <span>
-                        <strong className={isSingle ? '' : 'strong-opacity'}>
-                          <i>
-                            <img src="./img/tab-img2.png" alt="tab-img" />
-                          </i>
-                          Timed auction
-                        </strong>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="spacer-20" />
-
-                {marketType === MARKET_TYPE.SIMPLE && (
-                  <div className="form-cfield">
-                    <h5>Price</h5>
-                    <Field
-                      type="number"
-                      name="price"
-                      id="item_price"
-                      className={`form-control input__holder__single`}
-                      placeholder={`Enter price for one item (${COIN})`}
-                      onChange={onChangePrice}
-                      onWheel={(e: any) => e.target.blur()}
-                    />
-                    <ErrorMessage name="price">
-                      {(msg) => <div className="error-form">{msg}</div>}
-                    </ErrorMessage>
-                    {/* <div className="spacer-20"></div> */}
-                  </div>
-                )}
-
-                {/* <div className="spacer-20"></div> */}
-
-                {marketType === MARKET_TYPE.AUCTION && (
-                  <div className="form-cfield">
-                    <h5 className="form-label label-sub label-icon">
-                      Minimum bid
-                      <BsQuestion className="cursor-pointer help-icon" />
+              <div className="nft__form_field createNft__form_field_secondary sensative-content custom-switch">
+                <div className="row align-items-center">
+                  <div className="col-md-8">
+                    <h5>
+                      <i>
+                        <IconLock />
+                      </i>
+                      Unlockable Content
                     </h5>
                     <p className="sublabel">
-                      Bids below this amount won’t be allowed.
+                      Include unlockable content that can only be revealed by
+                      the owner of the item.
                     </p>
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="input-container input-icon-container">
-                          <Field
-                            type="text"
-                            name="minimumBid"
-                            id="item_price_bid"
-                            className={`form-control input__holder__single`}
-                            placeholder="Enter minimum bid"
-                          />
-                          <img
-                            src={BidIcon}
-                            className="input-icon crypto-icon"
-                            alt="bid icon"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-3">
-                        <Field
-                          name="pricetokentype"
-                          as={pricetokenSelectComponent}
-                          placeholder="PriceTokenType"
-                          className={`form-control input__holder__single`}
-                          onChange={onChangePriceTokenType}
-                        />
-                      </div>
-                    </div>
-                    <ErrorMessage name="minimumBid">
-                      {(msg) => <div className="error-form">{msg}</div>}
-                    </ErrorMessage>
-
-                    {/* <div className="spacer-10"></div> */}
                   </div>
-                )}
 
-                <div className="form-cfield">
-                  <h5 className="form-label label-sub label-icon">
-                    Expiration date
-                    <BsQuestion className="cursor-pointer help-icon" />
-                  </h5>
-                  <p className="sublabel">Market Item expiration date.</p>
-
-                  <Field
-                    type="datetime-local"
-                    name="expirationDate"
-                    id="bid_expiration_date"
-                    className={`form-control input__holder__single`}
-                    onChange={onChangeExpirationDateInput}
-                    min={moment().add(1, 'hours')}
-                  />
-                  <ErrorMessage name="expirationDate">
-                    {(msg) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-                </div>
-
-                <div className="form-cfield">
-                  <h5 className="form-label label-icon">
-                    Royalties
-                    <BsQuestion className="cursor-pointer help-icon" />
-                  </h5>
-                  <Field
-                    name="royalties"
-                    as={royaltiesComponent}
-                    placeholder="First Name"
-                    className={`form-control input__holder__single`}
-                  />
-                  <ErrorMessage name="royalties">
-                    {(msg) => <div className="error-form">{msg}</div>}
-                  </ErrorMessage>
-                </div>
-                {supply == 1 && marketType === MARKET_TYPE.SIMPLE && (
-                  <div className="form-cfield form-ccfield sensative-content">
-                    <div className="row align-items-center">
-                      <div className="col-md-8">
-                        <h5>
-                          <i
-                            className="fa fa-exclamation-triangle"
-                            aria-hidden="true"
-                          ></i>
-                          Lazy Mint
-                        </h5>
-                        <p className="sublabel">
-                          Mint nft when someone buy this item&nbsp;&nbsp;
-                          <i
-                            className="fa fa-info-circle"
-                            aria-hidden="true"
-                          ></i>
-                        </p>
-                      </div>
-                      <div className="col-md-4 text-right">
-                        <Field
-                          type="checkbox"
-                          name="lazyMint"
-                          component={Switch}
-                          size="large"
-                          onChange={onChangeLazyMint}
-                        />
-                      </div>
-                    </div>
+                  <div className="col-md-4 text-right">
+                    <InputRadio
+                      type="checkbox"
+                      size="large"
+                      name="unlockableContentCheck"
+                      onChangeInputName={switchUnlocableContent}
+                      component={Switch}
+                    />
                   </div>
-                )}
-                <div className="spacer-20"></div>
-                {submitCreateState.loading ? (
-                  <Loader />
-                ) : (
-                  <input
-                    type="submit"
-                    id="submit"
-                    className="btn-main btn-main-submit"
-                    value="Create Nft"
-                  />
-                )}
-                <div className="spacer-20"></div>
-                {submitCreateState.error && (
-                  <Alert
-                    text={submitCreateState.error}
-                    type={ALERT_TYPE.DANGER}
-                  />
-                )}
+                </div>
               </div>
+
+              {isUnlocableContent && (
+                <InputField
+                  type="text"
+                  name="unlockableContent"
+                  onChangeInputName={onChangeUnlockableContent}
+                  id="item_Description"
+                  className={`form-control input__holder__single textarea`}
+                  placeholder={
+                    'Enter content(assess key, code to redeem, link to a file, etc.)'
+                  }
+                  as="textarea"
+                />
+              )}
+
+              <div className="nft__form_field createNft__form_field_secondary sensative-content ">
+                <div className="row align-items-center">
+                  <div className="col-md-8">
+                    <h5>
+                      <i>
+                        <IconExc />
+                      </i>
+                      Explicit & Sensitive Content
+                    </h5>
+                    <p className="sublabel">
+                      Content will be unlocked after a successful transactionSet
+                      this item as explicit and sensitive content&nbsp;&nbsp;
+                    </p>
+                  </div>
+                  <div className="col-md-4 text-right">
+                    <div className="custom-switch">
+                      <InputRadio
+                        type="checkbox"
+                        name="explicit"
+                        size="large"
+                        onChangeInputName={onChangeExplicit}
+                        component={Switch}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <InputField
+                type="number"
+                required="yes"
+                label="Supply"
+                sublabel="increase copies to share your NFT with a large number of
+                  community members"
+                name="supply"
+                onChangeInputName={onChangeSupply}
+                id="item_supply"
+                className={`form-control input__holder__single`}
+                placeholder={'Enter supply'}
+                value={supply}
+              />
+              <Royalties
+                isSingle={isSingle}
+                royaltiesType={royaltiesType}
+                onChangeInputName={onChangeRoyalties}
+                onTabChange={onTabChange}
+                value={royaltiesValue}
+              />
+
+              <div className="spacer-20"></div>
+
+              <ListOnMarketPlace
+                price={price}
+                minimumBid={minimumBid}
+                setPriceInput={setPriceInput}
+                setMinimumBidInput={setMinimumBidInput}
+                setTokenType={setTokenType}
+                setExpirationDateInput={setExpirationDateInput}
+                setExpirationDate={setExpirationDate}
+                starttime={starttime}
+                endtime={endtime}
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+                selectStartTime={selectStartTime}
+                selectEndTime={selectEndTime}
+                submit={submit}
+                onTab={onTab}
+                submitCreateState={{
+                  error: null,
+                  loading: false
+                }}
+                marketType={marketType}
+                multiple={false}
+                expirationDateInput={expirationDateInput}
+                tokentype={tokentype}
+                isSingle={isSingle}
+                setFieldValue={setFieldValue}
+                enableListing={enableListing}
+                setEnableListing={setEnableListing}
+                onChangeLazyMint={onChangeLazyMint}
+              />
             </Form>
           </div>
-          <div className="col-lg-5 col-sm-6 col-xs-12 preview-nft-col">
-            <div className="createsingle-imagemain">
-              <PreviewNft
-                imageUrl={getImageUrl()}
-                userImage={getProfileImage(userDetails?.profileImage)}
-                nft={{
-                  name,
-                  description,
-                  price,
-                  totalAmount: supply,
-                  leftAmount: supply
-                }}
-                tokentype={
-                  marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'
-                }
-                isPreview={true}
-                multiple={supply == 1 ? false : true}
-                timer={marketType === MARKET_TYPE.AUCTION}
-                marketType={marketType}
-                expirationDateInput={expirationDateInput}
-              />
-            </div>
-          </div>
+
+          <PreviewNft
+            imageUrl={getImageUrl()}
+            userImage={getProfileImage(userDetails?.profileImage)}
+            nft={{
+              name,
+              description,
+              price,
+              totalAmount: supply,
+              leftAmount: supply
+            }}
+            starttime={starttime}
+            endtime={endtime}
+            dateRange={dateRange}
+            // tokentype={marketType === MARKET_TYPE.AUCTION ? tokentype : 'ETH'}
+            tokentype={marketType === MARKET_TYPE.AUCTION ? '' : ''}
+            isPreview={true}
+            multiple={supply == 1 ? false : true}
+            timer={marketType === MARKET_TYPE.AUCTION}
+            marketType={marketType}
+            expirationDateInput={expirationDateInput}
+            selectCollection={collectionName}
+          />
         </div>
       </>
     );
   };
-
   return (
     <div className="nft-create-form ">
+      {openExpirationDate && (
+        <div className="checkout">
+          <CreateExpiryPopUp
+            onClose={closeCreateExpiryPopup}
+            submitCollection={submitCollection}
+            starttime={starttime}
+            endtime={endtime}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            selectStartTime={selectStartTime}
+            selectEndTime={selectEndTime}
+            createCollectionState={createCollectionState}
+          />
+        </div>
+      )}
       {openCreateCollection && (
         <div className="checkout">
           <CreateCollectionPopUp
             onClose={closeCreateCollectionPopup}
             submitCollection={submitCollection}
             createCollectionState={createCollectionState}
+            collectionsType={collectionsType}
+            onTabCategories={onTabCategories}
           />
         </div>
       )}
-      {openAddAttribute && (
-        <div className="checkout">
-          <AddAttributePopup
-            onClose={() => setAddAttributeVisible(false)}
-            submitAttrType={addAttribute}
-          />
-        </div>
-      )}
+
       <Formik
         initialValues={getInitialValue()}
         onSubmit={(values, actions) => {
-          const obj = priceTokens?.find(
-            (item) => item.name === values.pricetokentype
+          const startingDate: Date = dateRange[0].startDate;
+          const endDate: Date = dateRange[0].endDate;
+          submit(
+            {
+              ...values,
+              category,
+              startingDate,
+              endDate
+            },
+            actions.resetForm
           );
-          submit({ ...values, priceTokenId: obj?._id }, actions.resetForm);
         }}
         render={displayCreateSingleForm}
         validationSchema={SignupSchema}

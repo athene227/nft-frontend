@@ -266,20 +266,20 @@ export class ApiService {
     });
   };
 
-  //* create bid
-  static createBid = async (data: {
-    price: string;
-    buyerAddress: string;
-    listingId: string;
-    toketId: string;
-    networkId: number;
-  }) => {
-    return Axios.request<IBid>({
-      url: END_POINTS.BIDS,
-      method: 'post',
-      data
-    });
-  };
+  //* create bid = Happens on the eve t listener ==> so remove soon
+  // static createBid = async (data: {
+  //   price: string;
+  //   buyerAddress: string;
+  //   listingId: string;
+  //   toketId: string;
+  //   networkId: number;
+  // }) => {
+  //   return Axios.request<IBid>({
+  //     url: END_POINTS.BIDS,
+  //     method: 'post',
+  //     data
+  //   });
+  // };
 
   //* fetchBids
   static fetchBids = async (params: {
@@ -326,7 +326,14 @@ export class ApiService {
     name: string;
     description: string;
     imageUrl: string;
+    bannerUrl: string;
     userAddress: string;
+    category: string;
+    link_yoursite: string;
+    link_discord: string;
+    link_medium: string;
+    link_telegram: string;
+    pulseUrl: string;
   }) => {
     return Axios.request<ICollection>({
       url: END_POINTS.COLLECTIONS,
@@ -427,20 +434,20 @@ export class ApiService {
     });
   };
 
-  static createOffer = async (data: {
-    price: string;
-    buyerAddress: string;
-    quantity: number;
-    listingId: string;
-    toketId: string;
-    networkId: number;
-  }) => {
-    return Axios.request({
-      url: END_POINTS.OFFERS,
-      method: 'post',
-      data
-    });
-  };
+  // static createOffer = async (data: {
+  //   price: string;
+  //   buyerAddress: string;
+  //   quantity: number;
+  //   listingId: string;
+  //   toketId: string;
+  //   networkId: number;
+  // }) => {
+  //   return Axios.request({
+  //     url: END_POINTS.OFFERS,
+  //     method: 'post',
+  //     data
+  //   });
+  // };
 
   static fetchNftOffers = async (params: {
     tokenId: string;

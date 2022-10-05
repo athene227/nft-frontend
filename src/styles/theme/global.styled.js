@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+
 import progressBg from '../../assets/images/progress-bg.png';
 import * as theme from './themeVariables';
 
@@ -38,7 +39,7 @@ import * as theme from './themeVariables';
 
 const GlobalStyle = createGlobalStyle`
   body {
-    background: ${({ theme }) => theme.colors['background']};
+    background: ${({ theme }) => theme.colors['bodybg']};
     font-family: "DM Sans", Helvetica, Arial, sans-serif;
     font-family: 'Neulis Alt';
     font-weight: 300;
@@ -233,10 +234,38 @@ h2{
         &.crypto-icon{
           top:16px;
         }
+        &.icon-left{
+
+        }
+        &.input-icon-text{
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 18px;
+          letter-spacing: 0.02em;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          right: 21px;
+          top:21px;
+          img{
+            position:relative;
+            top:-1px;
+          }
+        }
         }
         .input-container{
           &.input-icon-container{
             position:relative;
+            &.icon-left{
+              .input-icon{
+                left:20px;
+                top:19px;
+              }
+              .input__holder__single{
+                padding-left:55px;
+              }
+            }
           }
         }
 
@@ -642,7 +671,7 @@ p.lead {
   transform-origin: unset !important;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .br {
@@ -685,7 +714,7 @@ section {
 .wraper {
   padding: 0;
   display: block;
-  overflow: hidden;
+  /* overflow: hidden; */
   width: 100%;
 
   .wraperitem {
@@ -1203,7 +1232,7 @@ img.img-rounded {
   position: relative;
   padding: 0;
   margin: 0;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.bodybg};
   background-image: url(${({ theme }) => theme.colors.bannerImage});
 }
 
@@ -2425,6 +2454,20 @@ border-radius: 8px;
   width: 100%;
   text-align: left;
 
+  /* text elipses */
+  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    padding-right:35px;
+    span{
+      i{
+        position:absolute;
+        right:15px;
+        top: 7px;
+      }
+    }
+
   span {
     opacity: 0.5;
     font-size: 14px;
@@ -3015,7 +3058,7 @@ input[type=number]::-webkit-outer-spin-button {
   
     .dropdownSelect {
       display: inline-block;
-      width: 225px;
+      width: 200px;
       position: relative;
       margin-right: 10px;
       margin-bottom: 5px;
@@ -3081,48 +3124,6 @@ select.form-control{
 input:-internal-autofill-selected {
   background-color:${({ theme }) => theme.colors['background']}!important;
 }
-.form-control-select{
-  .MuiInputBase-formControl{
-    border:0;
-  }
-  .MuiSelect-select{
-    padding: 1rem;
-  margin-bottom: 20px;
-  border: none;
-  border: solid 1px rgba(255, 255, 255, 0.1);
-  background:${({ theme }) => theme.colors['form_control_bg']};
-  border-radius: 3px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  height: auto;
-  box-shadow: none;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  color:${({ theme }) => theme.colors['text-light']};
-
-  &:focus {
-    background-color: inherit;
-    color:${({ theme }) => theme.colors['text-light']};
-    border-color: #86b7fe;
-    outline: 0;
-  }
-  img{
-    width:25px;
-    margin-right:8px;
-  }
-  }
-  fieldset{
-    display:none;
-  }
-}
-.form-control-item{
-  img{
-    width:25px;
-    margin-right:8px;
-  }
-}
-
-// general input
 
 // Profile detail input
 .icontype {
@@ -3203,6 +3204,7 @@ input:-internal-autofill-selected {
       border-color: ${({ theme }) => theme.colors['pink_col']};
       border-right: none;
       background: ${({ theme }) => theme.colors['pink_col']};
+      
     }
   }
 }
@@ -3502,6 +3504,7 @@ input:-internal-autofill-selected {
         /* background: $gradient2; */
         background:${({ theme }) => theme.colors['nft-attr-bg']};
         background-color:${({ theme }) => theme.colors['nft-attr-bg']};
+        background: linear-gradient(90deg, rgba(254, 0, 199, 0.2) 0%, rgba(0, 132, 254, 0.2) 103.82%);
         border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(80px);
         /* @include theme("themeLight", background, $background_light); */
@@ -3517,20 +3520,20 @@ input:-internal-autofill-selected {
         }
       }
       .modal-content {
-
         background-color: ${({ theme }) => theme.colors['modal-content-bg']};
         border: 0px;
         border-radius: 0px;
         padding: 30px;
-        padding-bottom: 50px;
+        /* padding-bottom: 50px; */
+        padding-bottom: 20px;
         max-height: 600px;
-        overflow-y: scroll;
-        .form-cfield {
+        overflow-y: auto;
+        .form-cfield, .nft__form_field {
           h6 {
             color: #ffffff;
           }
           .form-control {
-            background: transparent;
+            /* background: transparent; */
             border: 1px solid ${({ theme }) =>
               theme.colors['input-holder-border']};
             color: ${({ theme }) => theme.colors['text-light']};
@@ -3545,20 +3548,23 @@ input:-internal-autofill-selected {
           }
         }
         &::-webkit-scrollbar {
-          width: 3px;
+          width: 10px;
+          border-radius: 90px;
         }
 
         &::-webkit-scrollbar-track {
-          background: rgb(255, 255, 255, 0.1);
+          background: #323C58;
+          border-radius: 90px;
         }
 
         &::-webkit-scrollbar-thumb {
-          background: #00b2fe;
+          /* background: #00b2fe; */
+          background: linear-gradient(179.91deg, #FE00C7 -438.29%, #0084FE -346.44%);
           border-radius: 10px;
         }
 
         &:hover::-webkit-scrollbar-thumb {
-          background: #32bbf5;
+          background: linear-gradient(179.91deg, #FE00C7 -438.29%, #0084FE -346.44%);
         }
         /* .themeLight & {
           &::-webkit-scrollbar {
@@ -3581,6 +3587,11 @@ input:-internal-autofill-selected {
       }
       &.modal-width-small{
         max-width: 550px;
+      }
+      .full-height-popup{
+        .modal-content{
+          max-height: calc(100vh - 168px);
+        }
       }
     }
   }
@@ -3797,21 +3808,35 @@ rgba(0, 129, 255, 1)); */
     border-width: thin; */
 }
 .MuiPaper-root.MuiPaper-elevation{
-  background: rgba(15, 24, 59, 0.9);
+  /* background: rgba(15, 24, 59, 0.9);
 border: 1px solid rgba(255, 255, 255, 0.05);
 box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
 backdrop-filter: blur(400px);
-border-radius: 5px;
+border-radius: 5px; */
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(45px);
+border-radius: 10px;
 }
-.MuiMenu-list{
+/* Collection Select Global settings */
+
+// general input
+  .MuiMenu-list{
    padding-top:7px;
-/* Note: backdrop-filter has minimal browser support */
+   height:100%;
+   max-height:250px;
+   overflow: hidden;
+    overflow-y: auto;
 
 
     .form-control-item{
       color:#ffffff;
       position:relative;
       padding:13px 20px!important;
+      img{
+          width:25px;
+          margin-right:8px;
+          border-radius: 500px;
+        }
       &:after{
         content:'';
         height:1px;
@@ -3832,10 +3857,54 @@ border-radius: 5px;
           background-color: rgba(0,0, 0, 0.1);
         }
       }
+      .btn-main{
+        padding-left:15px;
+        padding-right: 15px;
+      }
     }
   }
+  /* Collection Select Global settings */
   .cursor-pointer{
     cursor:pointer;
+  }
+  .popover__nft_style{
+    border:0px!important;
+    border-image:none!important;
+    border-radius: 0px 3px 10px 10px!important;
+    width:200px!important;
+    &.popover{
+      .popover-body{
+      padding:0;
+      opacity: 1;
+      background:transparent;
+      border-radius: 0px 3px 10px 10px;
+        .MuiList-root{
+          padding-top: 0%;
+          padding-bottom:0;
+          border-radius: 0px 3px 10px 10px;
+            .MuiListItem-root{
+              background: rgba(255, 255, 255, 0.1);
+              backdrop-filter: blur(40px);
+              border-bottom: 1px solid rgba(255,255,255,0.1);
+              font-weight: 500;
+              font-size: 14px;
+              line-height: 18px;
+              color: #FFFFFF;
+              padding:7px 0px;
+              &:last-of-type{
+                border-bottom-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+              }
+              .MuiListItemButton-root{
+                padding-right:10px;
+              }
+              .MuiListItemSecondaryAction-root{
+                display:none;
+              }
+            }
+        }
+    }
+    }
   }
 `;
 

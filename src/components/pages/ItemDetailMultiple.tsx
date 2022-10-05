@@ -1,8 +1,10 @@
 import { navigate } from '@reach/router';
+import { ethers } from 'ethers';
 import moment from 'moment';
 import React, { memo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from 'src/components/components/Loader';
+import { serviceFee } from 'src/config';
 import { ApiService } from 'src/core/axios';
 import {
   ALERT_TYPE,
@@ -261,15 +263,15 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
       const price = Number(chosenCollectibleToBuyFrom.price);
 
       //* price in wei
-      const weiPrice = web3.utils.toWei(price.toString(), 'ether');
+      const weiPrice = ethers.utils.parseEther(price.toString());
 
       //* price times amount in wei
-      const priceTimesTheAmount = Number(weiPrice) * Number(data.amount);
+      const priceTimesTheAmount = weiPrice.mul(Number(data.amount));
 
       //* price times amount + commission
-      const totalPaying =
-        priceTimesTheAmount +
-        getPriceAfterPercent(Number(priceTimesTheAmount), 1);
+      const totalPaying = priceTimesTheAmount.add(
+        priceTimesTheAmount.mul(serviceFee).div(100)
+      );
 
       //* get balance
       const myBalance = await getMyBalance(userAddress, web3);
@@ -334,7 +336,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         userAddress,
         listingId: Number(chosenCollectibleToBuyFrom.listingId),
         quantity: Number(data.amount),
-        value: totalPaying
+        value: totalPaying.toString()
       });
 
       // //* turn off loader
@@ -708,7 +710,7 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         ...offerTrackingItem,
         userAddress,
         price: offer.amount,
-        action: PROCESS_TRAKING_ACTION.ACCEPTOFFER,
+        action: PROCESS_TRAKING_ACTION.ACCEPT_OFFER,
         processStatus: PROCESS_TRAKING_STATUS.BEFORE
       });
 
@@ -976,12 +978,14 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         data.pricetokenaddress,
         web3
       );
-      const offerInWei = web3.utils.toWei(data.price.toString(), 'ether');
-      const offerWithCommissionWeiValue =
-        Number(offerInWei) + getPriceAfterPercent(Number(offerInWei), 1);
+      const offerInWei = ethers.utils.parseEther(data.price.toString());
+      const offerWithCommissionWeiValue = offerInWei.add(
+        offerInWei.mul(serviceFee).div(100)
+      );
       if (
-        Number(myBalanceinWei) <
-        offerWithCommissionWeiValue * Number(data.quantity)
+        offerWithCommissionWeiValue
+          .mul(Number(data.quantity))
+          .gt(myBalanceinWei)
       ) {
         notification.error(ERRORS.NOT_ENOUGH_BALANCE);
         throw new Error(ERRORS.NOT_ENOUGH_BALANCE);
@@ -1015,7 +1019,9 @@ const ItemDetailMultiple = (props: { tokenId: string; nftAddress: string }) => {
         mockERC20Contract,
         spender: nftMarketOffersContract._address,
         owner: userAddress,
-        amount: offerWithCommissionWeiValue * data.quantity
+        amount: offerWithCommissionWeiValue
+          .mul(Number(data.quantity))
+          .toString()
       });
       //* make offer on contract
       console.log(

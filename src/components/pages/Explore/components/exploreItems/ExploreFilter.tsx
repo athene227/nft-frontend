@@ -91,7 +91,7 @@ const ExploreFilter = () => {
         <div className="row mr-2 ml-0">
           <div className="col-md-10">
             <h4 className="text-left mb-4">Filter By</h4>
-            <div className="explore-filtermain">
+            <div className="explore-filtermain test">
               <div className=" dropdownSelect one">
                 <div className={`de_form price_filer_holder`}>
                   <CategoryPopover
