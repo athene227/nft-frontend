@@ -1,0 +1,16 @@
+import React from 'react';
+import renderer from 'react-test-renderer';
+import {{pascalCase name}} from '../{{pascalCase name}}';
+
+import { Provider } from 'react-redux';
+import store from 'src/store/store';
+
+describe('{{pascalCase name}}', () => {
+	it('renders without error', () => {
+		const component = renderer.create(
+			<Provider store={store} ><{{pascalCase name}} /></Provider>
+		);
+		const tree = component.toJSON();
+		expect(tree).toMatchSnapshot();
+	});
+});

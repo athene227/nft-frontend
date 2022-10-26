@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { SIDE } from '../../src/enums';
-import { ICollection } from 'src/collections.types';
 import {
   ATTRIBUTE_TYPE,
   ITEM_CREATE_STATUS,
   MARKET_TYPE,
   STATUS
 } from 'src/enums';
+import { ICollection } from 'src/types/collections.types';
 
 import { IPriceToken } from './priceTokens.types';
 import { IUser } from './users.types';
@@ -66,6 +66,7 @@ export interface INft {
   tokenUri: string;
   transactionHash: string;
   signature: string;
+  supply: number;
 }
 
 export interface ISimpleMarketItem {

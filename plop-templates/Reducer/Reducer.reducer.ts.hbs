@@ -1,0 +1,111 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { SERVER_REQUEST_STATUS } from 'src/enums';
+import { ApiService } from 'src/services/api';
+import { IFindRequestQuery, ServerRequestStatus } from 'src/types';
+import { getErrorFromAction } from 'src/utils';
+
+interface IRowData {
+  _id: string
+}
+/*
+|-----------------------------------------------------------------
+| Initial State
+|-----------------------------------------------------------------
+|
+*/
+
+
+interface I{{pascalCase name}}State {
+	data: IRowData[];
+	status: null | ServerRequestStatus;
+
+	query: null | IFindRequestQuery;
+	error: null | string;
+}
+
+const initialState: I{{pascalCase name}}State = {
+	data: [],
+	status: null,
+	query: null,
+	error: null,
+};
+
+/*
+|-----------------------------------------------------------------
+| Create async actions
+|-----------------------------------------------------------------
+|
+*/
+const asyncAction = {
+	onFetch{{pascalCase name}}: createAsyncThunk(
+		'{{camelCase name}}/onFetch{{pascalCase name}} ',
+		async (query: IFindRequestQuery, {rejectWithValue}) => {
+			try {
+				const res = await ApiService.fetchRequests(query);
+				return {
+					data: res.data.data,
+					query: {
+						...query,
+						limit: res.data.limit,
+						skip: res.data.limit,
+						total: res.data.limit,
+					},
+				};
+			} catch (err) {
+				if (!err.response) {
+					throw err;
+				}
+				return rejectWithValue(err.response.data);
+			}
+		}
+	)
+}
+
+/*
+|-----------------------------------------------------------------
+| Create Slice
+|-----------------------------------------------------------------
+|
+*/
+
+const {{camelCase name}}State = createSlice({
+	name: '{{camelCase name}}State',
+	initialState,
+	reducers: {
+		cleanState(state) {
+      state = initialState
+    },
+	},
+	extraReducers: {
+		[asyncAction.onFetch{{pascalCase name}}.pending as any]: (state, action) => {
+			// action.meta.arg - the location of action args
+			state.status = SERVER_REQUEST_STATUS.PENDING;
+			state.error = null;
+		},
+		[asyncAction.onFetch{{pascalCase name}}.fulfilled as any]: (state, action) => {
+			state.status = SERVER_REQUEST_STATUS.FULFILLED;
+			state.data = action.payload.data;
+			state.query = action.payload.query;
+		},
+		[asyncAction.onFetch{{pascalCase name}}.rejected as any]: (state, action) => {
+			state.status = SERVER_REQUEST_STATUS.REJECTED;
+			state.error = getErrorFromAction(action);
+		},
+	},
+});
+
+/*
+|-----------------------------------------------------------------
+| Export actions & reducer
+|-----------------------------------------------------------------
+|
+*/
+
+export const {{camelCase name}}Actions = {
+  ...{{camelCase name}}State.actions,
+  ...asyncAction,
+}
+export {default as {{camelCase name}}Selectors} from './{{camelCase name}}.selectors';
+
+export default {{camelCase name}}State.reducer;
+

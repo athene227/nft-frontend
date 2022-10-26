@@ -1,16 +1,18 @@
-import { ethers, network, waffle } from 'hardhat';
+import '@nomiclabs/hardhat-waffle';
+
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/dist/src/signer-with-address';
 import { assert, expect } from 'chai';
-import '@nomiclabs/hardhat-waffle';
+import { deployMockContract } from 'ethereum-waffle';
+import { ContractFactory } from 'ethers';
+import { ethers, network, waffle } from 'hardhat';
+
 import {
   MockERC20,
   NFT721,
   NFT1155,
-  NFTMarketSimple,
-  NFT1155__factory
+  NFT1155__factory,
+  NFTMarketSimple
 } from '../typechain/pulse';
-import { deployMockContract } from 'ethereum-waffle';
-import { ContractFactory } from 'ethers';
 
 describe('Whitelisting ERC20 tokens', async () => {
   let erc20: MockERC20;

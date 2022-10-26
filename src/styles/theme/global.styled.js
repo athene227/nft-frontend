@@ -1,6 +1,6 @@
+import progressBg from 'src/assets/images/progress-bg.png';
 import { createGlobalStyle } from 'styled-components';
 
-import progressBg from '../../assets/images/progress-bg.png';
 import * as theme from './themeVariables';
 
 // [Table of contents]
@@ -710,7 +710,16 @@ section {
     background: rgb(247, 244, 253);
   }
 }
-
+.EZ-Drawer{
+  position: absolute;
+}
+.filter-icon{
+  cursor: pointer;
+}
+.collection-filter{
+  background:none;
+  border: none;
+}
 .wraper {
   padding: 0;
   display: block;
@@ -774,6 +783,10 @@ section {
   margin-top: 0.75rem !important;
 }
 
+.mt-4 {
+  margin-top: 0.25rem !important;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem !important;
 }
@@ -810,6 +823,7 @@ section {
   -webkit-transition-delay: 0s;
   transition-delay: 0s;
   z-index: 0;
+  
 
   span {
     color: ${({ theme }) => theme.colors['white']};
@@ -1866,8 +1880,10 @@ img.img-rounded {
   label,
   input,
   svg {
-    color:${({ theme }) => theme.colors['white_black']};
+    color:#828996
+    /* color:${({ theme }) => theme.colors['white_black']}; */
   }
+
 
   fieldset {
     border-color: transparent;
@@ -2315,7 +2331,7 @@ img.img-rounded {
   cursor: pointer;
   line-height: 28px;
   margin-bottom: -20px;
-  height: 110px;
+  height: 120px;
   transition: 0.3s all ease-in;
   /* backdrop-filter: blur(14px); */
   margin-left: -10px;
@@ -2576,6 +2592,21 @@ border-radius: 8px;
 
 // }
 // Filters
+
+.icon-view{
+    border: 1px solid;
+    width: 90px;
+    height: 55px;
+    border-radius: 10px;
+    
+    display: inherit;
+    border-color: #3e4642;
+  }
+  .icon-view-inner{
+    padding-top: 12px;
+    padding-right: 12px;
+    cursor: pointer;
+  }
 
 .explore_items_filer {
   .price_filer_holder {
@@ -3905,6 +3936,53 @@ border-radius: 10px;
         }
     }
     }
+  }
+  .text-gradient {
+    background: linear-gradient(90deg, #ff00cd 0%, #0d7dfb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+  ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: ${({ theme }) => theme.colors['scrollbar-trackbg']};
+      }
+      ::-webkit-scrollbar-thumb {
+        background: ${({ theme }) => theme.colors['scrollbar-thumbbg']};
+        border-radius: 10px;
+      }
+      :hover::-webkit-scrollbar-thumb {
+        background: #32bbf5;
+      }
+      .popover-price-filter{
+        background:transparent!important;
+  }
+  .MuiAutocomplete-popper .MuiListItemText-root {
+    color:#ffffff;
+  }
+  .custom-dropdown{
+    .MuiPaper-root{
+      background: rgba(217, 217, 217, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      min-width: 143px;
+      /* Note: backdrop-filter has minimal browser support */
+
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      .MuiMenuItem-root{
+        svg,img{
+          margin-right:7.5px;
+        }
+      }
+    }
+ 
   }
 `;
 

@@ -1,4 +1,4 @@
-import { ICollection } from 'src/collections.types';
+import { ICollection } from 'src/types/collections.types';
 
 import { IPriceToken } from './priceTokens.types';
 import { IUser } from './users.types';

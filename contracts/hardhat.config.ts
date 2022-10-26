@@ -1,9 +1,10 @@
 import '@nomiclabs/hardhat-waffle';
 import 'hardhat-gas-reporter';
 import 'hardhat-contract-sizer';
+import '@nomiclabs/hardhat-etherscan';
+
 //import 'hardhat-typechain';
 import dotenv from 'dotenv';
-import '@nomiclabs/hardhat-etherscan';
 dotenv.config();
 
 //const HDWalletProvider = require('@truffle/hdwallet-provider');

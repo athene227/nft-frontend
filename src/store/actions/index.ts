@@ -160,6 +160,11 @@ export const sellNft: any = asyncAction(
 )();
 
 // collections
+export const clearCollections = action('collections/CLEAR_ALL_COLLECTIONS')();
+export const setCollectionCurrentPage = action(
+  'collections/SET_COLLECTION_CURRENT_PAGE'
+)();
+
 export const fetchMyCollections: any = asyncAction(
   'collections/fetchMyCollections',
   'collections/fetchMyCollections_SUCCESS',
@@ -219,6 +224,12 @@ export const fetchNewNfts: any = asyncAction(
   'nft/fetchNewNfts',
   'nft/fetchNewNfts_SUCCESS',
   'nft/fetchNewNfts_FAIL'
+)();
+
+export const fetchNftsByCollection: any = asyncAction(
+  'nft/fetchNftsByCollection',
+  'nft/fetchNftsByCollection_SUCCESS',
+  'nft/fetchNftsByCollections_FAIL'
 )();
 
 export const fetchHotAuctions: any = asyncAction(

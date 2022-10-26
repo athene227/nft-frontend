@@ -1,0 +1,1 @@
+This file contains the latest test deployment addresses in the Goerli network<br/>ERC-1155: [https://goerli.etherscan.io/address/0x0557D9D59c6509a141EFe33C33d150bF7eDC43C2](https://goerli.etherscan.io/address/0x0557D9D59c6509a141EFe33C33d150bF7eDC43C2)<br/>

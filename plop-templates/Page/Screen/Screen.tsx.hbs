@@ -1,0 +1,61 @@
+{{#if isDashboard}}
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import DashboardLayout from 'src/components/dashboardLayout';
+import PageContent from 'src/components/page/pageContent';
+import PageTitle from 'src/components/page/pageTitle';
+import { APP_ROUTES } from 'src/enums';
+import { useDispatch, userSelectors, useSelector } from 'src/store';
+import { theme } from 'src/styles/theme';
+
+{{else}}
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, userSelectors, useSelector } from 'src/store';
+import { theme } from 'src/styles/theme';
+
+{{/if}}
+{{#if cssFile}}
+import classes from './style/{{pascalCase name}}.module.css';
+{{/if}}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface I{{pascalCase name}}Props {
+  exa?: string;
+}
+
+const {{pascalCase name}}: React.FunctionComponent<I{{pascalCase name}}Props> = (props) => {
+  // TOOLS
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // PROPS
+  const { exa } = props;
+
+  // STATE
+  const [example, setExample] = React.useState('');
+
+  // SELECTORS
+  const user = useSelector(userSelectors.selectUser);
+
+  // VIEW
+  return (
+  {{#if isDashboard}}
+    <DashboardLayout activeRoute={APP_ROUTES.ROUTE_NAME}>
+	  <div className={classes.root}>
+	    <PageTitle title={t('screens.{{camelCase name}}')} />
+	    <PageContent>Screen</PageContent>
+	  </div>
+	</DashboardLayout>
+  {{else}}
+    <div{{#if cssFile}} className={classes.root}{{/if}}>
+	    <h1 className={theme.fonts.classNames.pageTitle}>{{pascalCase name}}</h1>
+	  </div>
+  {{/if}}
+	);
+};
+
+export default {{pascalCase name}};

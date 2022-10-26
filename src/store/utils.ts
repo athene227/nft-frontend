@@ -144,3 +144,46 @@ export const getNftFilterQuery: NftFilterQueryFunc = (
     sortOrder: sort.sortOrder
   };
 };
+
+const generateCollectionFilter = (filters: any) => {
+  const filterArray = [];
+
+  if (filters?.selectedCategories?.length) {
+    filterArray.push({
+      left: 'category',
+      op: FilterOperator.InArray,
+      right: filters.selectedCategories
+    });
+  }
+
+  return filterArray;
+};
+
+type CollectionFilterQueryFunc = (
+  collections: { currentPage: number; pageLimit: number },
+  filters: IFilterState
+) => INftFilterQuery;
+
+export const getCollectionFilterQuery: CollectionFilterQueryFunc = (
+  collections,
+  filters
+) => {
+  const { currentPage, pageLimit } = collections;
+  const filterArray = generateCollectionFilter(filters);
+
+  return {
+    currentPage,
+    pageLimit,
+    filters: filterArray
+  };
+};
+
+export const getDaysBetween = (date1: any, date2: any) => {
+  const ONE_DAY = 1000 * 60 * 60 * 24;
+
+  // Calculate the difference in milliseconds
+  const differenceMs = Math.abs(date1 - date2);
+
+  // Convert back to days and return
+  return Math.round(differenceMs / ONE_DAY);
+};

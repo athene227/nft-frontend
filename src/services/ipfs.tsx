@@ -10,15 +10,15 @@ export const getImage = (image: string | undefined | null) => {
   return image.replace('ipfs://', gatewayUrl);
 };
 
-export const getImageUri = async (file: File) => {
+export const uploadImageToIPFS = async (file: File) => {
   const data = new FormData();
   data.append('file', file);
-  const res = await ApiService.getImageUri(data);
-  console.log('🚀 ~ file: ipfs.tsx ~ line 76 ~ getImageUri ~ res', res);
+  const res = await ApiService.uploadImageToIPFS(data);
+  console.log('🚀 ~ file: ipfs.tsx ~ line 76 ~ uploadImageToIPFS ~ res', res);
   return res.data;
 };
 
-export const getUri = async (data: {
+export const uploadMetadataToIPFS = async (data: {
   name: string;
   description: string;
   creatorAddress: string;
@@ -40,8 +40,8 @@ export const getUri = async (data: {
   };
 
   console.log('🚀 ~ file: ipfs.tsx ~ line 96 ~ options', options);
-  const res = await ApiService.getUri(options);
+  const res = await ApiService.uploadMetadataToIPFS(options);
   return res.data;
 };
 
-export default { getImageUri, getUri };
+export default { uploadImageToIPFS, uploadMetadataToIPFS };

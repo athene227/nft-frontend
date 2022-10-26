@@ -35,6 +35,27 @@ export const fetchNewNfts = () => async (dispatch: any, getState: any) => {
   }
 };
 
+export const fetchNftsByCollection =
+  (collectionId: string) => async (dispatch: any, getState: any) => {
+    dispatch(actions.fetchNftsByCollection.request(Canceler.cancel));
+    try {
+      const query = {
+        currentPage: 0,
+        pageLimit: 10,
+        filters: [
+          { left: 'status', op: 'eq', right: 'ON_SELL' },
+          { left: 'collectionId', op: 'eq', right: collectionId }
+        ],
+        sortOrder: SortOrder.RECENTLY_ADDED
+      };
+      const { data } = await ApiService.getListedNfts(query);
+
+      dispatch(actions.fetchNftsByCollection.success(data));
+    } catch (err) {
+      dispatch(actions.fetchNftsByCollection.failure(err));
+    }
+  };
+
 //* fetch hot auctions
 export const fetchHotAuctions = () => async (dispatch: any, getState: any) => {
   dispatch(actions.fetchHotAuctions.request(Canceler.cancel));

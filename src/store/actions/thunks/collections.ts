@@ -1,3 +1,5 @@
+import { getCollectionFilterQuery } from 'src/store/utils';
+
 import { ApiService, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
 
@@ -88,10 +90,21 @@ export const getCollections = () => async (dispatch: any, getState: any) => {
   dispatch(actions.getCollections.request(Canceler.cancel));
   try {
     const { data } = await ApiService.getCollections();
-
-    // console.log('getMyCreatedNft data', data);
     dispatch(actions.getCollections.success(data));
   } catch (err) {
     dispatch(actions.getCollections.failure(err));
   }
 };
+
+export const getListedCollections =
+  () => async (dispatch: any, getState: any) => {
+    dispatch(actions.getCollections.request(Canceler.cancel));
+    try {
+      const { collections, filters } = getState();
+      const query = getCollectionFilterQuery(collections, filters);
+      const { data } = await ApiService.getListedCollections(query);
+      dispatch(actions.getCollections.success(data));
+    } catch (err) {
+      dispatch(actions.getCollections.failure(err));
+    }
+  };

@@ -1,10 +1,10 @@
+// create option
+import bgDark from 'src/assets/images/bg-radius.png';
+
+import bgLight from '../../assets/images/bg-radius-light.png';
 import liveAuctionbg from './images/liveauction-bg.png';
 import image from './images/snake.svg';
 import imageLight from './images/snake-light.svg';
-
-// create option 
-import bgDark from '../../assets/images/bg-radius.png';
-import bgLight from '../../assets/images/bg-radius-light.png';
 
 const bgPrimaryColor = '#ffffff';
 const bodyBg = '#0B1C3D';
@@ -20,7 +20,7 @@ const blackSoft = '#333';
 const blackCol = '#2e333c';
 const blackLit = '#0e1e45';
 const blackMore = '#0f0f0f';
-const blue = '#0084fe'
+const blue = '#0084fe';
 // const pink_soft = "#fe00c7";
 const pinkCol = '#d61f8b';
 // const color = "#FE00C7";
@@ -51,7 +51,8 @@ const gradient1 =
   'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)';
 const gradient2 =
   'linear-gradient(90deg, rgba(254, 0, 199, 0.2) 0%, rgba(0, 132, 254, 0.2) 103.82%)';
-const nftattrgrad = 'linear-gradient(180deg, rgba(254, 0, 199, 0.07) 0%, rgba(0, 132, 254, 0.07) 100%)';
+const nftattrgrad =
+  'linear-gradient(180deg, rgba(254, 0, 199, 0.07) 0%, rgba(0, 132, 254, 0.07) 100%)';
 const gradient3 = 'linear-gradient(to left, #d61f8b, #fc202c)';
 const gradient4 = 'linear-gradient(to bottom, #d61f8b, #fc202c)';
 // const gradient-color1 = "#fe00c7;
@@ -172,11 +173,11 @@ const light = {
     'modal-content-bg': white,
     'progressbar-trail': 'rgb(91 106 114)',
     'progressbar-bg': '#6c6d83',
-    'createOptionBg': bgLight,
-    'profileDetailBg': white,
-    'notification-wrapperbg': 'linear-gradient(90deg, rgba(57, 147, 255, 0.2) 129.09%, rgba(244, 5, 201, 0.2) -1.88%)',
-    'social-wrapperbg': white,
-    
+    createOptionBg: bgLight,
+    profileDetailBg: white,
+    'notification-wrapperbg':
+      'linear-gradient(90deg, rgba(57, 147, 255, 0.2) 129.09%, rgba(244, 5, 201, 0.2) -1.88%)',
+    'social-wrapperbg': white
   }
 };
 const dark = {
@@ -262,7 +263,7 @@ const dark = {
     'hot-collection-bg': hotCollectionBg,
     'hot-collection-bx': 'rgb(4 15 37 / 15%) 17.9588px 26.9383px 26.9383px',
     'hot-collection-contentbg': 'rgba(255, 255, 255, 0.5)',
-    // create single page 
+    // create single page
     'input-holder-bg': colorBgPrimary,
     'input-holder-border': itemBorderColor,
     'input-holder-focus': colorBgPrimary,
@@ -271,15 +272,16 @@ const dark = {
     'tab-bx': 'none',
     'tab-color': white,
     'nft-attr-bg': nftattrgrad,
-    'nft-attr-bg2':'none',
+    'nft-attr-bg2': 'none',
     'nft-attr-bx': 'none',
     'modal-content-bg': '#0e193b',
     'progressbar-trail': 'rgb(4 39 58)',
     'progressbar-bg': '#181a3a',
-    'createOptionBg': bgDark,
-    'profileDetailBg': gradient1,
-    'notification-wrapperbg': 'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)',
-    'social-wrapperbg': '#0A1735',
+    createOptionBg: bgDark,
+    profileDetailBg: gradient1,
+    'notification-wrapperbg':
+      'linear-gradient(90deg, rgba(244, 5, 201, 0.2) -1.88%, rgba(57, 147, 255, 0.2) 129.09%)',
+    'social-wrapperbg': '#0A1735'
   }
 };
 export { dark, light };

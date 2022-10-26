@@ -1,5 +1,4 @@
-import { ICollection } from 'src/collections.types';
-import { gatewayUrl } from 'src/services/ipfs';
+import { ICollection } from 'src/types/collections.types';
 import { getErrorMessage } from 'src/utils';
 import { getType } from 'typesafe-actions';
 
@@ -33,12 +32,20 @@ export interface ICollectionsState {
     canceler: any;
     error: any;
   };
+  newCreatedCollectionID: string;
+  currentPage: number;
+  pageLimit: number;
+  totalCount: number;
 }
 
 export const defaultState: ICollectionsState = {
   myCollections: initEntityState([]),
   userCollections: initEntityState([]),
-  collections: initEntityState([])
+  collections: initEntityState([]),
+  newCreatedCollectionID: '',
+  currentPage: 0,
+  pageLimit: 21,
+  totalCount: 0
 };
 
 const states = (state = defaultState, action: any) => {
@@ -101,6 +108,7 @@ const states = (state = defaultState, action: any) => {
       const data = [...state.myCollections.data, action.payload.data];
       return {
         ...state,
+        newCreatedCollectionID: action.payload.data.id,
         myCollections: entityLoadingSucceeded(state.myCollections, data)
       };
     case getType(actions.createCollection.failure):
@@ -116,15 +124,30 @@ const states = (state = defaultState, action: any) => {
         collections: entityLoadingStarted(state.collections, action.payload)
       };
     case getType(actions.getCollections.success):
+      // return {
+      //   ...state,
+      //   collections: entityLoadingSucceeded(
+      //     state.collections,
+      //     action.payload.map((collection: any) => ({
+      //       ...collection,
+      //       imageUrl: collection.imageUrl.replace('ipfs://', gatewayUrl)
+      //     }))
+      //   )
+      // };
+
+      // append existing data with new data
+      const collectionData = state.collections.data
+        ? state.collections.data
+        : [];
+      collectionData.splice(
+        state.currentPage * state.pageLimit,
+        state.pageLimit,
+        ...action.payload.data
+      );
       return {
         ...state,
-        collections: entityLoadingSucceeded(
-          state.collections,
-          action.payload.map((collection: any) => ({
-            ...collection,
-            imageUrl: collection.imageUrl.replace('ipfs://', gatewayUrl)
-          }))
-        )
+        collections: entityLoadingSucceeded(state.collections, collectionData),
+        totalCount: action.payload.pagination.totalCount
       };
     case getType(actions.getCollections.failure):
       error = getErrorMessage(action.payload);
@@ -132,6 +155,10 @@ const states = (state = defaultState, action: any) => {
         ...state,
         collections: entityLoadingFailed(state.collections, error)
       };
+    case getType(actions.clearCollections):
+      return { ...state, collections: initEntityState([]), currentPage: 0 };
+    case getType(actions.setCollectionCurrentPage):
+      return { ...state, currentPage: action.payload };
 
     default:
       return state;

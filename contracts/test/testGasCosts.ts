@@ -1,15 +1,17 @@
 // This file is used for measuring certain gas costs. Enable when needed.
 
-import { ethers, network, waffle } from 'hardhat';
+import '@nomiclabs/hardhat-waffle';
+
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/dist/src/signer-with-address';
 import { assert, expect } from 'chai';
+import { ethers, network, waffle } from 'hardhat';
+
 import {
+  MockERC20,
   NFT721,
   NFT1155,
-  MockERC20,
   NFTMarketAuction
 } from '../typechain/pulse';
-import '@nomiclabs/hardhat-waffle';
 
 const dummyDeadline = 9000000000;
 const erc20AllowanceAmount = 1000;

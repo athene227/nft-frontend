@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { ICollection } from 'src/collections.types';
 import { API_ERRORS } from 'src/enums';
 import TokenService from 'src/services/token';
 import { IBid } from 'src/types/bids.types';
+import { ICollection } from 'src/types/collections.types';
 import { INft } from 'src/types/nfts.types';
 import { IUser } from 'src/types/users.types';
 
@@ -83,9 +83,9 @@ const END_POINTS = {
   NFT_COLLECTIBLE_DETAILES: `${SERVER_URL}/${API_VERSION}/nfts/nftMultipleDetailes`,
   GET_HOT_AUCTIONS: `${SERVER_URL}/${API_VERSION}/nfts/getHotAuctions`,
   GET_NFT_COUNTS_BY_CATEGORY: `${SERVER_URL}/${API_VERSION}/nfts/getCountByCategory`,
-  GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/getImageUri`,
+  GET_IMAGE_URI: `${SERVER_URL}/${API_VERSION}/nfts/uploadImageToIPFS`,
   GET_PRICETOKENS_LIST: `${SERVER_URL}/${API_VERSION}/pricetokens`,
-  GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/getUri`,
+  GET_URI: `${SERVER_URL}/${API_VERSION}/nfts/uploadMetadataToIPFS`,
   // BIDS
   BIDS: `${SERVER_URL}/${API_VERSION}/bids`,
   // OFFERS
@@ -369,6 +369,15 @@ export class ApiService {
     });
   };
 
+  //* get Listed Collections
+  static getListedCollections = async (params: any) => {
+    return Axios.request<INft[]>({
+      url: `${END_POINTS.COLLECTIONS}/getListedCollection`,
+      method: 'get',
+      params
+    });
+  };
+
   static getCollections = async () => {
     return Axios.request<ICollection[]>({
       url: `${END_POINTS.COLLECTIONS}/`,
@@ -411,7 +420,7 @@ export class ApiService {
     });
   };
 
-  static getImageUri = async (data: FormData) => {
+  static uploadImageToIPFS = async (data: FormData) => {
     return Axios.request({
       url: END_POINTS.GET_IMAGE_URI,
       method: 'post',
@@ -419,7 +428,7 @@ export class ApiService {
     });
   };
 
-  static getUri = async (data: any) => {
+  static uploadMetadataToIPFS = async (data: any) => {
     return Axios.request({
       url: END_POINTS.GET_URI,
       method: 'post',

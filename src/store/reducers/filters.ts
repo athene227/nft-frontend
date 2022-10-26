@@ -24,6 +24,7 @@ const states = (state = defaultState, action: any) => {
 
   switch (action.type) {
     case getType(actions.filterCategories):
+      // eslint-disable-next-line no-case-declarations
       const selectedCategories = payload.value
         ? handleSelection(
             state.selectedCategories,
@@ -34,6 +35,7 @@ const states = (state = defaultState, action: any) => {
       return { ...state, selectedCategories };
 
     case getType(actions.filterStatus):
+      // eslint-disable-next-line no-case-declarations
       const selectedStatus = payload.value
         ? handleSelection(
             state.selectedStatus,
@@ -44,6 +46,7 @@ const states = (state = defaultState, action: any) => {
       return { ...state, selectedStatus };
 
     case getType(actions.filterCollections):
+      // eslint-disable-next-line no-case-declarations
       const selectedCollections = payload.value ? payload.value : [];
       return { ...state, selectedCollections };
 

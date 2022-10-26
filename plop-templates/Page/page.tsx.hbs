@@ -1,0 +1,25 @@
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
+import { {{#if isPrivate}}PrivatePage{{else}}PublicPage{{/if}} } from 'src/components/auth';
+import { {{pascalCase name}}Screen } from 'src/screens/{{camelCase name}}';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface I{{pascalCase name}}Props {}
+
+const {{pascalCase name}}Page: React.FunctionComponent<I{{pascalCase name}}Props> = () => {
+  const { t } = useTranslation();
+
+  return (
+  	<>
+	  <Helmet>
+  		<title>{t('screens.{{camelCase name}}')}</title>
+  	  </Helmet>
+  	 {{#if isPrivate}} <PrivatePage>{{else}} <PublicPage>{{/if}}
+  	    <{{pascalCase name}}Screen />
+  	 {{#if isPrivate}} </PrivatePage>{{else}} </PublicPage>{{/if}}
+  	</>
+  );
+};
+
+export default {{pascalCase name}}Page;

@@ -92,6 +92,8 @@ An auction price is always denoted in some whitelisted ERC-20 token. The auction
 
 Used for bidding on an auction item. You can bid any amount - it does not need to be higher than previous bids. You have to hold enough of the price asset and must've given allowance for the marketplace to withdraw your tokens in advance.
 
+If a bid is placed within 10 minutes of the auction's end the auction's deadline is extended by 10 minutes from the moment the bid was placed. The actual extension is therefore anything between 0 and 10 minutes.
+
 Bidding on one's own NFT is not allowed.
 
 #### `terminateAuction`

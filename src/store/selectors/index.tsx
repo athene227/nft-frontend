@@ -52,6 +52,8 @@ export const collectionsState = (state: any) =>
 export const bidsState = (state: any) => state.bids.bids as IBids;
 export const searchState = (state: any) => state.search as ISearchState;
 export const newNftsState = (state: any) => state.NFT.newNfts.data as INft[];
+export const nftsByCollectionState = (state: any) =>
+  state.NFT.nftsByCollection.data as INft[];
 
 /*export const hotAuctionsState = (state: any) =>
   state.NFT.hotAuctions.data as INft[];*/

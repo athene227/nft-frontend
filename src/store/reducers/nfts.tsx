@@ -66,6 +66,7 @@ export interface INftState {
   nftCollectibleDetails: InftCollectibleDetail;
   nftShowcase: InftShowcase;
   newNfts: IListedNfts;
+  nftsByCollection: IListedNfts;
   hotAuctions: IListedNfts;
   sellNft: IsellNft;
   nftCount: ICountForCategory;
@@ -81,6 +82,7 @@ export const defaultState: INftState = {
   nftCollectibleDetails: initEntityState([]),
   nftShowcase: initEntityState(null),
   newNfts: initEntityState([]),
+  nftsByCollection: initEntityState([]),
   hotAuctions: initEntityState([]),
   sellNft: initEntityState(null),
   nftCount: initEntityState({}),
@@ -102,6 +104,7 @@ const states = (
       };
     case getType(actions.fetchListedNfts.success):
       // append existing data with new data
+      // eslint-disable-next-line no-case-declarations
       const data = state.listedNfts.data ? state.listedNfts.data : [];
       data.splice(
         state.currentPage * state.pageLimit,
@@ -180,7 +183,11 @@ const states = (
         nftShowcase: entityLoadingSucceeded(state.nftShowcase, action.payload)
       };
     case getType(actions.getNftShowcase.failure):
-      return { ...state, nftShowcase: entityLoadingFailed(state.nftShowcase) };
+      error = getErrorMessage(action.payload);
+      return {
+        ...state,
+        nftShowcase: entityLoadingFailed(state.nftShowcase, error)
+      };
 
     case getType(actions.fetchUserNfts.request):
       return {
@@ -243,6 +250,29 @@ const states = (
     case getType(actions.fetchNewNfts.failure):
       error = getErrorMessage(action.payload);
       return { ...state, newNfts: entityLoadingFailed(state.newNfts, error) };
+
+    case getType(actions.fetchNftsByCollection.request):
+      return {
+        ...state,
+        nftsByCollection: entityLoadingStarted(
+          state.nftsByCollection,
+          action.payload
+        )
+      };
+    case getType(actions.fetchNftsByCollection.success):
+      return {
+        ...state,
+        nftsByCollection: entityLoadingSucceeded(
+          state.nftsByCollection,
+          action.payload.data
+        )
+      };
+    case getType(actions.fetchNftsByCollection.failure):
+      error = getErrorMessage(action.payload);
+      return {
+        ...state,
+        newNfts: entityLoadingFailed(state.nftsByCollection, error)
+      };
 
     case getType(actions.fetchHotAuctions.request):
       return {

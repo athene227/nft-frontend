@@ -1,0 +1,14 @@
+import { createSelector } from '@reduxjs/toolkit'
+import {RootState} from '../../store';
+
+const select{{pascalCase name}}State = (state: RootState) => state.{{camelCase name}};
+
+const select{{pascalCase name}}StateData = createSelector(
+  select{{pascalCase name}}State,
+  ({{camelCase name}}) => {{camelCase name}}.data
+)
+
+export default {
+  select{{pascalCase name}}State,
+  select{{pascalCase name}}StateData,
+}

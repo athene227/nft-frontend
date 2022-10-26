@@ -1,18 +1,20 @@
-import { ethers, network, waffle } from 'hardhat';
+import '@nomiclabs/hardhat-waffle';
+
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/dist/src/signer-with-address';
 import { assert, expect } from 'chai';
-import '@nomiclabs/hardhat-waffle';
+import { deployMockContract } from 'ethereum-waffle';
+import { Contract } from 'ethers';
+import { ethers, network, waffle } from 'hardhat';
+
+import LazyMinter from '../scripts/LazyMinter';
 import {
+  IPartialNFT,
   MockERC20,
   NFT721,
   NFT1155,
-  NFTMarketOffers,
   NFT1155__factory,
-  IPartialNFT
+  NFTMarketOffers
 } from '../typechain/pulse';
-import { deployMockContract } from 'ethereum-waffle';
-import LazyMinter from '../scripts/LazyMinter';
-import { Contract } from 'ethers';
 
 const dummyDeadline = 9000000000;
 

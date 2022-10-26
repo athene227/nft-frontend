@@ -1,4 +1,4 @@
-import { ICollection } from 'src/collections.types';
+import { ICollection } from 'src/types/collections.types';
 import { INft } from 'src/types/nfts.types';
 import { IUser } from 'src/types/users.types';
 import { getErrorMessage } from 'src/utils';
